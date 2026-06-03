@@ -736,7 +736,7 @@ function updateTimerUI() {
       const titleEl = document.getElementById("active-buzz-title");
       if (titleEl) titleEl.textContent = isEm ? "⚡ Tu as buzzé !" : isTg ? "Tu as été buzzé·e !" : "⚡ Buzzer actif";
       if (isEm) { desc.textContent = "Tu as buzzé " + gameState.activeBuzz.targetName + " — vas le/la voir maintenant !"; }
-      else if (isTg) { desc.textContent = gameState.activeBuzz.fromName + " pense avoir trouve ton secret !"; }
+      else if (isTg) { desc.textContent = gameState.activeBuzz.fromName + " pense avoir trouvé ton secret !"; }
       else { desc.textContent = gameState.activeBuzz.fromName.split(" ")[0] + " a buzzé " + gameState.activeBuzz.targetName.split(" ")[0]; }
     } else {
       wrap.style.display = "none";
@@ -1447,31 +1447,70 @@ function openNotifsPanel() {
   const overlay = document.getElementById("notifs-panel-overlay");
   const body = document.getElementById("notifs-panel-body");
   if (!panel) return;
-  // Render notifs in panel
+  body.innerHTML = "";
+
   const notifs = playerState?.notifs || [];
-  if (!notifs.length) {
-    body.innerHTML = '<p style="font-size:13px;color:var(--color-text-secondary);">Aucune notification.</p>';
-  } else {
-    body.innerHTML = "";
-    notifs.forEach((n, i) => {
-      if (n.resolved) {
-        const div = document.createElement("div");
-        div.style.cssText = "font-size:12px;color:var(--color-text-secondary);padding:10px;background:var(--color-background-secondary);border-radius:8px;margin-bottom:6px;";
-        div.textContent = n.resolvedText || "Notification traitée";
-        body.appendChild(div); return;
-      }
-      const fk = n.fromKey; const fn = n.fromName;
+  const pending = notifs.filter(n => !n.resolved);
+  const resolved = notifs.filter(n => n.resolved);
+
+  // Pending buzzes
+  if (pending.length > 0) {
+    const sec = document.createElement("div");
+    sec.style.cssText = "font-size:11px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;";
+    sec.textContent = "En attente de ta réponse";
+    body.appendChild(sec);
+    pending.forEach((n, idx2) => {
+      const realIdx = notifs.findIndex(x => x.id === n.id);
+      const fk = n.fromKey; const fn2 = n.fromName;
       const div = document.createElement("div");
       div.className = "notif-urgent";
-      div.innerHTML = '<div class="nu-title"><i class="ti ti-hand-stop"></i> Tu as été buzzé·e !</div><div class="nu-body">'+n.text+'</div><div class="nu-actions"><button class="btn-yes" id="np-yes-'+i+'">✓ Oui</button><button class="btn-no" id="np-no-'+i+'">✗ Non</button></div>';
+      div.style.marginBottom = "10px";
+      div.innerHTML = '<div class="nu-title"><i class="ti ti-hand-stop"></i> Tu as été buzzé·e !</div>' +
+        '<div class="nu-body">' + n.text + '</div>' +
+        '<div class="nu-actions">' +
+        '<button class="btn-yes" id="np-yes-'+idx2+'">✓ Oui c&#39;est mon secret</button>' +
+        '<button class="btn-no" id="np-no-'+idx2+'">✗ Non ce n&#39;est pas ca</button>' +
+        '</div>';
       body.appendChild(div);
       setTimeout(() => {
-        const yb = document.getElementById("np-yes-"+i); if(yb) yb.addEventListener("click", () => { closeNotifsPanel(); respondBuzz(i, true, fk, fn); });
-        const nb = document.getElementById("np-no-"+i); if(nb) nb.addEventListener("click", () => { closeNotifsPanel(); respondBuzz(i, false, fk, fn); });
+        const yb = document.getElementById("np-yes-"+idx2);
+        if(yb) yb.addEventListener("click", () => { closeNotifsPanel(); respondBuzz(realIdx, true, fk, fn2); });
+        const nb = document.getElementById("np-no-"+idx2);
+        if(nb) nb.addEventListener("click", () => { closeNotifsPanel(); respondBuzz(realIdx, false, fk, fn2); });
       }, 0);
     });
   }
-  // Mark as read
+
+  // History section
+  const myName = currentUserData?.name?.split(" ")[0] || "";
+  const myFeedItems = (feedItems || []).filter(item =>
+    item.text && item.text.includes(myName)
+  ).slice(0, 8);
+
+  if (resolved.length > 0 || myFeedItems.length > 0) {
+    const sec2 = document.createElement("div");
+    sec2.style.cssText = "font-size:11px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:0.5px;margin:12px 0 8px;";
+    sec2.textContent = "Historique";
+    body.appendChild(sec2);
+    resolved.forEach(n => {
+      const div = document.createElement("div");
+      div.style.cssText = "font-size:12px;color:var(--color-text-secondary);padding:10px;background:var(--color-background-secondary);border-radius:8px;margin-bottom:6px;";
+      div.textContent = n.resolvedText || "Notification traitée";
+      body.appendChild(div);
+    });
+    const iconMap = {"fi-buzz":"🔴","fi-win":"✅","fi-fail":"❌","fi-token":"🪙","fi-search":"🔍"};
+    myFeedItems.forEach(item => {
+      const div = document.createElement("div");
+      div.style.cssText = "font-size:12px;color:var(--color-text-primary);padding:10px;background:var(--color-background-secondary);border-radius:8px;margin-bottom:6px;display:flex;gap:8px;align-items:flex-start;";
+      div.innerHTML = "<span style='font-size:16px;flex-shrink:0;'>"+(iconMap[item.icon]||"📌")+"</span><span style='flex:1;line-height:1.5;'>"+item.text+"</span>";
+      body.appendChild(div);
+    });
+  }
+
+  if (body.children.length === 0) {
+    body.innerHTML = "<p style='font-size:13px;color:var(--color-text-secondary);'>Aucune notification pour l'instant.</p>";
+  }
+
   if (playerState?.notifs) {
     const updated = playerState.notifs.map(n => ({...n, read: true}));
     updateDoc(playerRef(currentUser), { notifs: updated });
@@ -1554,10 +1593,11 @@ document.addEventListener("DOMContentLoaded", function() {
         <div style="font-size:40px;margin-bottom:10px;">🔴</div>
         <div style="font-size:17px;font-weight:600;color:#A32D2D;margin-bottom:8px;">Tu as été buzzé·e !</div>
         <div style="font-size:14px;color:var(--color-text-secondary);line-height:1.6;margin-bottom:20px;" id="buzz-popup-text"></div>
-        <div style="display:flex;gap:10px;">
-          <button id="buzz-popup-yes" style="flex:1;padding:14px;background:#3B6D11;color:white;border:none;border-radius:10px;font-size:14px;font-weight:500;cursor:pointer;">Oui c'est mon secret</button>
-          <button id="buzz-popup-no" style="flex:1;padding:14px;background:#E24B4A;color:white;border:none;border-radius:10px;font-size:14px;font-weight:500;cursor:pointer;">Non ce n'est pas ca</button>
+        <div style="display:flex;gap:10px;margin-bottom:8px;">
+          <button id="buzz-popup-yes" onclick="window._respondBuzzYes()" style="flex:1;padding:14px;background:#3B6D11;color:white;border:none;border-radius:10px;font-size:14px;font-weight:500;cursor:pointer;">✓ Oui</button>
+          <button id="buzz-popup-no" onclick="window._respondBuzzNo()" style="flex:1;padding:14px;background:#E24B4A;color:white;border:none;border-radius:10px;font-size:14px;font-weight:500;cursor:pointer;">✗ Non</button>
         </div>
+        <button onclick="document.getElementById('buzz-popup').style.display='none'" style="width:100%;padding:10px;background:none;border:0.5px solid rgba(255,255,255,0.15);border-radius:10px;font-size:13px;color:rgba(255,255,255,0.5);cursor:pointer;margin-top:0;">Plus tard — je vais la voir d'abord</button>
       </div>
     </div>
 
