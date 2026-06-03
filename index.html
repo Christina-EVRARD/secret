@@ -734,10 +734,10 @@ function updateTimerUI() {
       const isEm = gameState.activeBuzz.fromKey === currentUser;
       const isTg = gameState.activeBuzz.targetKey === currentUser;
       const titleEl = document.getElementById("active-buzz-title");
-      if (titleEl) titleEl.textContent = isEm ? "⚡ Tu as buzze !" : isTg ? "Tu as ete buzze !" : "⚡ Buzzer actif";
-      if (isEm) { desc.textContent = "Tu as buzze " + gameState.activeBuzz.targetName + " — vas le/la voir maintenant !"; }
+      if (titleEl) titleEl.textContent = isEm ? "⚡ Tu as buzzé !" : isTg ? "Tu as été buzzé·e !" : "⚡ Buzzer actif";
+      if (isEm) { desc.textContent = "Tu as buzzé " + gameState.activeBuzz.targetName + " — vas le/la voir maintenant !"; }
       else if (isTg) { desc.textContent = gameState.activeBuzz.fromName + " pense avoir trouve ton secret !"; }
-      else { desc.textContent = gameState.activeBuzz.fromName.split(" ")[0] + " a buzze " + gameState.activeBuzz.targetName.split(" ")[0]; }
+      else { desc.textContent = gameState.activeBuzz.fromName.split(" ")[0] + " a buzzé " + gameState.activeBuzz.targetName.split(" ")[0]; }
     } else {
       wrap.style.display = "none";
     }
@@ -793,12 +793,12 @@ function showResultPopup(success, targetName, tokens) {
     emoji.textContent = "🎉";
     title.style.color = "#3B6D11";
     title.textContent = "Bravo !";
-    text.textContent = "Tu as trouve le secret de " + targetName + " et tu gagnes +" + tokens + " tokens !";
+    text.textContent = "Tu as trouvé le secret de " + targetName + " et tu gagnes +" + tokens + " tokens !";
   } else {
     emoji.textContent = "😬";
     title.style.color = "#E24B4A";
     title.textContent = "Dommage !";
-    text.textContent = "Ce n'etait pas le bon secret de " + targetName + "... Tu perds " + tokens + " tokens.";
+    text.textContent = "Ce n'était pas le bon secret de " + targetName + "... Tu perds " + tokens + " tokens.";
   }
   popup.style.display = "flex";
 }
@@ -808,22 +808,39 @@ function showBuzzPopup(notif) {
   const txt = document.getElementById("buzz-popup-text");
   if (!popup || !txt) return;
   txt.textContent = notif.text;
-  popup.style.display = "flex";
-  const yesBtn = document.getElementById("buzz-popup-yes");
-  const noBtn = document.getElementById("buzz-popup-no");
   const idx = (playerState?.notifs || []).findIndex(n => n.id === notif.id);
-  yesBtn.onclick = () => { popup.style.display = "none"; respondBuzz(idx, true, notif.fromKey, notif.fromName); };
-  noBtn.onclick = () => { popup.style.display = "none"; respondBuzz(idx, false, notif.fromKey, notif.fromName); };
+  // Store pending buzz response on window for non-module access
+  window._pendingBuzz = { idx, fromKey: notif.fromKey, fromName: notif.fromName };
+  popup.style.display = "flex";
 }
+
+window._respondBuzzYes = function() {
+  const popup = document.getElementById("buzz-popup");
+  if (popup) popup.style.display = "none";
+  if (window._pendingBuzz) {
+    const b = window._pendingBuzz;
+    window._pendingBuzz = null;
+    respondBuzz(b.idx, true, b.fromKey, b.fromName);
+  }
+};
+window._respondBuzzNo = function() {
+  const popup = document.getElementById("buzz-popup");
+  if (popup) popup.style.display = "none";
+  if (window._pendingBuzz) {
+    const b = window._pendingBuzz;
+    window._pendingBuzz = null;
+    respondBuzz(b.idx, false, b.fromKey, b.fromName);
+  }
+};
 
 window.openBuzzModal = function() {
   if (gameState && gameState.appBlocked) { showToast("Appli en pause"); return; }
-  if (gameState && gameState.buzzBlocked) { showToast("Buzzer bloque"); return; }
+  if (gameState && gameState.buzzBlocked) { showToast("Buzzer bloqué"); return; }
   if (gameState && gameState.activeBuzz) {
     const ab = gameState.activeBuzz;
     const rem = Math.max(0, Math.floor((ab.endTs - Date.now()) / 1000));
     if (rem > 0 && (ab.fromKey === currentUser || ab.targetKey === currentUser)) {
-      showToast(ab.fromKey === currentUser ? "En attente de reponse..." : "Reponds au buzz dabord !");
+      showToast(ab.fromKey === currentUser ? "En attente de réponse..." : "Réponds au buzz d'abord !");
       return;
     }
   }
@@ -1156,7 +1173,7 @@ function updateBuzzBtn() {
     const isBusy = ab && rem2 > 0 && (ab.fromKey === currentUser || ab.targetKey === currentUser);
     if (isBusy) {
       btn.style.opacity="0.5"; btn.style.pointerEvents="none"; btn.style.background="#888780";
-      btn.textContent = ab.fromKey === currentUser ? "En attente de reponse..." : "Reponds au buzz !";
+      btn.textContent = ab.fromKey === currentUser ? "En attente de réponse..." : "Réponds au buzz !";
     } else {
       btn.style.opacity="1"; btn.style.pointerEvents="auto"; btn.style.background="#E24B4A";
       btn.textContent = "BUZZER";
@@ -1264,7 +1281,7 @@ function renderTeamRenameList() {
     div.style.cssText = "background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:10px;padding:12px;margin-bottom:8px;border-left:3px solid " + tc.main + ";";
     div.innerHTML =
       '<div style="font-size:11px;color:'+tc.main+';font-weight:500;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.4px;">Groupe '+tid+'</div>' +
-      '<div class="team-rename-row" style="margin-bottom:10px;"><input class="team-rename-input" id="team-rename-'+tid+'" placeholder="Nom de votre equipe..." value="'+currentName+'"><button class="team-rename-btn" style="background:'+tc.main+';" onclick="renameTeam(&apos;"+tid+"&apos;)">OK</button></div>' +
+      '<div class="team-rename-row" style="margin-bottom:10px;"><input class="team-rename-input" id="team-rename-'+tid+'" placeholder="Nom de votre équipe..." value="'+currentName+'"><button class="team-rename-btn" style="background:'+tc.main+';" onclick="renameTeam(&apos;"+tid+"&apos;)">OK</button></div>' +
       '<details style="cursor:pointer;">' +
       '<summary style="font-size:12px;color:var(--color-text-secondary);list-style:none;display:flex;align-items:center;gap:4px;user-select:none;">' +
       '<i class="ti ti-users" style="font-size:13px;"></i> ' + members.length + ' membre' + (members.length > 1 ? 's' : '') +
@@ -1528,14 +1545,14 @@ document.addEventListener("DOMContentLoaded", function() {
         <div style="font-size:48px;margin-bottom:12px;" id="result-popup-emoji">🎉</div>
         <div style="font-size:18px;font-weight:600;margin-bottom:8px;" id="result-popup-title">Bravo !</div>
         <div style="font-size:14px;color:var(--color-text-secondary);line-height:1.6;margin-bottom:20px;" id="result-popup-text"></div>
-        <button id="close-result-popup" style="width:100%;padding:12px;background:#534AB7;color:white;border:none;border-radius:10px;font-size:15px;font-weight:500;cursor:pointer;">OK</button>
+        <button onclick="document.getElementById('result-popup').style.display='none'" style="width:100%;padding:12px;background:#534AB7;color:white;border:none;border-radius:10px;font-size:15px;font-weight:500;cursor:pointer;">OK</button>
       </div>
     </div>
 
     <div id="buzz-popup" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);z-index:150;align-items:center;justify-content:center;padding:1.5rem;">
       <div style="background:var(--color-background-primary);border-radius:16px;padding:1.5rem;width:100%;max-width:340px;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,0.3);">
         <div style="font-size:40px;margin-bottom:10px;">🔴</div>
-        <div style="font-size:17px;font-weight:600;color:#A32D2D;margin-bottom:8px;">Tu as ete buzze !</div>
+        <div style="font-size:17px;font-weight:600;color:#A32D2D;margin-bottom:8px;">Tu as été buzzé·e !</div>
         <div style="font-size:14px;color:var(--color-text-secondary);line-height:1.6;margin-bottom:20px;" id="buzz-popup-text"></div>
         <div style="display:flex;gap:10px;">
           <button id="buzz-popup-yes" style="flex:1;padding:14px;background:#3B6D11;color:white;border:none;border-radius:10px;font-size:14px;font-weight:500;cursor:pointer;">Oui c'est mon secret</button>
