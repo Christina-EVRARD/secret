@@ -256,6 +256,7 @@ body{font-family:var(--font-sans);background:var(--color-background-secondary);m
     <div class="section-lbl" style="margin-top:4px;">Actions</div>
     <button onclick="resetBuzzQueue()" style="width:100%;padding:10px;background:none;border:0.5px solid #E24B4A;color:#E24B4A;border-radius:8px;font-size:13px;cursor:pointer;margin-bottom:8px;">Vider la file d'attente buzzer</button>
     <button onclick="revealAll()" style="width:100%;padding:10px;background:#534AB7;color:white;border:none;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;">🎉 Lancer la cérémonie de révélation</button>
+    <button onclick="resetAllPlayers()" style="width:100%;padding:10px;background:none;border:0.5px solid #854F0B;color:#854F0B;border-radius:8px;font-size:13px;cursor:pointer;margin-bottom:8px;">🔄 Réinitialiser tous les joueurs (démo)</button>
   </div>
 
   <div class="atab" id="atab-programme">
@@ -366,7 +367,7 @@ body{font-family:var(--font-sans);background:var(--color-background-secondary);m
       <div class="bb-desc" id="block-msg-display"></div>
     </div>
     <div class="secret-box">
-      <button class="hide-pill" onclick="toggleSecret()" id="hide-btn"><i class="ti ti-eye-off"></i> Cacher</button>
+      <button class="hide-pill" onclick="toggleSecret()" id="hide-btn" style="cursor:pointer;padding:4px 10px;border-radius:20px;background:rgba(255,255,255,0.2);border:none;color:#EEEDFE;font-size:11px;position:absolute;top:10px;right:10px;min-width:70px;text-align:center;"><i class="ti ti-eye-off"></i> Cacher</button>
       <div class="slabel">Mon secret</div>
       <div class="stext" id="my-secret"></div>
       <div class="slock"><i class="ti ti-lock"></i> Visible uniquement par toi</div>
@@ -387,18 +388,24 @@ body{font-family:var(--font-sans);background:var(--color-background-secondary);m
 </button>
 <div style="text-align:center;font-size:12px;color:var(--color-text-secondary);margin-bottom:12px;letter-spacing:1px;text-transform:uppercase;">Buzzer</div>
 
-    <div id="personal-feed" style="margin-bottom:12px;">
-      <div style="font-size:11px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">Mon activité</div>
-      <div id="personal-feed-items" style="display:flex;flex-direction:column;gap:6px;">
-        <div style="font-size:12px;color:var(--color-text-secondary);font-style:italic;">Aucune activité pour l'instant...</div>
-      </div>
-    </div>
     <div class="how-to">
       <div><i class="ti ti-bulb" style="color:#534AB7;"></i> Achète des indices sur les autres joueurs</div>
       <div><i class="ti ti-hand-stop" style="color:#E24B4A;"></i> Buze quand tu penses avoir trouvé</div>
       <div><i class="ti ti-run" style="color:#3B6D11;"></i> 5 minutes pour aller voir la personne</div>
       <div><i class="ti ti-check" style="color:#3B6D11;"></i> Confirmé → +5 tokens · Nié → -3 tokens</div>
     </div>
+
+    <details style="margin-top:10px;">
+      <summary style="font-size:12px;font-weight:500;color:var(--color-text-secondary);cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:var(--color-background-secondary);border-radius:8px;user-select:none;">
+        <span>📋 Mon activité</span>
+        <span style="font-size:10px;opacity:0.6;">Appuie pour déplier</span>
+      </summary>
+      <div style="margin-top:6px;">
+        <div id="personal-feed-items" style="display:flex;flex-direction:column;gap:6px;">
+          <div style="font-size:12px;color:var(--color-text-secondary);font-style:italic;padding:8px;">Aucune activité pour l'instant...</div>
+        </div>
+      </div>
+    </details>
   </div>
 
   <div class="tab" id="tab-players">
@@ -425,7 +432,7 @@ body{font-family:var(--font-sans);background:var(--color-background-secondary);m
 <!-- FIREBASE -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, doc, setDoc, getDoc, onSnapshot, updateDoc, arrayUnion, serverTimestamp, collection, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getFirestore, doc, setDoc, getDoc, onSnapshot, updateDoc, arrayUnion, serverTimestamp, collection, query, orderBy, limit, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAKxNuGxBR0NhRGS_fcypOykn4-JdYPF2k",
@@ -1417,6 +1424,31 @@ window.revealAll = async function() {
   showToast("🎉 Cérémonie lancée !");
 };
 
+window.resetAllPlayers = async function() {
+  if (!confirm("Réinitialiser TOUS les joueurs à 3 tokens ? (démo)")) return;
+  showToast("Réinitialisation en cours...");
+  const resetData = {
+    tokens: 3, secretsFound: 0, buzzedBy: 0,
+    unlockedHints: {}, buzzResults: {}, notifs: [],
+    pendingResult: null, online: false
+  };
+  for (const key of Object.keys(PLAYERS)) {
+    await setDoc(playerRef(key), resetData);
+  }
+  // Reset shared game state
+  await updateDoc(gameRef(), {
+    activeBuzz: null, queue: [],
+    totalBuzzes: 0, totalFound: 0
+  });
+  // Clear feed
+  const feedSnap = await getDocs(query(feedRef(), limit(100)));
+  for (const d of feedSnap.docs) {
+    await deleteDoc(d.ref);
+  }
+  await addFeedItem("fi-admin", "Admin : tous les joueurs ont été réinitialisés — démo relancée !");
+  showToast("✅ Tous les joueurs réinitialisés !");
+};
+
 window.awardPlayer = async function() {
   const sel = document.getElementById("award-player-select").value;
   const amt = parseInt(document.getElementById("award-player-amount").value) || 0;
@@ -1604,7 +1636,8 @@ function getTC(tid) { return TEAM_COLORS_BASE[tid] || { main: "#888780", light: 
 window.toggleSecret = function() {
   secretHidden = !secretHidden;
   document.getElementById("my-secret").classList.toggle("blurred", secretHidden);
-  document.getElementById("hide-btn").innerHTML = secretHidden ? '<i class="ti ti-eye"></i> Afficher' : '<i class="ti ti-eye-off"></i> Cacher';
+  const btn = document.getElementById("hide-btn");
+  if (btn) btn.innerHTML = secretHidden ? '<i class="ti ti-eye"></i> Afficher' : '<i class="ti ti-eye-off"></i> Cacher';
 };
 
 window.switchTab = function(name) {
