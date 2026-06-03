@@ -348,10 +348,7 @@ body{font-family:var(--font-sans);background:var(--color-background-secondary);m
 
   <div style="display:flex;align-items:center;justify-content:space-between;padding:0.75rem 0;">
     <div id="home-header-area"></div>
-    <button id="notif-bell-btn" style="position:relative;background:none;border:0.5px solid var(--color-border-secondary);border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--color-text-secondary);">
-      <i class="ti ti-bell" style="font-size:18px;"></i>
-      <span class="notif-dot" id="notif-dot" style="top:4px;right:4px;"></span>
-    </button>
+
   </div>
 
   <div class="nav">
@@ -388,7 +385,14 @@ body{font-family:var(--font-sans);background:var(--color-background-secondary);m
     <button id="buzz-main-btn" onclick="(window.openBuzzModal||function(){})()" style="width:100px;height:100px;border-radius:50%;background:#E24B4A;border:none;cursor:pointer;display:block;margin:0 auto 12px;box-shadow:0 6px 24px rgba(226,75,74,0.5);transition:transform 0.1s,box-shadow 0.1s;" onmousedown="this.style.transform='scale(0.95)';this.style.boxShadow='0 2px 10px rgba(226,75,74,0.4)'" onmouseup="this.style.transform='scale(1)';this.style.boxShadow='0 6px 24px rgba(226,75,74,0.5)'">
   <div style="width:60px;height:60px;border-radius:50%;background:rgba(255,255,255,0.15);margin:0 auto;"></div>
 </button>
-<div style="text-align:center;font-size:12px;color:var(--color-text-secondary);margin-bottom:10px;letter-spacing:1px;text-transform:uppercase;">Buzzer</div>
+<div style="text-align:center;font-size:12px;color:var(--color-text-secondary);margin-bottom:12px;letter-spacing:1px;text-transform:uppercase;">Buzzer</div>
+
+    <div id="personal-feed" style="margin-bottom:12px;">
+      <div style="font-size:11px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">Mon activité</div>
+      <div id="personal-feed-items" style="display:flex;flex-direction:column;gap:6px;">
+        <div style="font-size:12px;color:var(--color-text-secondary);font-style:italic;">Aucune activité pour l'instant...</div>
+      </div>
+    </div>
     <div class="how-to">
       <div><i class="ti ti-bulb" style="color:#534AB7;"></i> Achète des indices sur les autres joueurs</div>
       <div><i class="ti ti-hand-stop" style="color:#E24B4A;"></i> Buze quand tu penses avoir trouvé</div>
@@ -833,6 +837,7 @@ function startPlayerListeners() {
   unsubFeed = onSnapshot(q, (snap) => {
     feedItems = snap.docs.map(d => ({ ...d.data(), id: d.id }));
     renderFeed();
+    renderPersonalFeed();
   });
   // Timer
   if (timerInterval) clearInterval(timerInterval);
@@ -987,6 +992,7 @@ window._respondBuzzNo = function() {
 window.openBuzzModal = function() {
   if (gameState && gameState.appBlocked) { showToast("Appli en pause"); return; }
   if (gameState && gameState.buzzBlocked) { showToast("Buzzer bloqué"); return; }
+  if (playerState && (playerState.tokens || 0) < 3) { showToast("Il te faut au moins 3 tokens pour buzzer !"); return; }
   if (gameState && gameState.activeBuzz) {
     const ab = gameState.activeBuzz;
     const rem = Math.max(0, Math.floor((ab.endTs - Date.now()) / 1000));
@@ -1107,7 +1113,7 @@ window.respondBuzz = async function(idx, confirmed, fromKey, fromName) {
   if (gameState?.activeBuzz?.fromKey === fromKey && gameState?.activeBuzz?.targetKey === currentUser) {
     await advanceBuzzQueue();
   }
-  document.getElementById("notif-dot").classList.remove("show");
+  
 };
 
 // ─── HINTS ────────────────────────────────────────────────
@@ -1326,16 +1332,50 @@ function updateBuzzBtn() {
     const ab = gameState?.activeBuzz;
     const rem2 = ab ? Math.max(0, Math.floor((ab.endTs - Date.now()) / 1000)) : 0;
     const isBusy = ab && rem2 > 0 && (ab.fromKey === currentUser || ab.targetKey === currentUser);
+    const notEnoughTokens = playerState && (playerState.tokens || 0) < 3;
     if (isBusy) {
       btn.style.opacity="0.4"; btn.style.pointerEvents="none"; btn.style.background="#888780";
       btn.style.boxShadow="none";
+    } else if (notEnoughTokens) {
+      btn.style.opacity="0.4"; btn.style.pointerEvents="none"; btn.style.background="#888780";
+      btn.style.boxShadow="none";
+      btn.title="Il te faut au moins 3 tokens pour buzzer";
     } else {
       btn.style.opacity="1"; btn.style.pointerEvents="auto"; btn.style.background="#E24B4A";
       btn.style.boxShadow="0 6px 24px rgba(226,75,74,0.5)";
+      btn.title="";
     }
   }
   const banner = document.getElementById("app-blocked-banner");
   if (banner) { banner.style.display = gameState?.appBlocked ? "block" : "none"; const m = document.getElementById("block-msg-display"); if (m) m.textContent = gameState?.blockMessage || "Pause en cours"; }
+}
+
+function renderPersonalFeed() {
+  const el = document.getElementById("personal-feed-items");
+  if (!el || !currentUserData) return;
+  const myName = currentUserData.name.split(" ")[0];
+  const myItems = (feedItems || []).filter(item => {
+    if (!item.text) return false;
+    return item.text.includes(myName) ||
+           item.text.startsWith("Tu as") ||
+           item.text.startsWith("Temps") ||
+           item.text.includes("ton secret") ||
+           item.text.includes("a buzzé " + myName) ||
+           item.text.includes("a confirmé") && item.text.includes(myName) ||
+           item.text.includes("a nié") && item.text.includes(myName);
+  }).slice(0, 10);
+  if (!myItems.length) {
+    el.innerHTML = "<div style='font-size:12px;color:var(--color-text-secondary);font-style:italic;'>Aucune activité pour l'instant...</div>";
+    return;
+  }
+  el.innerHTML = "";
+  const iconMap = {"fi-buzz":"🔴","fi-win":"✅","fi-fail":"❌","fi-token":"🪙","fi-search":"🔍","fi-admin":"⚙️"};
+  myItems.forEach(item => {
+    const div = document.createElement("div");
+    div.style.cssText = "display:flex;align-items:flex-start;gap:8px;padding:8px 10px;background:var(--color-background-secondary);border-radius:8px;font-size:12px;line-height:1.5;";
+    div.innerHTML = "<span style='font-size:15px;flex-shrink:0;'>"+(iconMap[item.icon]||"📌")+"</span><span style='flex:1;color:var(--color-text-primary);'>"+item.text+"</span><span style='font-size:10px;color:var(--color-text-secondary);white-space:nowrap;margin-left:4px;'>"+(item.time||"")+"</span>";
+    el.appendChild(div);
+  });
 }
 
 function renderAll() {
@@ -1346,9 +1386,10 @@ function renderAll() {
   renderRankingIndividual();
   renderRankingTeam();
   renderNotifs();
+  renderNotifs();
+  renderPersonalFeed();
   updateBuzzBtn();
 }
-
 // ─── ADMIN FONCTIONS ──────────────────────────────────────
 window.toggleBlock = async function(type) {
   if (!gameState) return;
@@ -1574,7 +1615,7 @@ window.switchTab = function(name) {
   if (name === "notifs" && playerState) {
     const notifs = (playerState.notifs || []).map(n => ({ ...n, read: true }));
     updateDoc(playerRef(currentUser), { notifs });
-    document.getElementById("notif-dot").classList.remove("show");
+    
   }
 };
 
@@ -1670,7 +1711,7 @@ function openNotifsPanel() {
     const updated = playerState.notifs.map(n => ({...n, read: true}));
     updateDoc(playerRef(currentUser), { notifs: updated });
   }
-  document.getElementById("notif-dot").classList.remove("show");
+  
   panel.style.display = "block";
   overlay.style.display = "block";
 }
@@ -1695,8 +1736,7 @@ function attachEventListeners() {
     buzzBtn.onclick = null;
     buzzBtn.addEventListener("click", openBuzzModal, false);
   }
-  const bellBtn = document.getElementById("notif-bell-btn");
-  if (bellBtn) bellBtn.addEventListener("click", () => openNotifsPanel());
+
   // Modal closes
   const closeHints = document.getElementById("close-modal-hints");
   if (closeHints) closeHints.addEventListener("click", () => closeModal("modal-hints"));
