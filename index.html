@@ -1,0 +1,1548 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Secret Story — Séminaire 2026</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+:root{
+  --color-text-primary:#1a1a1a;
+  --color-text-secondary:#6b6b6b;
+  --color-background-primary:#ffffff;
+  --color-background-secondary:#f5f5f5;
+  --color-border-tertiary:#e8e8e8;
+  --color-border-secondary:#d0d0d0;
+  --border-radius-lg:12px;
+  --border-radius-md:8px;
+  --font-sans:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+}
+@media(prefers-color-scheme:dark){
+  :root{
+    --color-text-primary:#f0f0f0;
+    --color-text-secondary:#999;
+    --color-background-primary:#1c1c1e;
+    --color-background-secondary:#2c2c2e;
+    --color-border-tertiary:#3a3a3c;
+    --color-border-secondary:#48484a;
+  }
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--font-sans);background:var(--color-background-secondary);min-height:100vh;}
+.app{max-width:420px;margin:0 auto;padding:1rem;min-height:100vh;background:var(--color-background-secondary);}
+.screen{display:none;}.screen.active{display:block;}
+.logo{text-align:center;padding:2rem 0 1.5rem;}
+.logo h1{font-size:24px;font-weight:600;color:var(--color-text-primary);}
+.logo p{font-size:14px;color:var(--color-text-secondary);margin-top:4px;}
+.card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1.5rem;margin-bottom:1rem;}
+.card label{font-size:13px;color:var(--color-text-secondary);display:block;margin-bottom:6px;}
+.card input,.card select{width:100%;margin-bottom:1rem;padding:10px 12px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);background:var(--color-background-primary);color:var(--color-text-primary);font-size:14px;}
+.btn-primary{width:100%;padding:12px;background:#534AB7;color:#fff;border:none;border-radius:var(--border-radius-md);font-size:15px;font-weight:500;cursor:pointer;}
+.btn-primary:hover{background:#3C3489;}
+.btn-primary:disabled{background:#888;cursor:default;}
+.error-msg{color:#E24B4A;font-size:13px;text-align:center;margin-top:8px;display:none;}
+
+/* NAV */
+.nav{display:flex;border-bottom:0.5px solid var(--color-border-tertiary);margin-bottom:1rem;background:var(--color-background-primary);position:sticky;top:0;z-index:10;}
+.nb{flex:1;padding:10px 2px;background:none;border:none;border-bottom:2px solid transparent;font-size:10px;color:var(--color-text-secondary);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;}
+.nb i{font-size:16px;}
+.nb.active{color:#534AB7;border-bottom-color:#534AB7;}
+.nb-wrap{position:relative;flex:1;display:flex;justify-content:center;}
+.notif-dot{position:absolute;top:4px;right:6px;width:7px;height:7px;background:#E24B4A;border-radius:50%;display:none;}
+.notif-dot.show{display:block;}
+.tab{display:none;}.tab.active{display:block;}
+
+/* ADMIN NAV */
+.admin-nav{display:flex;border-bottom:0.5px solid var(--color-border-tertiary);margin-bottom:1rem;}
+.anb{flex:1;padding:10px 2px;background:none;border:none;border-bottom:2px solid transparent;font-size:10px;color:var(--color-text-secondary);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;}
+.anb i{font-size:16px;}
+.anb.active{color:#E24B4A;border-bottom-color:#E24B4A;}
+.atab{display:none;}.atab.active{display:block;}
+
+/* SECRET BOX */
+.secret-box{border-radius:12px;padding:14px;margin-bottom:12px;position:relative;background:#534AB7;}
+.slabel{font-size:10px;text-transform:uppercase;letter-spacing:0.5px;opacity:0.7;margin-bottom:5px;color:#EEEDFE;}
+.stext{font-size:14px;font-weight:500;line-height:1.5;color:#EEEDFE;}
+.slock{font-size:10px;opacity:0.5;margin-top:8px;color:#EEEDFE;}
+.hide-pill{position:absolute;top:10px;right:10px;background:rgba(255,255,255,0.15);border:none;color:#EEEDFE;font-size:11px;padding:3px 8px;border-radius:20px;cursor:pointer;}
+.blurred{filter:blur(5px);user-select:none;}
+
+/* SCORES */
+.scores-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;}
+.score-card{border-radius:10px;padding:12px;}
+.score-card.individual{background:var(--color-background-secondary);}
+.score-card.team{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);}
+.sc-label{font-size:10px;text-transform:uppercase;letter-spacing:0.4px;color:var(--color-text-secondary);margin-bottom:6px;display:flex;align-items:center;gap:4px;}
+.sc-main{font-size:26px;font-weight:500;color:var(--color-text-primary);}
+.sc-sub{font-size:11px;color:var(--color-text-secondary);margin-top:2px;}
+.team-pill{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:500;padding:3px 8px;border-radius:20px;margin-top:4px;}
+.team-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+
+/* BUZZ */
+.buzz-btn-big{width:100%;padding:18px;background:#E24B4A;color:white;border:none;border-radius:12px;font-size:22px;font-weight:600;cursor:pointer;margin-bottom:10px;letter-spacing:0.5px;}
+.buzz-btn-big:disabled{background:#888;cursor:default;font-size:15px;}
+.active-buzz{background:#FCEBEB;border:0.5px solid #F7C1C1;border-radius:10px;padding:12px;margin-bottom:10px;}
+.ab-title{font-size:13px;font-weight:500;color:#A32D2D;margin-bottom:3px;}
+.ab-desc{font-size:12px;color:#A32D2D;opacity:0.8;margin-bottom:8px;}
+.timer-bar-wrap{background:#F7C1C1;border-radius:4px;height:6px;overflow:hidden;}
+.timer-bar{height:100%;border-radius:4px;background:#E24B4A;transition:width 1s linear;}
+.timer-lbl{font-size:12px;color:#A32D2D;text-align:right;margin-top:4px;font-weight:500;}
+.blocked-banner{background:#FAEEDA;border:0.5px solid #F0C97A;border-radius:10px;padding:12px;margin-bottom:10px;text-align:center;}
+.bb-title{font-size:13px;font-weight:500;color:#854F0B;margin-bottom:3px;}
+.bb-desc{font-size:12px;color:#854F0B;opacity:0.8;}
+.how-to{background:var(--color-background-secondary);border-radius:8px;padding:12px;font-size:12px;color:var(--color-text-secondary);line-height:1.9;}
+
+/* PLAYERS */
+.section-lbl{font-size:11px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:8px;}
+.search-field{width:100%;padding:9px 12px;border:0.5px solid var(--color-border-secondary);border-radius:8px;font-size:13px;background:var(--color-background-primary);color:var(--color-text-primary);margin-bottom:10px;}
+.team-group{margin-bottom:14px;}
+.team-group-header{display:flex;align-items:center;gap:6px;margin-bottom:6px;padding:4px 0;}
+.player-row{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:10px;margin-bottom:6px;cursor:pointer;}
+.av{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;flex-shrink:0;}
+.pname{font-size:13px;font-weight:500;color:var(--color-text-primary);}
+.pcomp{font-size:11px;color:var(--color-text-secondary);}
+.pinfo{flex:1;}
+.badge-found{color:#3B6D11;font-size:18px;}
+.badge-cd{font-size:11px;color:#854F0B;background:#FAEEDA;padding:2px 7px;border-radius:20px;}
+
+/* RANKING */
+.ranking-tabs{display:flex;gap:6px;margin-bottom:12px;}
+.rtab-btn{flex:1;padding:8px;background:var(--color-background-secondary);border:none;border-radius:8px;font-size:12px;cursor:pointer;color:var(--color-text-secondary);}
+.rtab-btn.active{background:#534AB7;color:white;font-weight:500;}
+.rtab{display:none;}.rtab.active{display:block;}
+.ranking-item{display:flex;align-items:center;gap:8px;padding:10px 0;border-bottom:0.5px solid var(--color-border-tertiary);}
+.ranking-item:last-child{border-bottom:none;}
+.rank-num{font-size:18px;width:28px;text-align:center;}
+.rank-info{flex:1;}
+.rank-name{font-size:13px;font-weight:500;color:var(--color-text-primary);}
+.rank-detail{font-size:11px;color:var(--color-text-secondary);margin-top:2px;}
+.rank-score{font-size:15px;font-weight:500;color:#534AB7;}
+
+/* PROGRAMME */
+.day-header{font-size:14px;font-weight:500;color:var(--color-text-primary);padding:10px 0 6px;border-bottom:0.5px solid var(--color-border-tertiary);margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+.prog-item{display:flex;margin-bottom:6px;border-radius:10px;overflow:hidden;border:0.5px solid var(--color-border-tertiary);background:var(--color-background-primary);}
+.prog-item.unlocked{cursor:pointer;border-color:var(--color-border-secondary);}
+.prog-item.is-game.unlocked{border-color:#534AB7;}
+.prog-item.locked{opacity:0.5;}
+.prog-time{background:var(--color-background-secondary);padding:10px 8px;font-size:11px;font-weight:500;color:var(--color-text-secondary);min-width:52px;text-align:center;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.prog-body{padding:10px 12px;flex:1;}
+.prog-title{font-size:13px;font-weight:500;color:var(--color-text-primary);}
+.prog-badge{display:inline-flex;align-items:center;gap:3px;font-size:10px;padding:2px 7px;border-radius:20px;margin-top:3px;}
+.badge-locked-p{background:var(--color-background-secondary);color:var(--color-text-secondary);}
+.badge-unlocked-p{background:#F0F0F0;color:#555;}
+.badge-game-p{background:#EEEDFE;color:#534AB7;}
+
+/* NOTIFS */
+.notif-urgent{background:#FCEBEB;border:0.5px solid #F7C1C1;border-radius:12px;padding:14px;margin-bottom:10px;}
+.nu-title{font-size:14px;font-weight:500;color:#A32D2D;margin-bottom:4px;}
+.nu-body{font-size:13px;color:#A32D2D;opacity:0.85;margin-bottom:12px;line-height:1.5;}
+.nu-actions{display:flex;gap:8px;}
+.btn-yes{flex:1;padding:10px;background:#3B6D11;color:white;border:none;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;}
+.btn-no{flex:1;padding:10px;background:#E24B4A;color:white;border:none;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;}
+
+/* FEED */
+.feed-item{display:flex;gap:10px;padding:10px 0;border-bottom:0.5px solid var(--color-border-tertiary);align-items:flex-start;}
+.feed-item:last-child{border-bottom:none;}
+.fi-icon{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px;}
+.fi-buzz{background:#FCEBEB;color:#A32D2D;}
+.fi-win{background:#EAF3DE;color:#3B6D11;}
+.fi-fail{background:#FCEBEB;color:#A32D2D;}
+.fi-token{background:#FAEEDA;color:#854F0B;}
+.fi-search{background:#E6F1FB;color:#185FA5;}
+.fi-admin{background:#EEEDFE;color:#534AB7;}
+.feed-text{font-size:13px;color:var(--color-text-primary);line-height:1.5;flex:1;}
+.feed-time{font-size:11px;color:var(--color-text-secondary);flex-shrink:0;white-space:nowrap;}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:100;align-items:center;justify-content:center;padding:1rem;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--color-background-primary);border-radius:16px;padding:1.5rem;width:100%;max-width:380px;max-height:85vh;overflow-y:auto;}
+.modal h3{font-size:16px;font-weight:500;margin-bottom:12px;color:var(--color-text-primary);}
+.hint-item{background:var(--color-background-secondary);border-radius:8px;padding:10px;margin-bottom:8px;}
+.hint-item .hl{font-size:10px;color:var(--color-text-secondary);margin-bottom:3px;}
+.hint-item .ht{font-size:13px;color:var(--color-text-primary);}
+.hint-item.locked-h{opacity:0.4;}
+.hint-item.locked-h .ht{filter:blur(3px);user-select:none;}
+.buy-hint-btn{width:100%;padding:8px;background:none;border:0.5px solid #534AB7;color:#534AB7;border-radius:8px;font-size:13px;cursor:pointer;margin-bottom:8px;}
+.modal-close{width:100%;padding:10px;background:none;border:0.5px solid var(--color-border-secondary);border-radius:8px;font-size:13px;cursor:pointer;color:var(--color-text-primary);margin-top:8px;}
+
+/* ADMIN */
+.admin-header{background:#1A1A2E;border-radius:12px;padding:14px;margin-bottom:12px;display:flex;align-items:center;gap:10px;}
+.admin-badge{background:#E24B4A;color:white;font-size:11px;font-weight:500;padding:3px 10px;border-radius:20px;text-transform:uppercase;}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:12px;background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:10px;margin-bottom:8px;}
+.toggle-label{font-size:13px;font-weight:500;color:var(--color-text-primary);}
+.toggle-sub{font-size:11px;color:var(--color-text-secondary);margin-top:2px;}
+.toggle{width:46px;height:26px;border-radius:13px;border:none;cursor:pointer;position:relative;transition:background 0.2s;flex-shrink:0;}
+.toggle.off{background:#C8C7C2;}
+.toggle.on-red{background:#E24B4A;}
+.toggle.on-green{background:#3B6D11;}
+.toggle::after{content:"";position:absolute;width:20px;height:20px;background:white;border-radius:50%;top:3px;transition:left 0.2s;box-shadow:0 1px 3px rgba(0,0,0,0.3);}
+.toggle.on-red::after,.toggle.on-green::after{left:23px;}
+.toggle.off::after{left:3px;}
+.tac-row{display:flex;gap:6px;align-items:center;}
+.tac-select{flex:1;padding:8px;border:0.5px solid var(--color-border-secondary);border-radius:8px;font-size:12px;background:var(--color-background-primary);color:var(--color-text-primary);}
+.tac-input{width:64px;padding:8px;border:0.5px solid var(--color-border-secondary);border-radius:8px;font-size:13px;background:var(--color-background-primary);color:var(--color-text-primary);text-align:center;}
+.tac-btn{padding:8px 14px;background:#534AB7;color:white;border:none;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;}
+.admin-prog-item{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:10px;padding:12px;margin-bottom:8px;}
+.api-url-row{display:flex;gap:6px;margin-top:8px;}
+.api-url-input{flex:1;padding:7px 10px;border:0.5px solid var(--color-border-secondary);border-radius:6px;font-size:12px;background:var(--color-background-primary);color:var(--color-text-primary);}
+.api-url-save{padding:7px 12px;background:#534AB7;color:white;border:none;border-radius:6px;font-size:12px;cursor:pointer;font-weight:500;}
+.status-card{background:var(--color-background-secondary);border-radius:10px;padding:12px;margin-bottom:10px;}
+.sc-row2{display:flex;justify-content:space-between;font-size:12px;color:var(--color-text-secondary);padding:5px 0;border-bottom:0.5px solid var(--color-border-tertiary);}
+.sc-row2:last-child{border-bottom:none;}
+.sc-val{font-weight:500;color:var(--color-text-primary);}
+.team-rename-row{display:flex;gap:6px;align-items:center;margin-bottom:6px;}
+.team-rename-input{flex:1;padding:7px 10px;border:0.5px solid var(--color-border-secondary);border-radius:8px;font-size:12px;background:var(--color-background-primary);color:var(--color-text-primary);}
+.team-rename-btn{padding:7px 12px;background:#534AB7;color:white;border:none;border-radius:8px;font-size:12px;cursor:pointer;}
+
+/* LOADING */
+.loading-screen{position:fixed;top:0;left:0;right:0;bottom:0;background:#534AB7;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:200;}
+.loading-screen h2{color:white;font-size:20px;font-weight:500;margin-top:16px;}
+.loading-screen p{color:rgba(255,255,255,0.7);font-size:14px;margin-top:8px;}
+.spinner{width:40px;height:40px;border:3px solid rgba(255,255,255,0.3);border-top:3px solid white;border-radius:50%;animation:spin 0.8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+.toast{display:none;position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1a1a1a;color:white;padding:12px 24px;border-radius:10px;font-size:14px;z-index:300;white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,0.3);}
+.toast.show{display:block;}
+</style>
+</head>
+<body>
+
+<!-- LOADING -->
+<div class="loading-screen" id="loading-screen">
+  <div class="spinner"></div>
+  <h2>Secret Story</h2>
+  <p>Connexion en cours...</p>
+</div>
+
+<div class="app" id="app" style="display:none;">
+
+<!-- LOGIN -->
+<div class="screen active" id="screen-login">
+  <div class="logo">
+    <i class="ti ti-eye-off" style="font-size:36px;display:block;margin:0 auto 10px;color:#534AB7;"></i>
+    <h1>Secret Story</h1>
+    <p>Séminaire Guest Suite × Evermaps 2026</p>
+  </div>
+  <div class="card">
+    <label>Adresse email</label>
+    <input type="email" id="login-email" placeholder="votre@email.com" autocomplete="email">
+    <label>Code d'accès</label>
+    <input type="password" id="login-code" placeholder="Code personnel" maxlength="10">
+    <button class="btn-primary" onclick="login()" id="login-btn">Accéder au jeu</button>
+    <p class="error-msg" id="login-error">Email ou code incorrect.</p>
+  </div>
+</div>
+
+<!-- ADMIN -->
+<div class="screen" id="screen-admin">
+  <div class="admin-header">
+    <span class="admin-badge">Admin</span>
+    <span style="font-size:14px;font-weight:500;color:white;" id="admin-name-header">Panneau de contrôle</span>
+  </div>
+  <div class="admin-nav">
+    <div class="nb-wrap"><button class="anb active" onclick="switchAdminTab('controls')" id="anav-controls"><i class="ti ti-settings"></i>Contrôles</button></div>
+    <div class="nb-wrap"><button class="anb" onclick="switchAdminTab('programme')" id="anav-programme"><i class="ti ti-calendar"></i>Programme</button></div>
+    <div class="nb-wrap"><button class="anb" onclick="switchAdminTab('tokens')" id="anav-tokens"><i class="ti ti-coin"></i>Tokens</button></div>
+    <div class="nb-wrap"><button class="anb" onclick="switchAdminTab('equipes')" id="anav-equipes"><i class="ti ti-users"></i>Équipes</button></div>
+    <div class="nb-wrap"><button class="anb" onclick="switchAdminTab('stats')" id="anav-stats"><i class="ti ti-chart-bar"></i>Stats</button></div>
+  </div>
+
+  <div class="atab active" id="atab-controls">
+    <div class="section-lbl">Blocages</div>
+    <div class="toggle-row"><div><div class="toggle-label">Bloquer le buzzer</div><div class="toggle-sub">Personne ne peut buzzer</div></div><button class="toggle off" id="toggle-buzz" onclick="toggleBlock('buzz')"></button></div>
+    <div class="toggle-row"><div><div class="toggle-label">Bloquer l'appli</div><div class="toggle-sub">Message de pause affiché</div></div><button class="toggle off" id="toggle-app" onclick="toggleBlock('app')"></button></div>
+    <input type="text" id="block-message" class="search-field" placeholder="Message de pause..." value="Cours d'orientation en cours — à tout à l'heure !">
+    <div class="section-lbl" style="margin-top:4px;">Actions</div>
+    <button onclick="resetBuzzQueue()" style="width:100%;padding:10px;background:none;border:0.5px solid #E24B4A;color:#E24B4A;border-radius:8px;font-size:13px;cursor:pointer;margin-bottom:8px;">Vider la file d'attente buzzer</button>
+    <button onclick="revealAll()" style="width:100%;padding:10px;background:#534AB7;color:white;border:none;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;">🎉 Lancer la cérémonie de révélation</button>
+  </div>
+
+  <div class="atab" id="atab-programme">
+    <div class="section-lbl">Débloquer les activités</div>
+    <p style="font-size:12px;color:var(--color-text-secondary);margin-bottom:10px;line-height:1.5;">Active chaque activité au bon moment. Ajoute une URL ou des consignes si besoin.</p>
+    <div id="admin-prog-list"></div>
+  </div>
+
+  <div class="atab" id="atab-tokens">
+    <div class="section-lbl">Joueur individuel</div>
+    <div style="background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:10px;padding:12px;margin-bottom:12px;">
+      <div class="tac-row">
+        <select class="tac-select" id="award-player-select"><option value="">Joueur...</option></select>
+        <input type="number" class="tac-input" id="award-player-amount" value="3" min="1" max="20">
+        <button class="tac-btn" onclick="awardPlayer()">+</button>
+      </div>
+    </div>
+    <div class="section-lbl">Équipe entière</div>
+    <div style="background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:10px;padding:12px;margin-bottom:12px;">
+      <div class="tac-row">
+        <select class="tac-select" id="award-team-select"><option value="">Équipe...</option></select>
+        <input type="number" class="tac-input" id="award-team-amount" value="4" min="1" max="20">
+        <button class="tac-btn" onclick="awardTeam()">+</button>
+      </div>
+    </div>
+    <div class="section-lbl">Historique</div>
+    <div id="award-history"><p style="font-size:12px;color:var(--color-text-secondary);">Aucune attribution.</p></div>
+  </div>
+
+  <div class="atab" id="atab-equipes">
+    <div class="section-lbl">Renommer les équipes</div>
+    <p style="font-size:12px;color:var(--color-text-secondary);margin-bottom:12px;line-height:1.5;">Change le nom d'une équipe ici — ça se met à jour sur tous les téléphones.</p>
+    <div id="team-rename-list"></div>
+  </div>
+
+  <div class="atab" id="atab-stats">
+    <div class="section-lbl">État du jeu</div>
+    <div class="status-card">
+      <div class="sc-row2"><span>Joueurs connectés</span><span class="sc-val" id="stat-connected">—</span></div>
+      <div class="sc-row2"><span>Secrets trouvés</span><span class="sc-val" id="stat-found">—</span></div>
+      <div class="sc-row2"><span>Buzzes envoyés</span><span class="sc-val" id="stat-buzzes">—</span></div>
+      <div class="sc-row2"><span>Buzzer bloqué</span><span class="sc-val" id="stat-buzz-blocked">Non</span></div>
+      <div class="sc-row2"><span>Appli bloquée</span><span class="sc-val" id="stat-app-blocked">Non</span></div>
+    </div>
+    <div class="section-lbl">Classement équipes</div>
+    <div id="admin-ranking"></div>
+  </div>
+
+  <div style="margin-top:16px;">
+    <button onclick="logoutAdmin()" style="width:100%;padding:10px;background:none;border:0.5px solid var(--color-border-secondary);border-radius:8px;font-size:13px;cursor:pointer;color:var(--color-text-secondary);">Quitter le panneau admin</button>
+  </div>
+</div>
+
+<!-- JEU JOUEUR -->
+<div class="screen" id="screen-main">
+  <!-- NOTIFS PANEL -->
+  <div id="notifs-panel" style="display:none;position:fixed;top:0;right:0;bottom:0;width:min(340px,100vw);background:var(--color-background-primary);z-index:200;box-shadow:-4px 0 24px rgba(0,0,0,0.15);overflow-y:auto;padding:1rem;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+      <div style="font-size:15px;font-weight:500;color:var(--color-text-primary);">Notifications</div>
+      <button onclick="closeNotifsPanel()" style="background:none;border:0.5px solid var(--color-border-secondary);border-radius:50%;width:32px;height:32px;cursor:pointer;color:var(--color-text-secondary);font-size:16px;">✕</button>
+    </div>
+    <div id="notifs-panel-body"></div>
+  </div>
+  <div id="notifs-panel-overlay" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.3);z-index:199;" onclick="closeNotifsPanel()"></div>
+
+  <div id="modal-hints" class="modal-overlay" style="position:fixed;">
+    <div class="modal">
+      <h3 id="mh-name"></h3>
+      <div id="mh-body"></div>
+      <button class="modal-close" onclick="window.closeModalHints()">Fermer</button>
+    </div>
+  </div>
+  <div id="modal-buzz-list" class="modal-overlay" style="position:fixed;">
+    <div class="modal">
+      <h3 style="margin-bottom:10px;"><i class="ti ti-hand-stop" style="color:#E24B4A;"></i> Qui veux-tu buzzer ?</h3>
+      <input class="search-field" type="text" placeholder="🔍 Rechercher..." id="buzz-search" oninput="renderBuzzList()">
+      <div id="buzz-player-list"></div>
+      <button class="modal-close" onclick="window.closeModalBuzz()">Annuler</button>
+    </div>
+  </div>
+  <div id="modal-prog" class="modal-overlay" style="position:fixed;">
+    <div class="modal">
+      <div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:4px;" id="mp-time"></div>
+      <h3 id="mp-name"></h3>
+      <div style="font-size:13px;color:var(--color-text-primary);line-height:1.6;margin-bottom:14px;" id="mp-desc"></div>
+      <div id="mp-links-wrap"></div>
+      <button class="modal-close" onclick="window.closeModalProg()">Fermer</button>
+    </div>
+  </div>
+
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:0.75rem 0;">
+    <div id="home-header-area"></div>
+    <button id="notif-bell-btn" style="position:relative;background:none;border:0.5px solid var(--color-border-secondary);border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--color-text-secondary);">
+      <i class="ti ti-bell" style="font-size:18px;"></i>
+      <span class="notif-dot" id="notif-dot" style="top:4px;right:4px;"></span>
+    </button>
+  </div>
+
+  <div class="nav">
+    <div class="nb-wrap"><button class="nb active" onclick="switchTab('home')" id="nav-home"><i class="ti ti-user"></i>Accueil</button></div>
+    <div class="nb-wrap"><button class="nb" onclick="switchTab('players')" id="nav-players"><i class="ti ti-users"></i>Joueurs</button></div>
+    <div class="nb-wrap"><button class="nb" onclick="switchTab('feed')" id="nav-feed"><i class="ti ti-activity"></i>Feed</button></div>
+    <div class="nb-wrap"><button class="nb" onclick="switchTab('ranking')" id="nav-ranking"><i class="ti ti-chart-bar"></i>Top</button></div>
+    <div class="nb-wrap"><button class="nb" onclick="switchTab('programme')" id="nav-programme"><i class="ti ti-calendar"></i>Programme</button></div>
+  </div>
+
+  <div class="tab active" id="tab-home">
+
+    <div id="app-blocked-banner" class="blocked-banner" style="display:none;">
+      <div class="bb-title">⛔ Appli en pause</div>
+      <div class="bb-desc" id="block-msg-display"></div>
+    </div>
+    <div class="secret-box">
+      <button class="hide-pill" onclick="toggleSecret()" id="hide-btn"><i class="ti ti-eye-off"></i> Cacher</button>
+      <div class="slabel">Mon secret</div>
+      <div class="stext" id="my-secret"></div>
+      <div class="slock"><i class="ti ti-lock"></i> Visible uniquement par toi</div>
+    </div>
+    <div style="background:var(--color-background-secondary);border-radius:10px;padding:20px;margin-bottom:12px;text-align:center;">
+      <div style="font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--color-text-secondary);margin-bottom:8px;">Mes tokens</div>
+      <div style="font-size:44px;font-weight:600;color:var(--color-text-primary);line-height:1;" id="my-tokens">3</div>
+      <div style="font-size:12px;color:var(--color-text-secondary);margin-top:8px;" id="my-found-sub">0 secret trouvé</div>
+    </div>
+    <div id="active-buzz-wrap" style="display:none;" class="active-buzz">
+      <div class="ab-title" id="active-buzz-title">⚡ Buzzer actif !</div>
+      <div class="ab-desc" id="active-buzz-desc"></div>
+      <div class="timer-bar-wrap"><div class="timer-bar" id="timer-bar" style="width:100%;"></div></div>
+      <div class="timer-lbl" id="timer-label">5:00</div>
+    </div>
+    <button class="buzz-btn-big" id="buzz-main-btn" onclick="(window.openBuzzModal||function(){})()">BUZZER</button>
+    <div class="how-to">
+      <div><i class="ti ti-bulb" style="color:#534AB7;"></i> Achète des indices sur les autres joueurs</div>
+      <div><i class="ti ti-hand-stop" style="color:#E24B4A;"></i> Buze quand tu penses avoir trouvé</div>
+      <div><i class="ti ti-run" style="color:#3B6D11;"></i> 5 minutes pour aller voir la personne</div>
+      <div><i class="ti ti-check" style="color:#3B6D11;"></i> Confirmé → +5 tokens · Nié → -3 tokens</div>
+    </div>
+  </div>
+
+  <div class="tab" id="tab-players">
+    <input class="search-field" type="text" placeholder="🔍 Rechercher un joueur..." id="player-search" oninput="renderPlayersTab()">
+    <div id="players-list"></div>
+  </div>
+
+  <div class="tab" id="tab-programme"><div id="programme-list"></div></div>
+  <div class="tab" id="tab-notifs"><div class="section-lbl">Notifications</div><div id="notifs-list"></div></div>
+  <div class="tab" id="tab-feed"><div class="section-lbl">Feed live</div><div id="feed-list"></div></div>
+  <div class="tab" id="tab-ranking">
+    <div class="ranking-tabs">
+      <button class="rtab-btn active" onclick="switchRankTab('individual')" id="rbtn-individual">Individuel</button>
+      <button class="rtab-btn" onclick="switchRankTab('team')" id="rbtn-team">Équipes</button>
+    </div>
+    <div class="rtab active" id="rtab-individual"><div id="ranking-individual"></div></div>
+    <div class="rtab" id="rtab-team"><div id="ranking-team"></div></div>
+  </div>
+</div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<!-- FIREBASE -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, doc, setDoc, getDoc, onSnapshot, updateDoc, arrayUnion, serverTimestamp, collection, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAKxNuGxBR0NhRGS_fcypOykn4-JdYPF2k",
+  authDomain: "seminaire2026-bb241.firebaseapp.com",
+  projectId: "seminaire2026-bb241",
+  storageBucket: "seminaire2026-bb241.firebasestorage.app",
+  messagingSenderId: "7112815957",
+  appId: "1:7112815957:web:10d5f281d4d2008a8fabdc"
+};
+
+const fbApp = initializeApp(firebaseConfig);
+const db = getFirestore(fbApp);
+
+// ─── CONFIG ───────────────────────────────────────────────
+const ADMIN_ACCOUNTS = {
+  "charline.blanchet@guestapp.me": { code: "ADMIN01", name: "Charline Blanchet" },
+  "christina.evrard@guestapp.me":  { code: "ADMIN02", name: "Christina Evrard" }
+};
+
+const PLAYER_ACCOUNTS = {
+  "charline.blanchet@free.fr": { code: "CB2408", key: "charline" },
+  "kristi35@hotmail.fr":        { code: "KR1503", key: "kristi" }
+};
+
+const PLAYERS = {
+  charline: {
+    name: "Charline Blanchet", email: "charline.blanchet@free.fr",
+    company: "Guest Suite", initials: "CB", team: "1",
+    secret: "J'ai gagné un jeu à la radio.",
+    hints: [
+      { level: "Indice 1", text: "Mon secret s'est passé en moins de 5 minutes.", cost: 1 },
+      { level: "Indice 2", text: "J'ai utilisé ma voix pour gagner.", cost: 2 },
+      { level: "Indice 3", text: "C'était un concours avec d'autres candidats.", cost: 3 },
+      { level: "Indice 4", text: "J'ai entendu mon prénom à travers des haut-parleurs.", cost: 4 }
+    ]
+  },
+  kristi: {
+    name: "Christina", email: "kristi35@hotmail.fr",
+    company: "Evermaps", initials: "KR", team: "2",
+    secret: "J'ai voyagé aux États-Unis avant de rejoindre Evermaps.",
+    hints: [
+      { level: "Indice 1", text: "Mon secret s'est passé avant mon job actuel.", cost: 1 },
+      { level: "Indice 2", text: "Ça implique un déplacement de plus de 1000 km.", cost: 2 },
+      { level: "Indice 3", text: "J'ai traversé un océan.", cost: 3 },
+      { level: "Indice 4", text: "Le pays est connu pour ses gratte-ciels et son hamburger.", cost: 4 }
+    ]
+  }
+};
+
+const DEFAULT_TEAM_NAMES = {
+  "1": "Groupe 1", "2": "Groupe 2", "3": "Groupe 3", "4": "Groupe 4",
+  "5": "Groupe 5", "6": "Groupe 6", "7": "Groupe 7", "8": "Groupe 8",
+  "9": "Groupe 9", "10": "Groupe 10"
+};
+
+const TEAM_COLORS_BASE = {
+  "1": { main: "#534AB7", light: "#EEEDFE" },
+  "2": { main: "#0F6E56", light: "#E1F5EE" },
+  "3": { main: "#993C1D", light: "#FAECE7" },
+  "4": { main: "#185FA5", light: "#E6F1FB" },
+  "5": { main: "#854F0B", light: "#FAEEDA" },
+  "6": { main: "#993556", light: "#FBEAF0" },
+  "7": { main: "#2D6B6B", light: "#E0F3F3" },
+  "8": { main: "#5C3D8F", light: "#EEE5FA" },
+  "9": { main: "#3B6D11", light: "#EAF3DE" },
+  "10":{ main: "#6B4411", light: "#F5EBD9" }
+};
+
+const PROGRAMME = [
+  { id:"p1",  day:"Lundi",  time:"09h00", title:"Bus 🚌",                  desc:"Départ en bus ! Connexion à l'appli Secret Story.", isGame:true,  unlocked:true  },
+  { id:"p2",  day:"Lundi",  time:"09h45", title:"Arrivée au domaine",       desc:"Installation et découverte du lieu.",               isGame:false, unlocked:true  },
+  { id:"p3",  day:"Lundi",  time:"10h00", title:"Rocket Quarter #1 🚀",     desc:"Réunion d'équipe — présentations et vision.",       isGame:false, unlocked:false },
+  { id:"p4",  day:"Lundi",  time:"12h00", title:"Déjeuner 🍽️",             desc:"Temps libre pour manger et échanger.",              isGame:false, unlocked:false },
+  { id:"p5",  day:"Lundi",  time:"14h00", title:"Rocket Quarter #2 🚀",     desc:"Suite de la réunion d'équipe.",                    isGame:false, unlocked:false },
+  { id:"p6",  day:"Lundi",  time:"16h00", title:"Activité ⚡",               desc:"Course d'orientation — gagnez des tokens !",       isGame:true,  unlocked:false },
+  { id:"p7",  day:"Lundi",  time:"18h00", title:"Temps libre 🌿",           desc:"Détente, balade dans le domaine.",                  isGame:false, unlocked:false },
+  { id:"p8",  day:"Lundi",  time:"19h30", title:"Apéro 🥂",                 desc:"Apéritif tous ensemble.",                           isGame:true,  unlocked:false },
+  { id:"p9",  day:"Lundi",  time:"20h30", title:"Repas 🍷",                 desc:"Dîner — le Secret Story continue !",                isGame:false, unlocked:false },
+  { id:"p10", day:"Lundi",  time:"22h00", title:"Soirée 🎉",                desc:"Soirée libre.",                                     isGame:false, unlocked:false },
+  { id:"p11", day:"Mardi",  time:"09h00", title:"Petit déjeuner ☀️",        desc:"Bon matin ! Dernière journée.",                    isGame:false, unlocked:false },
+  { id:"p12", day:"Mardi",  time:"10h00", title:"Activité ⚡",               desc:"Blind test et quiz final. Derniers tokens !",       isGame:true,  unlocked:false },
+  { id:"p13", day:"Mardi",  time:"12h30", title:"Déjeuner + Cérémonie 🏆",  desc:"Révélation des secrets et remise des prix !",       isGame:true,  unlocked:false },
+  { id:"p14", day:"Mardi",  time:"14h00", title:"Moment chill / Tech",       desc:"Temps libre ou session tech.",                     isGame:false, unlocked:false },
+  { id:"p15", day:"Mardi",  time:"16h30", title:"Départ 👋",                desc:"À bientôt et merci pour ces deux jours !",          isGame:false, unlocked:false }
+];
+
+const BUZZ_DURATION = 5 * 60;
+
+// ─── STATE ────────────────────────────────────────────────
+let currentUser = null;  // player key
+let currentUserData = null;
+let isAdmin = false;
+let adminName = "";
+let secretHidden = false;
+let activeProgItem = null;
+let timerInterval = null;
+let teamNames = { ...DEFAULT_TEAM_NAMES };
+
+// Firebase listeners
+let unsubGame = null;
+let unsubPlayer = null;
+let unsubFeed = null;
+
+// Local cache
+let gameState = null;   // shared game doc
+let playerState = null; // current player doc
+let feedItems = [];
+let allPlayerStates = {}; // cache of all player states
+
+// ─── FIREBASE HELPERS ─────────────────────────────────────
+const gameRef = () => doc(db, "game", "state");
+const playerRef = (key) => doc(db, "players", key);
+const feedRef = () => collection(db, "feed");
+
+async function initGame() {
+  const snap = await getDoc(gameRef());
+  if (!snap.exists()) {
+    await setDoc(gameRef(), {
+      activeBuzz: null, queue: [], appBlocked: false, buzzBlocked: false,
+      blockMessage: "Cours d'orientation en cours — à tout à l'heure !",
+      programme: PROGRAMME.map(p => ({ id: p.id, unlocked: p.unlocked, url: "", consigne: "" })),
+      awardHistory: [], teamNames: { ...DEFAULT_TEAM_NAMES },
+      totalBuzzes: 0, totalFound: 0
+    });
+  }
+}
+
+async function initPlayer(key) {
+  const snap = await getDoc(playerRef(key));
+  if (!snap.exists()) {
+    await setDoc(playerRef(key), {
+      tokens: 3, secretsFound: 0, buzzedBy: 0,
+      unlockedHints: {}, buzzResults: {}, notifs: [], online: true
+    });
+  } else {
+    // Reset tokens to 3 and clear test data on each login for now
+    await updateDoc(playerRef(key), {
+      tokens: 3, secretsFound: 0, buzzedBy: 0,
+      unlockedHints: {}, buzzResults: {}, notifs: [], online: true
+    });
+  }
+}
+
+async function addFeedItem(icon, text) {
+  const ts = Date.now();
+  await setDoc(doc(db, "feed", String(ts)), { icon, text, ts, time: "À l'instant" });
+}
+
+function formatTime(ts) {
+  const diff = Math.floor((Date.now() - ts) / 1000);
+  if (diff < 60) return "À l'instant";
+  if (diff < 3600) return `il y a ${Math.floor(diff/60)} min`;
+  return `il y a ${Math.floor(diff/3600)}h`;
+}
+
+// ─── LOGIN ────────────────────────────────────────────────
+window.login = async function() {
+  const email = document.getElementById("login-email").value.trim().toLowerCase();
+  const code = document.getElementById("login-code").value.trim().toUpperCase();
+  const btn = document.getElementById("login-btn");
+  const err = document.getElementById("login-error");
+  err.style.display = "none";
+  btn.disabled = true; btn.textContent = "Connexion...";
+
+  // Check admin
+  const adminMatch = Object.entries(ADMIN_ACCOUNTS).find(([e, v]) => e === email && v.code === code);
+  if (adminMatch) {
+    isAdmin = true; adminName = adminMatch[1].name;
+    document.getElementById("screen-login").classList.remove("active");
+    document.getElementById("screen-admin").classList.add("active");
+    document.getElementById("admin-name-header").textContent = adminName;
+    await initGame();
+    startAdminListeners();
+    btn.disabled = false; btn.textContent = "Accéder au jeu";
+    return;
+  }
+
+  // Check player
+  const playerMatch = Object.entries(PLAYER_ACCOUNTS).find(([e, v]) => e === email && v.code === code);
+  if (playerMatch) {
+    currentUser = playerMatch[1].key;
+    currentUserData = PLAYERS[currentUser];
+    isAdmin = false;
+    await initGame();
+    await initPlayer(currentUser);
+    document.getElementById("screen-login").classList.remove("active");
+    document.getElementById("screen-main").classList.add("active");
+    const p = currentUserData;
+    const tc = getTC(p.team);
+    const tname0 = teamNames[p.team] || "Groupe " + p.team;
+  document.getElementById("home-header-area").innerHTML = '<div style="display:flex;align-items:center;gap:10px;"><div style="width:40px;height:40px;border-radius:50%;background:'+tc.light+';color:'+tc.main+';display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;">'+p.initials+'</div><div><div style="font-size:14px;font-weight:500;color:var(--color-text-primary);">'+p.name+'</div><div class="header-team-name" style="font-size:11px;color:var(--color-text-secondary);margin-top:2px;">Mon équipe : <strong style="color:'+tc.main+';">'+tname0+'</strong></div></div></div>';
+    document.getElementById("my-secret").textContent = p.secret;
+  secretHidden = true;
+  document.getElementById("my-secret").classList.add("blurred");
+  document.getElementById("hide-btn").innerHTML = '<i class="ti ti-eye"></i> Afficher';
+    startPlayerListeners();
+    btn.disabled = false; btn.textContent = "Accéder au jeu";
+    return;
+  }
+
+  err.style.display = "block";
+  btn.disabled = false; btn.textContent = "Accéder au jeu";
+};
+
+window.logout = async function() {
+  if (currentUser) {
+    await updateDoc(playerRef(currentUser), { online: false });
+  }
+  if (unsubGame) { unsubGame(); unsubGame = null; }
+  if (unsubPlayer) { unsubPlayer(); unsubPlayer = null; }
+  if (unsubFeed) { unsubFeed(); unsubFeed = null; }
+  clearInterval(timerInterval);
+  currentUser = null; currentUserData = null; isAdmin = false; secretHidden = false;
+  gameState = null; playerState = null; feedItems = [];
+  document.getElementById("screen-main").classList.remove("active");
+  document.getElementById("screen-login").classList.add("active");
+  document.getElementById("login-email").value = "";
+  document.getElementById("login-code").value = "";
+};
+
+window.logoutAdmin = function() {
+  if (unsubGame) { unsubGame(); unsubGame = null; }
+  isAdmin = false;
+  document.getElementById("screen-admin").classList.remove("active");
+  document.getElementById("screen-login").classList.add("active");
+  document.getElementById("login-email").value = "";
+  document.getElementById("login-code").value = "";
+};
+
+// ─── LISTENERS ────────────────────────────────────────────
+function startPlayerListeners() {
+  // Game state
+  unsubGame = onSnapshot(gameRef(), (snap) => {
+    if (!snap.exists()) return;
+    gameState = snap.data();
+    teamNames = gameState.teamNames || { ...DEFAULT_TEAM_NAMES };
+    renderAll();
+    updateTimerUI();
+  });
+  // Player state
+  unsubPlayer = onSnapshot(playerRef(currentUser), (snap) => {
+    if (!snap.exists()) return;
+    const prev = playerState;
+    playerState = snap.data();
+    const prevCount = (prev?.notifs || []).filter(n => !n.read && !n.resolved).length;
+    const newCount = (playerState.notifs || []).filter(n => !n.read && !n.resolved).length;
+    if (newCount > prevCount) {
+      const newNotif = (playerState.notifs || []).find(n => !n.read && !n.resolved);
+      if (newNotif && !newNotif.isMyTurn) showBuzzPopup(newNotif);
+    }
+    // Check for pending result popup (buzz confirmed/denied)
+    if (playerState.pendingResult && (!prev?.pendingResult || playerState.pendingResult.ts !== prev?.pendingResult?.ts)) {
+      const r = playerState.pendingResult;
+      showResultPopup(r.success, r.targetName, r.tokens);
+      updateDoc(playerRef(currentUser), { pendingResult: null });
+    }
+    renderAll();
+    const has = (playerState.notifs || []).some(n => !n.read && !n.resolved);
+    document.getElementById("notif-dot").classList.toggle("show", has);
+  });
+  // Feed
+  const q = query(feedRef(), orderBy("ts", "desc"), limit(30));
+  unsubFeed = onSnapshot(q, (snap) => {
+    feedItems = snap.docs.map(d => ({ ...d.data(), id: d.id }));
+    renderFeed();
+  });
+  // Timer
+  if (timerInterval) clearInterval(timerInterval);
+  timerInterval = setInterval(() => {
+    updateTimerUI();
+    if (gameState?.activeBuzz) {
+      const rem = Math.max(0, Math.floor((gameState.activeBuzz.endTs - Date.now()) / 1000));
+      if (rem <= 0 && gameState.activeBuzz.fromKey === currentUser && playerState && !playerState.buzzResults?.[gameState.activeBuzz.targetKey]) {
+        handleBuzzTimeout();
+      }
+    }
+  }, 1000);
+}
+
+function startAdminListeners() {
+  unsubGame = onSnapshot(gameRef(), (snap) => {
+    if (!snap.exists()) return;
+    gameState = snap.data();
+    teamNames = gameState.teamNames || { ...DEFAULT_TEAM_NAMES };
+    renderAdminAll();
+  });
+  const q = query(feedRef(), orderBy("ts", "desc"), limit(20));
+  unsubFeed = onSnapshot(q, (snap) => {
+    feedItems = snap.docs.map(d => ({ ...d.data(), id: d.id }));
+  });
+  // Load all player states for stats
+  Object.keys(PLAYERS).forEach(key => {
+    onSnapshot(playerRef(key), (snap) => {
+      if (snap.exists()) { allPlayerStates[key] = snap.data(); renderAdminStats(); }
+    });
+  });
+}
+
+// ─── TIMER ────────────────────────────────────────────────
+function updateTimerUI() {
+  const wrap = document.getElementById("active-buzz-wrap");
+  const bar = document.getElementById("timer-bar");
+  const lbl = document.getElementById("timer-label");
+  const desc = document.getElementById("active-buzz-desc");
+  if (!wrap) return;
+  if (gameState?.activeBuzz) {
+    const rem = Math.max(0, Math.floor((gameState.activeBuzz.endTs - Date.now()) / 1000));
+    if (rem > 0) {
+      wrap.style.display = "block";
+      bar.style.width = Math.round((rem / BUZZ_DURATION) * 100) + "%";
+      const m = Math.floor(rem / 60), s = rem % 60;
+      lbl.textContent = m + ":" + (s < 10 ? "0" : "") + s;
+      const isEm = gameState.activeBuzz.fromKey === currentUser;
+      const isTg = gameState.activeBuzz.targetKey === currentUser;
+      const titleEl = document.getElementById("active-buzz-title");
+      if (titleEl) titleEl.textContent = isEm ? "⚡ Tu as buzze !" : isTg ? "Tu as ete buzze !" : "⚡ Buzzer actif";
+      if (isEm) { desc.textContent = "Tu as buzze " + gameState.activeBuzz.targetName + " — vas le/la voir maintenant !"; }
+      else if (isTg) { desc.textContent = gameState.activeBuzz.fromName + " pense avoir trouve ton secret !"; }
+      else { desc.textContent = gameState.activeBuzz.fromName.split(" ")[0] + " a buzze " + gameState.activeBuzz.targetName.split(" ")[0]; }
+    } else {
+      wrap.style.display = "none";
+    }
+  } else {
+    wrap.style.display = "none";
+  }
+  updateBuzzBtn();
+}
+
+async function handleBuzzTimeout() {
+  if (!gameState?.activeBuzz) return;
+  const targetKey = gameState.activeBuzz.targetKey;
+  await updateDoc(playerRef(currentUser), {
+    tokens: Math.max(0, (playerState?.tokens || 0) - 3),
+    [`buzzResults.${targetKey}`]: "timeout"
+  });
+  await addFeedItem("fi-fail", "Temps écoulé — 3 tokens perdus !");
+  await advanceBuzzQueue();
+}
+
+async function advanceBuzzQueue() {
+  const sh = gameState;
+  if (!sh) return;
+  if (sh.queue && sh.queue.length > 0) {
+    const next = sh.queue[0];
+    const newQueue = sh.queue.slice(1);
+    await updateDoc(gameRef(), {
+      activeBuzz: { ...next, startTs: Date.now(), endTs: Date.now() + BUZZ_DURATION * 1000 },
+      queue: newQueue
+    });
+    // Notify next person in queue
+    if (PLAYERS[next.fromKey]) {
+      const ost = await getDoc(playerRef(next.fromKey));
+      if (ost.exists()) {
+        const notifs = ost.data().notifs || [];
+        notifs.unshift({ id: Date.now(), fromKey: next.fromKey, fromName: next.fromName, targetKey: next.targetKey, text: "C'est ton tour ! Tu as 5 minutes pour aller voir " + next.targetName.split(" ")[0] + ".", read: false, resolved: false, isMyTurn: true });
+        await updateDoc(playerRef(next.fromKey), { notifs });
+      }
+    }
+  } else {
+    await updateDoc(gameRef(), { activeBuzz: null });
+  }
+}
+
+// ─── BUZZ ─────────────────────────────────────────────────
+function showResultPopup(success, targetName, tokens) {
+  const popup = document.getElementById("result-popup");
+  const emoji = document.getElementById("result-popup-emoji");
+  const title = document.getElementById("result-popup-title");
+  const text = document.getElementById("result-popup-text");
+  if (!popup) return;
+  if (success) {
+    emoji.textContent = "🎉";
+    title.style.color = "#3B6D11";
+    title.textContent = "Bravo !";
+    text.textContent = "Tu as trouve le secret de " + targetName + " et tu gagnes +" + tokens + " tokens !";
+  } else {
+    emoji.textContent = "😬";
+    title.style.color = "#E24B4A";
+    title.textContent = "Dommage !";
+    text.textContent = "Ce n'etait pas le bon secret de " + targetName + "... Tu perds " + tokens + " tokens.";
+  }
+  popup.style.display = "flex";
+}
+
+function showBuzzPopup(notif) {
+  const popup = document.getElementById("buzz-popup");
+  const txt = document.getElementById("buzz-popup-text");
+  if (!popup || !txt) return;
+  txt.textContent = notif.text;
+  popup.style.display = "flex";
+  const yesBtn = document.getElementById("buzz-popup-yes");
+  const noBtn = document.getElementById("buzz-popup-no");
+  const idx = (playerState?.notifs || []).findIndex(n => n.id === notif.id);
+  yesBtn.onclick = () => { popup.style.display = "none"; respondBuzz(idx, true, notif.fromKey, notif.fromName); };
+  noBtn.onclick = () => { popup.style.display = "none"; respondBuzz(idx, false, notif.fromKey, notif.fromName); };
+}
+
+window.openBuzzModal = function() {
+  if (gameState && gameState.appBlocked) { showToast("Appli en pause"); return; }
+  if (gameState && gameState.buzzBlocked) { showToast("Buzzer bloque"); return; }
+  if (gameState && gameState.activeBuzz) {
+    const ab = gameState.activeBuzz;
+    const rem = Math.max(0, Math.floor((ab.endTs - Date.now()) / 1000));
+    if (rem > 0 && (ab.fromKey === currentUser || ab.targetKey === currentUser)) {
+      showToast(ab.fromKey === currentUser ? "En attente de reponse..." : "Reponds au buzz dabord !");
+      return;
+    }
+  }
+  document.getElementById("buzz-search").value = "";
+  renderBuzzList();
+  document.getElementById("modal-buzz-list").classList.add("open");
+};
+
+window.renderBuzzList = function() {
+  const q = document.getElementById("buzz-search").value.toLowerCase();
+  const el = document.getElementById("buzz-player-list");
+  el.innerHTML = "";
+  Object.entries(PLAYERS).forEach(([key, p]) => {
+    if (key === currentUser) return;
+    if (q && !p.name.toLowerCase().includes(q)) return;
+    const tc = getTC(p.team);
+    const confirmed = playerState?.buzzResults?.[key] === "confirmed";
+    if (confirmed) return; // Already found — hide from buzz list
+    const inQueue = gameState?.queue?.some(qq => qq.targetKey === key && qq.fromKey === currentUser);
+    const isBuzzed = gameState?.activeBuzz?.targetKey === key;
+    let badge = '<i class="ti ti-chevron-right" style="color:var(--color-text-secondary);"></i>';
+    const div = document.createElement("div");
+    let disabled = false;
+    if (inQueue) { badge = '<span style="font-size:11px;color:#854F0B;background:#FAEEDA;padding:2px 7px;border-radius:20px;">File d\'attente</span>'; disabled = true; }
+    div.className = "player-row";
+    div.style.borderLeft = `3px solid ${tc.main}`;
+    div.innerHTML = `<div class="av" style="background:${tc.light};color:${tc.main};">${p.initials}</div><div class="pinfo"><div class="pname">${p.name}</div><div class="pcomp">${p.company}${isBuzzed ? " · 🔴 actif" : ""}</div></div>${badge}`;
+    if (!disabled) div.onclick = () => doBuzz(key);
+    else { div.style.opacity = "0.55"; div.style.cursor = "default"; }
+    el.appendChild(div);
+  });
+};
+
+async function doBuzz(targetKey) {
+  closeModal("modal-buzz-list");
+  const target = PLAYERS[targetKey];
+  const fromName = currentUserData.name;
+  if (gameState?.activeBuzz) {
+    await updateDoc(gameRef(), {
+      queue: arrayUnion({ fromKey: currentUser, fromName, targetKey, targetName: target.name, ts: Date.now() })
+    });
+    await addFeedItem("fi-buzz", fromName.split(" ")[0] + " est en file d'attente pour buzzer " + target.name.split(" ")[0]);
+    showToast("Ajouté en file d'attente !");
+    return;
+  }
+  await updateDoc(gameRef(), {
+    activeBuzz: { fromKey: currentUser, fromName, targetKey, targetName: target.name, startTs: Date.now(), endTs: Date.now() + BUZZ_DURATION * 1000 },
+    totalBuzzes: (gameState?.totalBuzzes || 0) + 1
+  });
+  // Notify target
+  if (PLAYERS[targetKey]) {
+    const ost = await getDoc(playerRef(targetKey));
+    if (ost.exists()) {
+      const notifs = ost.data().notifs || [];
+      notifs.unshift({ id: Date.now(), fromKey: currentUser, fromName, targetKey, text: fromName.split(" ")[0] + " pense avoir découvert ton secret ! Tu as 5 minutes pour le rencontrer.", read: false, resolved: false });
+      await updateDoc(playerRef(targetKey), { notifs, buzzedBy: (ost.data().buzzedBy || 0) + 1 });
+    }
+  }
+  await addFeedItem("fi-buzz", fromName.split(" ")[0] + " a buzzé " + target.name.split(" ")[0] + " !");
+  showToast("Buzzer envoyé !");
+}
+
+window.respondBuzz = async function(idx, confirmed, fromKey, fromName) {
+  const notifs = [...(playerState?.notifs || [])];
+  notifs[idx].resolved = true; notifs[idx].read = true;
+  const fname = fromName.split(" ")[0];
+  if (confirmed) {
+    notifs[idx].resolvedText = "Tu as confirmé ton secret à " + fname + " ✓";
+    if (PLAYERS[fromKey]) {
+      const ost = await getDoc(playerRef(fromKey));
+      if (ost.exists()) {
+        const ostData = ost.data();
+        await updateDoc(playerRef(fromKey), {
+          tokens: (ostData.tokens || 0) + 5,
+          secretsFound: (ostData.secretsFound || 0) + 1,
+          [`buzzResults.${currentUser}`]: "confirmed"
+        });
+      }
+    }
+    await addFeedItem("fi-win", currentUserData.name.split(" ")[0] + " a confirmé son secret à " + fname + " ! +5 tokens");
+    await updateDoc(gameRef(), { totalFound: (gameState?.totalFound || 0) + 1 });
+    showToast("Secret confirmé !");
+    // Notify the buzzer via their player doc
+    if (PLAYERS[fromKey]) {
+      const ost2 = await getDoc(playerRef(fromKey));
+      if (ost2.exists()) {
+        const pd = ost2.data();
+        await updateDoc(playerRef(fromKey), { pendingResult: { success: true, targetName: currentUserData.name, tokens: 5, ts: Date.now() } });
+      }
+    }
+  } else {
+    notifs[idx].resolvedText = "Tu as nié la tentative de " + fname;
+    if (PLAYERS[fromKey]) {
+      const ost = await getDoc(playerRef(fromKey));
+      if (ost.exists()) {
+        await updateDoc(playerRef(fromKey), {
+          tokens: Math.max(0, (ost.data().tokens || 0) - 3),
+          [`buzzResults.${currentUser}`]: "denied"
+        });
+      }
+    }
+    await addFeedItem("fi-fail", currentUserData.name.split(" ")[0] + " a nié — " + fname + " perd 3 tokens !");
+    showToast("Buzz nié !");
+    if (PLAYERS[fromKey]) {
+      await updateDoc(playerRef(fromKey), { pendingResult: { success: false, targetName: currentUserData.name, tokens: 3, ts: Date.now() } });
+    }
+  }
+  await updateDoc(playerRef(currentUser), { notifs });
+  if (gameState?.activeBuzz?.fromKey === fromKey && gameState?.activeBuzz?.targetKey === currentUser) {
+    await advanceBuzzQueue();
+  }
+  document.getElementById("notif-dot").classList.remove("show");
+};
+
+// ─── HINTS ────────────────────────────────────────────────
+window.openHintsModal = function(key) {
+  const p = PLAYERS[key]; if (!p) return;
+  document.getElementById("mh-name").textContent = p.name;
+  const el = document.getElementById("mh-body");
+  const uc = playerState?.unlockedHints?.[key] || 0;
+  let html = "";
+  p.hints.forEach((h, i) => {
+    if (i < uc) html += `<div class="hint-item"><div class="hl">${h.level}</div><div class="ht">${h.text}</div></div>`;
+    else if (i === uc) html += `<button class="buy-hint-btn" onclick="buyHint('${key}')"><i class="ti ti-coin"></i> Débloquer l'indice ${i+1} — ${h.cost} token${h.cost > 1 ? "s" : ""}</button><div class="hint-item locked-h"><div class="hl">${h.level}</div><div class="ht">${h.text}</div></div>`;
+    else html += `<div class="hint-item locked-h"><div class="hl">${h.level}</div><div class="ht">${h.text}</div></div>`;
+  });
+  el.innerHTML = html;
+  document.getElementById("modal-hints").classList.add("open");
+};
+
+window.buyHint = async function(key) {
+  const p = PLAYERS[key]; if (!p) return;
+  const uc = playerState?.unlockedHints?.[key] || 0;
+  if (uc >= p.hints.length) { showToast("Tous les indices débloqués !"); return; }
+  const cost = p.hints[uc].cost;
+  if ((playerState?.tokens || 0) < cost) { showToast("Pas assez de tokens !"); return; }
+  await updateDoc(playerRef(currentUser), {
+    tokens: (playerState.tokens || 0) - cost,
+    [`unlockedHints.${key}`]: uc + 1
+  });
+  await addFeedItem("fi-search", currentUserData.name.split(" ")[0] + " a acheté un indice sur " + p.name.split(" ")[0]);
+  openHintsModal(key);
+  showToast("Indice débloqué !");
+};
+
+// ─── PROGRAMME ────────────────────────────────────────────
+function renderProgramme() {
+  const el = document.getElementById("programme-list"); if (!el) return;
+  const ps = {};
+  (gameState?.programme || []).forEach(p => ps[p.id] = p);
+  el.innerHTML = ""; let lastDay = "";
+  PROGRAMME.forEach(item => {
+    const st = ps[item.id] || { unlocked: item.unlocked, url: "", consigne: "" };
+    if (item.day !== lastDay) {
+      lastDay = item.day;
+      const dh = document.createElement("div"); dh.className = "day-header";
+      dh.innerHTML = `<i class="ti ti-calendar"></i> ${item.day}`;
+      el.appendChild(dh);
+    }
+    const div = document.createElement("div");
+    div.className = "prog-item" + (st.unlocked ? " unlocked" : " locked") + (item.isGame ? " is-game" : "");
+    const badge = st.unlocked
+      ? (item.isGame ? '<span class="prog-badge badge-game-p">⚡ Activité</span>' : '<span class="prog-badge badge-unlocked-p">✓</span>')
+      : '<span class="prog-badge badge-locked-p">🔒 Bientôt</span>';
+    div.innerHTML = `<div class="prog-time">${item.time}</div><div class="prog-body"><div class="prog-title">${item.title}</div>${badge}</div>`;
+    if (st.unlocked) div.onclick = () => openProgModal(item, st);
+    el.appendChild(div);
+  });
+}
+
+window.openProgModal = function(item, st) {
+  activeProgItem = { item, st };
+  document.getElementById("mp-time").textContent = item.day + " · " + item.time;
+  document.getElementById("mp-name").textContent = item.title;
+  document.getElementById("mp-desc").textContent = st.consigne || item.desc;
+  const linksWrap = document.getElementById("mp-links-wrap");
+  if (linksWrap) {
+    linksWrap.innerHTML = "";
+    const links = st.links || (st.url ? [{label: "Ouvrir le lien", url: st.url}] : []);
+    links.forEach(function(lk) {
+      const btn = document.createElement("button");
+      btn.style.cssText = "width:100%;padding:12px;background:#534AB7;color:white;border:none;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;margin-bottom:8px;display:block;";
+      btn.textContent = (lk.label || "Lien") + " ↗";
+      btn.onclick = function() { window.open(lk.url, "_blank"); };
+      linksWrap.appendChild(btn);
+    });
+  }
+  document.getElementById("modal-prog").classList.add("open");
+};
+window.openProgUrl = function() { if (activeProgItem?.st?.url) window.open(activeProgItem.st.url, "_blank"); };
+
+// ─── PLAYERS TAB ──────────────────────────────────────────
+function renderPlayersTab() {
+  const el = document.getElementById("players-list"); if (!el) return;
+  const q = (document.getElementById("player-search") || {}).value?.toLowerCase() || "";
+  el.innerHTML = "";
+  const byTeam = {};
+  Object.entries(PLAYERS).forEach(([key, p]) => {
+    if (key === currentUser) return;
+    if (q && !p.name.toLowerCase().includes(q)) return;
+    if (!byTeam[p.team]) byTeam[p.team] = [];
+    byTeam[p.team].push({ key, p });
+  });
+  if (Object.keys(byTeam).length === 0) { el.innerHTML = '<p style="font-size:13px;color:var(--color-text-secondary);">Aucun joueur trouvé.</p>'; return; }
+  Object.keys(byTeam).sort().forEach(tid => {
+    const tc = getTC(tid); const tname = teamNames[tid] || "Groupe " + tid;
+    const grp = document.createElement("div"); grp.className = "team-group";
+    grp.innerHTML = `<div class="team-group-header"><span style="width:10px;height:10px;border-radius:50%;background:${tc.main};display:inline-block;"></span><span style="font-size:12px;font-weight:500;color:${tc.main};">${tname}</span></div>`;
+    byTeam[tid].forEach(({ key, p }) => {
+      const confirmed = playerState?.buzzResults?.[key] === "confirmed";
+      const isBuzzed = gameState?.activeBuzz?.targetKey === key;
+      const rem = isBuzzed ? Math.max(0, Math.floor((gameState.activeBuzz.endTs - Date.now()) / 1000)) : 0;
+      const inQueue = gameState?.queue?.some(qq => qq.targetKey === key);
+      let badge = '<i class="ti ti-search" style="color:var(--color-text-secondary);font-size:14px;"></i>';
+      if (confirmed) badge = '<span style="font-size:11px;font-weight:500;color:#3B6D11;background:#EAF3DE;padding:3px 8px;border-radius:20px;white-space:nowrap;">🔓 Secret trouvé</span>';
+      else if (isBuzzed) { const m = Math.floor(rem/60), s = rem%60; badge = `<span class="badge-cd"><i class="ti ti-hourglass"></i> ${m}:${s<10?"0":""}${s}</span>`; }
+      else if (inQueue) badge = '<span style="font-size:18px;">⏳</span>';
+      const div = document.createElement("div"); div.className = "player-row";
+      div.style.borderLeft = `3px solid ${tc.main}`;
+      const tname = teamNames[p.team] || "Groupe " + p.team;
+      div.innerHTML = '<div class="av" style="background:'+tc.light+';color:'+tc.main+';">'+p.initials+'</div><div class="pinfo"><div class="pname">'+p.name+'</div><div style="font-size:11px;font-weight:500;color:'+tc.main+';margin-top:2px;">'+tname+'</div></div>'+badge;
+      div.onclick = () => openHintsModal(key);
+      grp.appendChild(div);
+    });
+    el.appendChild(grp);
+  });
+}
+
+// ─── RANKING ──────────────────────────────────────────────
+function renderRankingIndividual() {
+  const el = document.getElementById("ranking-individual"); if (!el) return;
+  const data = Object.entries(PLAYERS).map(([k, p]) => {
+    const st = k === currentUser ? playerState : allPlayerStates[k];
+    const tc = getTC(p.team); const tname = teamNames[p.team] || "Groupe " + p.team;
+    return { name: p.name, team: tname, color: tc.main, score: st?.tokens || 0, found: st?.secretsFound || 0 };
+  }).sort((a, b) => b.score - a.score);
+  el.innerHTML = ""; const medals = ["🥇","🥈","🥉"];
+  data.forEach((r, i) => {
+    const div = document.createElement("div"); div.className = "ranking-item";
+    div.innerHTML = `<div class="rank-num">${medals[i]||i+1}</div><div class="rank-info"><div class="rank-name">${r.name}</div><div style="display:flex;align-items:center;gap:4px;margin-top:2px;"><span style="width:7px;height:7px;border-radius:50%;background:${r.color};display:inline-block;"></span><span class="rank-detail">${r.team} · ${r.found} secret(s)</span></div></div><div class="rank-score">${r.score}<span style="font-size:10px;color:var(--color-text-secondary);"> tkn</span></div>`;
+    el.appendChild(div);
+  });
+}
+
+function getTeamScore(tid) {
+  return Object.entries(PLAYERS).filter(([, p]) => p.team === tid)
+    .reduce((sum, [k]) => sum + ((k === currentUser ? playerState?.tokens : allPlayerStates[k]?.tokens) || 0), 0);
+}
+
+function renderRankingTeam() {
+  const el = document.getElementById("ranking-team"); if (!el) return;
+  const usedTeams = [...new Set(Object.values(PLAYERS).map(p => p.team))];
+  const data = usedTeams.map(tid => {
+    const tc = getTC(tid); return { name: teamNames[tid] || "Groupe "+tid, color: tc.main, light: tc.light, score: getTeamScore(tid) };
+  }).sort((a, b) => b.score - a.score);
+  el.innerHTML = ""; const medals = ["🥇","🥈","🥉"]; const max = data[0]?.score || 1;
+  data.forEach((r, i) => {
+    const div = document.createElement("div"); div.className = "ranking-item"; div.style.flexDirection = "column"; div.style.alignItems = "stretch";
+    div.innerHTML = `<div style="display:flex;align-items:center;gap:8px;"><div class="rank-num">${medals[i]||i+1}</div><div class="rank-info"><div class="rank-name" style="color:${r.color};">${r.name}</div></div><div class="rank-score">${r.score}<span style="font-size:10px;color:var(--color-text-secondary);"> tkn</span></div></div><div style="background:${r.light};border-radius:4px;height:5px;margin-top:8px;"><div style="height:100%;width:${Math.round((r.score/max)*100)}%;background:${r.color};border-radius:4px;transition:width 0.5s;"></div></div>`;
+    el.appendChild(div);
+  });
+}
+
+// ─── FEED ─────────────────────────────────────────────────
+function renderFeed() {
+  const el = document.getElementById("feed-list"); if (!el) return; el.innerHTML = "";
+  const iconMap = { "fi-search": "ti-search", "fi-win": "ti-check", "fi-fail": "ti-x", "fi-token": "ti-coin", "fi-buzz": "ti-hand-stop", "fi-admin": "ti-settings" };
+  feedItems.forEach(item => {
+    const div = document.createElement("div"); div.className = "feed-item";
+    div.innerHTML = `<div class="fi-icon ${item.icon}"><i class="ti ${iconMap[item.icon]||"ti-activity"}"></i></div><div class="feed-text">${item.text}</div><div class="feed-time">${formatTime(item.ts)}</div>`;
+    el.appendChild(div);
+  });
+}
+
+// ─── NOTIFS ───────────────────────────────────────────────
+function renderNotifs() {
+  const el = document.getElementById("notifs-list"); if (!el) return;
+  const notifs = playerState?.notifs || [];
+  if (!notifs.length) { el.innerHTML = '<p style="font-size:13px;color:var(--color-text-secondary);">Aucune notification.</p>'; return; }
+  el.innerHTML = "";
+  notifs.forEach((n, i) => {
+    if (n.resolved) {
+      const div = document.createElement("div");
+      div.style.cssText = "font-size:12px;color:var(--color-text-secondary);padding:10px;background:var(--color-background-secondary);border-radius:8px;margin-bottom:6px;";
+      div.textContent = n.resolvedText || "Notification traitée";
+      el.appendChild(div); return;
+    }
+    const div = document.createElement("div"); div.className = "notif-urgent";
+    const btnYesId = "buzz-yes-" + i;
+    const btnNoId = "buzz-no-" + i;
+    div.innerHTML = '<div class="nu-title"><i class="ti ti-hand-stop"></i> Tu as été buzzé·e !</div>' +
+      '<div class="nu-body">' + n.text + '</div>' +
+      '<div class="nu-actions">' +
+      '<button class="btn-yes" id="' + btnYesId + '">Oui c\'est mon secret</button>' +
+      '<button class="btn-no" id="' + btnNoId + '">Non ce n\'est pas ça</button>' +
+      '</div>';
+    el.appendChild(div);
+    const fromKey = n.fromKey; const fromName = n.fromName;
+    setTimeout(() => {
+      const yb = document.getElementById(btnYesId); if (yb) yb.addEventListener("click", () => respondBuzz(i, true, fromKey, fromName));
+      const nb = document.getElementById(btnNoId); if (nb) nb.addEventListener("click", () => respondBuzz(i, false, fromKey, fromName));
+    }, 0);
+  });
+}
+
+// ─── HOME SCORES ──────────────────────────────────────────
+function renderHomeScores() {
+  if (!currentUser || !playerState) return;
+  const p = currentUserData; const tc = getTC(p.team);
+  document.getElementById("my-tokens").textContent = playerState.tokens || 0;
+  const found = playerState.secretsFound || 0;
+  document.getElementById("my-found-sub").textContent = found + " secret" + (found > 1 ? "s" : "") + " trouvé" + (found > 1 ? "s" : "");
+  const tn = teamNames[p.team] || "Groupe " + p.team;
+  // Update team name in header live
+  const headerEl = document.getElementById("home-header-area");
+  if (headerEl) {
+    const nameDiv = headerEl.querySelector(".header-team-name");
+    if (nameDiv) nameDiv.innerHTML = "Mon équipe : <strong style=\"color:"+tc.main+";\">" + tn + "</strong>";
+  }
+
+}
+
+function updateBuzzBtn() {
+  const btn = document.getElementById("buzz-main-btn"); if (!btn) return;
+  if (gameState?.appBlocked) { btn.style.opacity="0.5"; btn.style.pointerEvents="none"; btn.textContent = "⛔ Appli en pause"; btn.style.background="#888780"; }
+  else if (gameState?.buzzBlocked) { btn.style.opacity="0.5"; btn.style.pointerEvents="none"; btn.textContent = "🔒 Buzzer bloqué"; btn.style.background="#888780"; }
+  else {
+    const ab = gameState?.activeBuzz;
+    const rem2 = ab ? Math.max(0, Math.floor((ab.endTs - Date.now()) / 1000)) : 0;
+    const isBusy = ab && rem2 > 0 && (ab.fromKey === currentUser || ab.targetKey === currentUser);
+    if (isBusy) {
+      btn.style.opacity="0.5"; btn.style.pointerEvents="none"; btn.style.background="#888780";
+      btn.textContent = ab.fromKey === currentUser ? "En attente de reponse..." : "Reponds au buzz !";
+    } else {
+      btn.style.opacity="1"; btn.style.pointerEvents="auto"; btn.style.background="#E24B4A";
+      btn.textContent = "BUZZER";
+    }
+  }
+  const banner = document.getElementById("app-blocked-banner");
+  if (banner) { banner.style.display = gameState?.appBlocked ? "block" : "none"; const m = document.getElementById("block-msg-display"); if (m) m.textContent = gameState?.blockMessage || "Pause en cours"; }
+}
+
+function renderAll() {
+  if (!currentUser) return;
+  renderHomeScores();
+  renderPlayersTab();
+  renderProgramme();
+  renderRankingIndividual();
+  renderRankingTeam();
+  renderNotifs();
+  updateBuzzBtn();
+}
+
+// ─── ADMIN FONCTIONS ──────────────────────────────────────
+window.toggleBlock = async function(type) {
+  if (!gameState) return;
+  if (type === "buzz") {
+    const v = !gameState.buzzBlocked;
+    await updateDoc(gameRef(), { buzzBlocked: v });
+    await addFeedItem("fi-admin", "Admin : buzzer " + (v ? "bloqué" : "débloqué"));
+    showToast(v ? "Buzzer bloqué !" : "Buzzer débloqué !");
+  } else {
+    const v = !gameState.appBlocked;
+    const msg = document.getElementById("block-message").value || "Pause en cours";
+    await updateDoc(gameRef(), { appBlocked: v, blockMessage: msg });
+    await addFeedItem("fi-admin", "Admin : appli " + (v ? "bloquée" : "débloquée") + " — " + msg);
+    showToast(v ? "Appli bloquée !" : "Appli débloquée !");
+  }
+};
+
+window.resetBuzzQueue = async function() {
+  await updateDoc(gameRef(), { activeBuzz: null, queue: [] });
+  showToast("File d'attente vidée !");
+};
+
+window.revealAll = async function() {
+  await addFeedItem("fi-admin", "🎉 La cérémonie de révélation commence !");
+  showToast("🎉 Cérémonie lancée !");
+};
+
+window.awardPlayer = async function() {
+  const sel = document.getElementById("award-player-select").value;
+  const amt = parseInt(document.getElementById("award-player-amount").value) || 0;
+  if (!sel || amt <= 0) { showToast("Sélectionne un joueur !"); return; }
+  const st = await getDoc(playerRef(sel));
+  if (st.exists()) await updateDoc(playerRef(sel), { tokens: (st.data().tokens || 0) + amt });
+  const prog = gameState?.awardHistory || [];
+  prog.unshift({ name: PLAYERS[sel].name, amount: amt, type: "player", ts: Date.now() });
+  await updateDoc(gameRef(), { awardHistory: prog.slice(0, 20) });
+  await addFeedItem("fi-token", "Admin : +" + amt + " tokens attribués à " + PLAYERS[sel].name.split(" ")[0]);
+  showToast("+" + amt + " tokens → " + PLAYERS[sel].name.split(" ")[0] + " !");
+};
+
+window.awardTeam = async function() {
+  const sel = document.getElementById("award-team-select").value;
+  const amt = parseInt(document.getElementById("award-team-amount").value) || 0;
+  if (!sel || amt <= 0) { showToast("Sélectionne une équipe !"); return; }
+  let count = 0;
+  for (const [k, p] of Object.entries(PLAYERS)) {
+    if (p.team === sel) {
+      const st = await getDoc(playerRef(k));
+      if (st.exists()) await updateDoc(playerRef(k), { tokens: (st.data().tokens || 0) + amt });
+      count++;
+    }
+  }
+  const tname = teamNames[sel] || "Groupe " + sel;
+  const prog = gameState?.awardHistory || [];
+  prog.unshift({ name: tname, amount: amt, type: "team", count, ts: Date.now() });
+  await updateDoc(gameRef(), { awardHistory: prog.slice(0, 20) });
+  await addFeedItem("fi-token", "Admin : +" + amt + " tokens à chaque membre de " + tname + " (×" + count + ")");
+  showToast("+" + amt + " tokens → " + tname + " !");
+};
+
+window.renameTeam = async function(tid) {
+  const input = document.getElementById("team-rename-" + tid);
+  const newName = input?.value?.trim();
+  if (!newName) { showToast("Saisis un nom !"); return; }
+  await updateDoc(gameRef(), { [`teamNames.${tid}`]: newName });
+  await addFeedItem("fi-admin", "Admin : Groupe " + tid + " renommé en \"" + newName + "\"");
+  showToast("Équipe renommée : " + newName);
+};
+
+function renderTeamRenameList() {
+  const el = document.getElementById("team-rename-list"); if (!el) return;
+  el.innerHTML = "";
+  const usedTeams = [...new Set(Object.values(PLAYERS).map(p => p.team))].sort();
+  usedTeams.forEach(tid => {
+    const tc = getTC(tid);
+    const currentName = teamNames[tid] || "Groupe " + tid;
+    const members = Object.values(PLAYERS).filter(p => p.team === tid);
+    const membersList = members.map(p =>
+      '<div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:0.5px solid var(--color-border-tertiary);">' +
+      '<div style="width:28px;height:28px;border-radius:50%;background:'+tc.light+';color:'+tc.main+';display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;flex-shrink:0;">'+p.initials+'</div>' +
+      '<div><div style="font-size:12px;font-weight:500;color:var(--color-text-primary);">'+p.name+'</div><div style="font-size:11px;color:var(--color-text-secondary);">'+p.company+'</div></div>' +
+      '</div>'
+    ).join("");
+    const div = document.createElement("div");
+    div.style.cssText = "background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:10px;padding:12px;margin-bottom:8px;border-left:3px solid " + tc.main + ";";
+    div.innerHTML =
+      '<div style="font-size:11px;color:'+tc.main+';font-weight:500;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.4px;">Groupe '+tid+'</div>' +
+      '<div class="team-rename-row" style="margin-bottom:10px;"><input class="team-rename-input" id="team-rename-'+tid+'" placeholder="Nom de votre equipe..." value="'+currentName+'"><button class="team-rename-btn" style="background:'+tc.main+';" onclick="renameTeam(&apos;"+tid+"&apos;)">OK</button></div>' +
+      '<details style="cursor:pointer;">' +
+      '<summary style="font-size:12px;color:var(--color-text-secondary);list-style:none;display:flex;align-items:center;gap:4px;user-select:none;">' +
+      '<i class="ti ti-users" style="font-size:13px;"></i> ' + members.length + ' membre' + (members.length > 1 ? 's' : '') +
+      '</summary>' +
+      '<div style="margin-top:8px;padding-left:4px;">' + membersList + '</div>' +
+      '</details>';
+    el.appendChild(div);
+  });
+}
+
+window.toggleProgItem = async function(id) {
+  const prog = gameState?.programme || [];
+  const idx = prog.findIndex(p => p.id === id);
+  if (idx >= 0) prog[idx].unlocked = !prog[idx].unlocked;
+  await updateDoc(gameRef(), { programme: prog });
+  showToast("Activité mise à jour !");
+};
+
+window.saveProgItem = async function(id) {
+  const urlInput = document.getElementById("purl-" + id)?.value || "";
+  const labelInput = document.getElementById("plabel-" + id)?.value || "";
+  const prog = gameState?.programme || [];
+  const idx = prog.findIndex(p => p.id === id);
+  if (idx >= 0) {
+    if (urlInput.startsWith("http")) {
+      // Add to links array
+      prog[idx].links = prog[idx].links || [];
+      const label = labelInput || "Lien " + (prog[idx].links.length + 1);
+      prog[idx].links.push({label, url: urlInput});
+      prog[idx].url = urlInput; // keep backwards compat
+      prog[idx].consigne = "";
+    } else {
+      prog[idx].consigne = urlInput;
+      prog[idx].url = "";
+    }
+  }
+  await updateDoc(gameRef(), { programme: prog });
+  showToast("Sauvegardé !");
+};
+
+window.removeLinkFromProg = async function(id, linkIdx) {
+  const prog = gameState?.programme || [];
+  const idx = prog.findIndex(p => p.id === id);
+  if (idx >= 0 && prog[idx].links) {
+    prog[idx].links.splice(linkIdx, 1);
+    prog[idx].url = prog[idx].links[0]?.url || "";
+  }
+  await updateDoc(gameRef(), { programme: prog });
+  showToast("Lien supprimé !");
+};
+
+function renderAdminProg() {
+  const el = document.getElementById("admin-prog-list"); if (!el) return;
+  const ps = {}; (gameState?.programme || []).forEach(p => ps[p.id] = p);
+  el.innerHTML = "";
+  PROGRAMME.forEach(item => {
+    const st = ps[item.id] || { unlocked: item.unlocked, url: "", consigne: "" };
+    const div = document.createElement("div"); div.className = "admin-prog-item";
+    div.innerHTML = `<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;"><div><div style="font-size:13px;font-weight:500;color:var(--color-text-primary);">${item.time} — ${item.title}</div><div style="font-size:11px;color:var(--color-text-secondary);">${item.day}</div></div><button class="toggle ${st.unlocked ? "on-green" : "off"}" id="ptoggle-${item.id}" onclick="toggleProgItem('${item.id}')"></button></div><div class="api-url-row"><input class="api-url-input" id="purl-${item.id}" placeholder="URL ou consigne..." value="${st.url || st.consigne || ""}"><button class="api-url-save" onclick="saveProgItem('${item.id}')">OK</button></div>`;
+    el.appendChild(div);
+  });
+}
+
+function renderAwardHistory() {
+  const el = document.getElementById("award-history"); if (!el) return;
+  const history = gameState?.awardHistory || [];
+  if (!history.length) { el.innerHTML = '<p style="font-size:12px;color:var(--color-text-secondary);">Aucune attribution.</p>'; return; }
+  el.innerHTML = "";
+  history.slice(0, 10).forEach(a => {
+    const div = document.createElement("div");
+    div.style.cssText = "display:flex;justify-content:space-between;font-size:12px;padding:7px 10px;background:var(--color-background-secondary);border-radius:6px;margin-bottom:4px;";
+    div.innerHTML = `<span>${a.type === "team" ? "🏆 "+a.name+" (×"+a.count+")" : "👤 "+a.name}</span><span style="color:#3B6D11;font-weight:500;">+${a.amount}</span>`;
+    el.appendChild(div);
+  });
+}
+
+function renderAdminStats() {
+  const online = Object.values(allPlayerStates).filter(s => s?.online).length;
+  const found = Object.values(allPlayerStates).reduce((s, p) => s + (p?.secretsFound || 0), 0);
+  if (document.getElementById("stat-connected")) document.getElementById("stat-connected").textContent = online + " / " + Object.keys(PLAYERS).length;
+  if (document.getElementById("stat-found")) document.getElementById("stat-found").textContent = found;
+  if (document.getElementById("stat-buzzes")) document.getElementById("stat-buzzes").textContent = gameState?.totalBuzzes || 0;
+  if (document.getElementById("stat-buzz-blocked")) document.getElementById("stat-buzz-blocked").textContent = gameState?.buzzBlocked ? "Oui ⛔" : "Non ✓";
+  if (document.getElementById("stat-app-blocked")) document.getElementById("stat-app-blocked").textContent = gameState?.appBlocked ? "Oui ⛔" : "Non ✓";
+  // Admin ranking
+  const el = document.getElementById("admin-ranking"); if (!el) return;
+  const usedTeams = [...new Set(Object.values(PLAYERS).map(p => p.team))];
+  const data = usedTeams.map(tid => {
+    const tc = getTC(tid);
+    const score = Object.entries(PLAYERS).filter(([, p]) => p.team === tid).reduce((s, [k]) => s + (allPlayerStates[k]?.tokens || 0), 0);
+    return { name: teamNames[tid] || "Groupe " + tid, color: tc.main, score };
+  }).sort((a, b) => b.score - a.score);
+  el.innerHTML = ""; const medals = ["🥇","🥈","🥉"];
+  data.forEach((r, i) => {
+    const div = document.createElement("div"); div.className = "ranking-item";
+    div.innerHTML = `<div class="rank-num">${medals[i]||i+1}</div><div class="rank-info"><div class="rank-name" style="color:${r.color};">${r.name}</div></div><div class="rank-score">${r.score}<span style="font-size:10px;color:var(--color-text-secondary);"> tkn</span></div>`;
+    el.appendChild(div);
+  });
+}
+
+function populateAdminSelects() {
+  const ps = document.getElementById("award-player-select");
+  const ts = document.getElementById("award-team-select");
+  if (ps) { ps.innerHTML = '<option value="">Joueur...</option>'; Object.entries(PLAYERS).forEach(([k, p]) => { const o = document.createElement("option"); o.value = k; o.textContent = p.name; ps.appendChild(o); }); }
+  const usedTeams = [...new Set(Object.values(PLAYERS).map(p => p.team))].sort();
+  if (ts) { ts.innerHTML = '<option value="">Équipe...</option>'; usedTeams.forEach(tid => { const o = document.createElement("option"); o.value = tid; o.textContent = teamNames[tid] || "Groupe " + tid; ts.appendChild(o); }); }
+}
+
+function renderAdminAll() {
+  if (!gameState) return;
+  const sh = gameState;
+  if (document.getElementById("toggle-buzz")) document.getElementById("toggle-buzz").className = "toggle " + (sh.buzzBlocked ? "on-red" : "off");
+  if (document.getElementById("toggle-app")) document.getElementById("toggle-app").className = "toggle " + (sh.appBlocked ? "on-red" : "off");
+  renderAdminProg();
+  renderAwardHistory();
+  renderAdminStats();
+  renderTeamRenameList();
+  populateAdminSelects();
+}
+
+// ─── HELPERS ──────────────────────────────────────────────
+function getTC(tid) { return TEAM_COLORS_BASE[tid] || { main: "#888780", light: "#F0F0F0" }; }
+
+window.toggleSecret = function() {
+  secretHidden = !secretHidden;
+  document.getElementById("my-secret").classList.toggle("blurred", secretHidden);
+  document.getElementById("hide-btn").innerHTML = secretHidden ? '<i class="ti ti-eye"></i> Afficher' : '<i class="ti ti-eye-off"></i> Cacher';
+};
+
+window.switchTab = function(name) {
+  document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+  document.querySelectorAll(".nb").forEach(b => b.classList.remove("active"));
+  document.getElementById("tab-" + name).classList.add("active");
+  document.getElementById("nav-" + name).classList.add("active");
+  if (name === "notifs" && playerState) {
+    const notifs = (playerState.notifs || []).map(n => ({ ...n, read: true }));
+    updateDoc(playerRef(currentUser), { notifs });
+    document.getElementById("notif-dot").classList.remove("show");
+  }
+};
+
+window.switchRankTab = function(n) {
+  document.querySelectorAll(".rtab").forEach(t => t.classList.remove("active"));
+  document.querySelectorAll(".rtab-btn").forEach(b => b.classList.remove("active"));
+  document.getElementById("rtab-" + n).classList.add("active");
+  document.getElementById("rbtn-" + n).classList.add("active");
+};
+
+window.switchAdminTab = function(n) {
+  document.querySelectorAll(".atab").forEach(t => t.classList.remove("active"));
+  document.querySelectorAll(".anb").forEach(b => b.classList.remove("active"));
+  document.getElementById("atab-" + n).classList.add("active");
+  document.getElementById("anav-" + n).classList.add("active");
+};
+
+window.closeModal = function(id) { document.getElementById(id).classList.remove("open"); };
+window.closeModalProg = function() { window.closeModal("modal-prog"); };
+window.closeModalHints = function() { window.closeModal("modal-hints"); };
+window.closeModalBuzz = function() { window.closeModal("modal-buzz-list"); };
+
+function openNotifsPanel() {
+  const panel = document.getElementById("notifs-panel");
+  const overlay = document.getElementById("notifs-panel-overlay");
+  const body = document.getElementById("notifs-panel-body");
+  if (!panel) return;
+  // Render notifs in panel
+  const notifs = playerState?.notifs || [];
+  if (!notifs.length) {
+    body.innerHTML = '<p style="font-size:13px;color:var(--color-text-secondary);">Aucune notification.</p>';
+  } else {
+    body.innerHTML = "";
+    notifs.forEach((n, i) => {
+      if (n.resolved) {
+        const div = document.createElement("div");
+        div.style.cssText = "font-size:12px;color:var(--color-text-secondary);padding:10px;background:var(--color-background-secondary);border-radius:8px;margin-bottom:6px;";
+        div.textContent = n.resolvedText || "Notification traitée";
+        body.appendChild(div); return;
+      }
+      const fk = n.fromKey; const fn = n.fromName;
+      const div = document.createElement("div");
+      div.className = "notif-urgent";
+      div.innerHTML = '<div class="nu-title"><i class="ti ti-hand-stop"></i> Tu as été buzzé·e !</div><div class="nu-body">'+n.text+'</div><div class="nu-actions"><button class="btn-yes" id="np-yes-'+i+'">✓ Oui</button><button class="btn-no" id="np-no-'+i+'">✗ Non</button></div>';
+      body.appendChild(div);
+      setTimeout(() => {
+        const yb = document.getElementById("np-yes-"+i); if(yb) yb.addEventListener("click", () => { closeNotifsPanel(); respondBuzz(i, true, fk, fn); });
+        const nb = document.getElementById("np-no-"+i); if(nb) nb.addEventListener("click", () => { closeNotifsPanel(); respondBuzz(i, false, fk, fn); });
+      }, 0);
+    });
+  }
+  // Mark as read
+  if (playerState?.notifs) {
+    const updated = playerState.notifs.map(n => ({...n, read: true}));
+    updateDoc(playerRef(currentUser), { notifs: updated });
+  }
+  document.getElementById("notif-dot").classList.remove("show");
+  panel.style.display = "block";
+  overlay.style.display = "block";
+}
+
+function closeNotifsPanel() {
+  document.getElementById("notifs-panel").style.display = "none";
+  document.getElementById("notifs-panel-overlay").style.display = "none";
+}
+
+let toastTimer = null;
+window.showToast = function(msg) {
+  const t = document.getElementById("toast"); t.textContent = msg; t.classList.add("show");
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove("show"), 2500);
+};
+
+// ─── EVENT LISTENERS ─────────────────────────────────────
+function attachEventListeners() {
+  // Buzz button
+  const buzzBtn = document.getElementById("buzz-main-btn");
+  if (buzzBtn) {
+    buzzBtn.onclick = null;
+    buzzBtn.addEventListener("click", openBuzzModal, false);
+  }
+  const bellBtn = document.getElementById("notif-bell-btn");
+  if (bellBtn) bellBtn.addEventListener("click", () => openNotifsPanel());
+  // Modal closes
+  const closeHints = document.getElementById("close-modal-hints");
+  if (closeHints) closeHints.addEventListener("click", () => closeModal("modal-hints"));
+  const closeBuzz = document.getElementById("close-modal-buzz");
+  if (closeBuzz) closeBuzz.addEventListener("click", () => closeModal("modal-buzz-list"));
+  const closeProg = document.getElementById("close-modal-prog");
+  if (closeProg) closeProg.addEventListener("click", () => closeModal("modal-prog"));
+  const closeResult = document.getElementById("close-result-popup");
+  if (closeResult) closeResult.addEventListener("click", () => { document.getElementById("result-popup").style.display = "none"; });
+}
+
+// ─── INIT ─────────────────────────────────────────────────
+document.getElementById("loading-screen").style.display = "none";
+document.getElementById("app").style.display = "block";
+
+// Enter on login
+document.getElementById("login-code").addEventListener("keydown", e => { if (e.key === "Enter") login(); });
+</script>
+<script>
+// Non-module script - runs in global scope, safe for onclick
+document.addEventListener("DOMContentLoaded", function() {
+  // Poll until buzz button exists and module is loaded
+  var tries = 0;
+  var interval = setInterval(function() {
+    tries++;
+    var btn = document.getElementById("buzz-main-btn");
+    if (btn && window.openBuzzModal) {
+      btn.addEventListener("click", function() {
+        window.openBuzzModal();
+      });
+      clearInterval(interval);
+    }
+    if (tries > 50) clearInterval(interval); // stop after 5s
+  }, 100);
+});
+</script>
+
+    <div id="result-popup" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);z-index:160;align-items:center;justify-content:center;padding:1.5rem;">
+      <div style="background:var(--color-background-primary);border-radius:16px;padding:2rem 1.5rem;width:100%;max-width:340px;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,0.3);">
+        <div style="font-size:48px;margin-bottom:12px;" id="result-popup-emoji">🎉</div>
+        <div style="font-size:18px;font-weight:600;margin-bottom:8px;" id="result-popup-title">Bravo !</div>
+        <div style="font-size:14px;color:var(--color-text-secondary);line-height:1.6;margin-bottom:20px;" id="result-popup-text"></div>
+        <button id="close-result-popup" style="width:100%;padding:12px;background:#534AB7;color:white;border:none;border-radius:10px;font-size:15px;font-weight:500;cursor:pointer;">OK</button>
+      </div>
+    </div>
+
+    <div id="buzz-popup" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);z-index:150;align-items:center;justify-content:center;padding:1.5rem;">
+      <div style="background:var(--color-background-primary);border-radius:16px;padding:1.5rem;width:100%;max-width:340px;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,0.3);">
+        <div style="font-size:40px;margin-bottom:10px;">🔴</div>
+        <div style="font-size:17px;font-weight:600;color:#A32D2D;margin-bottom:8px;">Tu as ete buzze !</div>
+        <div style="font-size:14px;color:var(--color-text-secondary);line-height:1.6;margin-bottom:20px;" id="buzz-popup-text"></div>
+        <div style="display:flex;gap:10px;">
+          <button id="buzz-popup-yes" style="flex:1;padding:14px;background:#3B6D11;color:white;border:none;border-radius:10px;font-size:14px;font-weight:500;cursor:pointer;">Oui c'est mon secret</button>
+          <button id="buzz-popup-no" style="flex:1;padding:14px;background:#E24B4A;color:white;border:none;border-radius:10px;font-size:14px;font-weight:500;cursor:pointer;">Non ce n'est pas ca</button>
+        </div>
+      </div>
+    </div>
+
+</body>
+</html>
