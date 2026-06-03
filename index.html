@@ -714,14 +714,11 @@ async function initPlayer(key) {
       unlockedHints: {}, buzzResults: {}, notifs: [], online: true
     });
   } else {
-    // Reset tokens to 3 and clear test data on each login for now
-    await updateDoc(playerRef(key), {
-      tokens: 3, secretsFound: 0, buzzedBy: 0,
-      unlockedHints: {}, buzzResults: {}, notifs: [], online: true
-    });
+    // Just mark as online, preserve all data
+    await updateDoc(playerRef(key), { online: true });
   }
-}
 
+}
 async function addFeedItem(icon, text) {
   const ts = Date.now();
   await setDoc(doc(db, "feed", String(ts)), { icon, text, ts, time: "À l'instant" });
