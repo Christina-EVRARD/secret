@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Secret Story — Récap Séminaire 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --purple: #534AB7;
+  --purple-light: #EEEDFE;
+  --red: #E24B4A;
+  --green: #3B6D11;
+  --green-light: #EAF3DE;
+  --amber: #854F0B;
+  --amber-light: #FAEEDA;
+  --bg: #F7F6FF;
+  --bg2: #FFFFFF;
+  --text: #1A1828;
+  --text2: #6B6880;
+  --border: #E2E0F0;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+/* HEADER */
+.hero {
+  background: linear-gradient(135deg, #1A1828 0%, #2D2850 50%, #534AB7 100%);
+  padding: 60px 40px 80px;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute; top: -60px; right: -60px;
+  width: 300px; height: 300px;
+  background: rgba(83,74,183,0.3);
+  border-radius: 50%;
+}
+.hero::after {
+  content: '';
+  position: absolute; bottom: -80px; left: 40%;
+  width: 200px; height: 200px;
+  background: rgba(226,75,74,0.2);
+  border-radius: 50%;
+}
+.hero-tag {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: rgba(255,255,255,0.8);
+  font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase;
+  padding: 6px 14px; border-radius: 20px; margin-bottom: 20px;
+  font-family: 'Syne', sans-serif;
+}
+.hero h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: 22px;
+  font-weight: 600;
+  color: white;
+  line-height: 1.3;
+  margin-bottom: 12px;
+  position: relative; z-index: 1;
+  letter-spacing: -0.2px;
+}
+.hero h1 span { color: #E24B4A; }
+.hero p {
+  font-size: 16px; color: rgba(255,255,255,0.65);
+  max-width: 600px; line-height: 1.7;
+  position: relative; z-index: 1;
+}
+.hero-meta {
+  display: flex; gap: 24px; margin-top: 32px; flex-wrap: wrap;
+  position: relative; z-index: 1;
+}
+.hero-meta-item {
+  display: flex; flex-direction: column; gap: 2px;
+}
+.hero-meta-item .label { font-size: 11px; color: rgba(255,255,255,0.45); text-transform: uppercase; letter-spacing: 1px; }
+.hero-meta-item .value { font-size: 16px; color: white; font-weight: 500; font-family: 'Syne', sans-serif; }
+
+/* NAV */
+.sticky-nav {
+  position: sticky; top: 0; z-index: 50;
+  background: rgba(247,246,255,0.95);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 40px;
+  display: flex; gap: 0; overflow-x: auto;
+}
+.nav-item {
+  padding: 16px 20px;
+  font-size: 13px; font-weight: 500;
+  color: var(--text2); cursor: pointer;
+  border-bottom: 2px solid transparent;
+  white-space: nowrap; transition: all 0.2s;
+  font-family: 'Syne', sans-serif;
+  background: none; border-top: none; border-left: none; border-right: none;
+}
+.nav-item:hover { color: var(--purple); }
+.nav-item.active { color: var(--purple); border-bottom-color: var(--purple); }
+
+/* CONTENT */
+.container { max-width: 1100px; margin: 0 auto; padding: 48px 40px; }
+
+.section { margin-bottom: 64px; scroll-margin-top: 60px; }
+
+.section-header {
+  display: flex; align-items: flex-start; gap: 16px; margin-bottom: 32px;
+}
+.section-num {
+  font-family: 'Syne', sans-serif;
+  font-size: 11px; font-weight: 700;
+  color: var(--purple); letter-spacing: 2px;
+  text-transform: uppercase; padding-top: 4px;
+  white-space: nowrap;
+}
+.section-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 26px; font-weight: 700;
+  line-height: 1.2;
+}
+.section-sub { font-size: 14px; color: var(--text2); margin-top: 4px; line-height: 1.6; }
+
+/* CARDS GRID */
+.cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+
+.card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 14px; padding: 24px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(83,74,183,0.1); }
+.card-icon { font-size: 28px; margin-bottom: 12px; }
+.card-title { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 600; margin-bottom: 6px; }
+.card-desc { font-size: 13px; color: var(--text2); line-height: 1.6; }
+
+.card.purple { border-left: 3px solid var(--purple); }
+.card.red { border-left: 3px solid var(--red); }
+.card.green { border-left: 3px solid var(--green); }
+.card.amber { border-left: 3px solid #854F0B; }
+
+/* PROGRAMME TABLE */
+.programme-grid { display: grid; gap: 8px; }
+
+.prog-day-title {
+  font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 1px;
+  color: var(--purple); padding: 16px 0 8px;
+  border-bottom: 1px solid var(--border); margin-bottom: 4px;
+}
+.prog-row {
+  display: flex; align-items: center; gap: 16px;
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 10px; padding: 12px 16px;
+  transition: background 0.15s;
+}
+.prog-row:hover { background: var(--purple-light); }
+.prog-row.game { border-left: 3px solid var(--purple); }
+.prog-time {
+  font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 600;
+  color: var(--text2); min-width: 52px;
+}
+.prog-title { font-size: 14px; font-weight: 500; flex: 1; }
+.prog-badge {
+  font-size: 11px; font-weight: 500; padding: 3px 8px;
+  border-radius: 20px; white-space: nowrap;
+}
+.badge-game { background: var(--purple-light); color: var(--purple); }
+.badge-normal { background: #F0F0F0; color: var(--text2); }
+
+/* TOKENS TABLE */
+.tokens-table { width: 100%; border-collapse: collapse; }
+.tokens-table th {
+  font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 1px; color: var(--text2);
+  padding: 10px 16px; text-align: left;
+  background: var(--bg); border-bottom: 1px solid var(--border);
+}
+.tokens-table td {
+  padding: 12px 16px; font-size: 14px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg2);
+}
+.tokens-table tr:last-child td { border-bottom: none; }
+.tokens-table tr:hover td { background: var(--purple-light); }
+.token-val { font-weight: 600; color: var(--purple); font-family: 'Syne', sans-serif; }
+.token-neg { color: var(--red); }
+.token-pos { color: var(--green); }
+
+/* RÈGLES */
+.rules-list { display: grid; gap: 12px; }
+.rule-item {
+  display: flex; gap: 14px; align-items: flex-start;
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 10px; padding: 16px;
+}
+.rule-icon {
+  width: 36px; height: 36px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0;
+}
+.ri-purple { background: var(--purple-light); }
+.ri-red { background: #FCEBEB; }
+.ri-green { background: var(--green-light); }
+.ri-amber { background: var(--amber-light); }
+.rule-content { flex: 1; }
+.rule-title { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 600; margin-bottom: 3px; }
+.rule-desc { font-size: 13px; color: var(--text2); line-height: 1.5; }
+
+/* MOCKUP PHONE */
+.mockup-section {
+  background: linear-gradient(135deg, #1A1828, #2D2850);
+  border-radius: 20px; padding: 48px 40px;
+  margin-bottom: 64px;
+}
+.mockup-title {
+  font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 700;
+  color: white; margin-bottom: 8px;
+}
+.mockup-sub { font-size: 14px; color: rgba(255,255,255,0.5); margin-bottom: 40px; }
+.phones-row { display: flex; gap: 24px; overflow-x: auto; padding-bottom: 8px; }
+
+.phone-mockup {
+  flex-shrink: 0; width: 200px;
+  background: #0F0E1A; border-radius: 28px;
+  padding: 20px 14px; border: 1.5px solid rgba(255,255,255,0.1);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+}
+.phone-screen-label {
+  font-family: 'Syne', sans-serif; font-size: 10px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 1px;
+  color: rgba(255,255,255,0.35); margin-bottom: 12px; text-align: center;
+}
+
+/* Mini screens */
+.mini-secret {
+  background: #534AB7; border-radius: 10px; padding: 10px;
+  margin-bottom: 8px;
+}
+.mini-secret-lbl { font-size: 8px; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.6; color: white; margin-bottom: 3px; }
+.mini-secret-txt { font-size: 10px; color: white; font-weight: 500; line-height: 1.3; filter: blur(2.5px); }
+.mini-secret-hide { font-size: 8px; color: rgba(255,255,255,0.5); margin-top: 4px; }
+
+.mini-scores { display: flex; justify-content: space-between; margin-bottom: 8px; }
+.mini-score-box { background: rgba(255,255,255,0.07); border-radius: 6px; padding: 6px 8px; text-align: center; flex: 1; margin: 0 2px; }
+.mini-score-val { font-size: 14px; font-weight: 600; color: white; }
+.mini-score-lbl { font-size: 7px; color: rgba(255,255,255,0.4); text-transform: uppercase; }
+
+.mini-buzz-btn {
+  width: 100%; padding: 10px; background: #E24B4A;
+  border: none; border-radius: 8px; color: white;
+  font-size: 12px; font-weight: 700; text-align: center;
+  cursor: pointer; margin-bottom: 6px; letter-spacing: 0.5px;
+}
+.mini-buzz-active {
+  background: #FCEBEB; border-radius: 6px; padding: 8px;
+  margin-bottom: 6px;
+}
+.mini-buzz-active-title { font-size: 9px; font-weight: 600; color: #A32D2D; margin-bottom: 3px; }
+.mini-buzz-active-desc { font-size: 8px; color: #A32D2D; opacity: 0.8; margin-bottom: 4px; }
+.mini-timer-bar { background: #F7C1C1; border-radius: 2px; height: 3px; overflow: hidden; }
+.mini-timer-fill { height: 100%; background: #E24B4A; border-radius: 2px; width: 60%; }
+
+.mini-nav { display: flex; justify-content: space-around; margin-top: 8px; border-top: 0.5px solid rgba(255,255,255,0.08); padding-top: 8px; }
+.mini-nav-item { font-size: 7px; color: rgba(255,255,255,0.35); text-align: center; }
+.mini-nav-item.active { color: #534AB7; }
+.mini-dot { width: 5px; height: 5px; border-radius: 50%; margin: 0 auto 2px; }
+.mini-dot.active { background: #534AB7; }
+.mini-dot.inactive { background: rgba(255,255,255,0.15); }
+
+.mini-player { display: flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.07); border-radius: 6px; padding: 6px 8px; margin-bottom: 4px; }
+.mini-av { width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 7px; font-weight: 600; flex-shrink: 0; }
+.mini-pname { font-size: 9px; color: white; font-weight: 500; }
+.mini-pteam { font-size: 7px; color: rgba(255,255,255,0.4); }
+.mini-badge-found { font-size: 7px; background: #EAF3DE; color: #3B6D11; padding: 1px 4px; border-radius: 10px; white-space: nowrap; }
+.mini-badge-cd { font-size: 7px; background: #FAEEDA; color: #854F0B; padding: 1px 4px; border-radius: 10px; }
+
+.mini-popup-overlay { background: rgba(0,0,0,0.6); border-radius: 10px; padding: 12px; text-align: center; }
+.mini-popup { background: #1c1c2e; border-radius: 8px; padding: 10px; }
+.mini-popup-emoji { font-size: 20px; margin-bottom: 4px; }
+.mini-popup-title { font-size: 10px; font-weight: 600; color: #A32D2D; margin-bottom: 3px; }
+.mini-popup-text { font-size: 8px; color: rgba(255,255,255,0.5); margin-bottom: 8px; line-height: 1.4; }
+.mini-popup-btns { display: flex; gap: 4px; }
+.mini-popup-yes { flex: 1; padding: 5px; background: #3B6D11; border: none; border-radius: 4px; color: white; font-size: 7px; }
+.mini-popup-no { flex: 1; padding: 5px; background: #E24B4A; border: none; border-radius: 4px; color: white; font-size: 7px; }
+
+/* ADMIN MOCKUP */
+.mini-admin { background: #1A1A2E; border-radius: 6px; padding: 8px; margin-bottom: 6px; }
+.mini-admin-badge { font-size: 7px; background: #E24B4A; color: white; padding: 1px 5px; border-radius: 10px; display: inline-block; margin-bottom: 3px; }
+.mini-admin-title { font-size: 9px; font-weight: 600; color: white; }
+.mini-toggle-row { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.06); border-radius: 4px; padding: 5px 7px; margin-bottom: 3px; }
+.mini-toggle-label { font-size: 8px; color: rgba(255,255,255,0.7); }
+.mini-toggle { width: 20px; height: 11px; border-radius: 6px; position: relative; }
+.mini-toggle.on { background: #E24B4A; }
+.mini-toggle.off { background: rgba(255,255,255,0.2); }
+.mini-toggle::after { content: ''; position: absolute; width: 7px; height: 7px; background: white; border-radius: 50%; top: 2px; }
+.mini-toggle.on::after { left: 11px; }
+.mini-toggle.off::after { left: 2px; }
+.mini-award-row { display: flex; gap: 4px; margin-top: 6px; }
+.mini-select { flex: 1; background: rgba(255,255,255,0.08); border: none; border-radius: 4px; padding: 4px; font-size: 7px; color: rgba(255,255,255,0.6); }
+.mini-plus-btn { background: #534AB7; border: none; border-radius: 4px; color: white; font-size: 8px; padding: 4px 6px; }
+
+/* ÉQUIPES */
+.equipes-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; }
+.equipe-card {
+  border-radius: 10px; padding: 14px;
+  border: 1px solid var(--border);
+}
+.equipe-name { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 600; margin-bottom: 8px; }
+.equipe-members { display: flex; flex-direction: column; gap: 4px; }
+.equipe-member { font-size: 12px; color: var(--text2); display: flex; align-items: center; gap: 6px; }
+.equipe-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+
+/* CHECKLIST */
+.checklist { display: grid; gap: 10px; }
+.check-item {
+  display: flex; align-items: center; gap: 12px;
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 10px; padding: 14px 16px;
+}
+.check-box {
+  width: 22px; height: 22px; border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; flex-shrink: 0; cursor: pointer;
+  transition: all 0.15s;
+}
+.check-box.done { background: var(--green-light); color: var(--green); }
+.check-box.todo { background: var(--purple-light); color: var(--purple); border: 1.5px dashed var(--purple); }
+.check-text { font-size: 14px; }
+.check-text.done { text-decoration: line-through; color: var(--text2); }
+
+/* FOOTER */
+.footer {
+  background: #1A1828; padding: 32px 40px;
+  display: flex; justify-content: space-between; align-items: center;
+  flex-wrap: wrap; gap: 16px;
+}
+.footer-logo { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; color: white; }
+.footer-logo span { color: #E24B4A; }
+.footer-info { font-size: 13px; color: rgba(255,255,255,0.4); }
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .hero { padding: 40px 24px 60px; }
+  .container { padding: 32px 24px; }
+  .sticky-nav { padding: 0 24px; }
+  .footer { padding: 24px; }
+  .phones-row { gap: 16px; }
+  .phone-mockup { width: 175px; }
+}
+
+/* ANIMATIONS */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.section { animation: fadeUp 0.4s ease both; }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-tag">📋 Document de référence</div>
+  <h1>Secret Story<br><span>Séminaire 2026</span></h1>
+  <p>Récapitulatif complet du concept, des règles, du programme et de l'application mise en place pour le séminaire Guest Suite × Evermaps.</p>
+  <div class="hero-meta">
+    <div class="hero-meta-item">
+      <span class="label">Participants</span>
+      <span class="value">60 personnes</span>
+    </div>
+    <div class="hero-meta-item">
+      <span class="label">Équipes</span>
+      <span class="value">10 × 6 membres</span>
+    </div>
+    <div class="hero-meta-item">
+      <span class="label">Durée</span>
+      <span class="value">2 jours</span>
+    </div>
+    <div class="hero-meta-item">
+      <span class="label">Lieu</span>
+      <span class="value">Domaine à Tours</span>
+    </div>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav class="sticky-nav">
+  <button class="nav-item active" onclick="scrollTo('concept')">Concept</button>
+  <button class="nav-item" onclick="scrollTo('programme')">Programme</button>
+  <button class="nav-item" onclick="scrollTo('regles')">Règles & Tokens</button>
+  <button class="nav-item" onclick="scrollTo('epreuves')">Épreuves</button>
+  <button class="nav-item" onclick="scrollTo('appli')">L'appli</button>
+  <button class="nav-item" onclick="scrollTo('equipes')">Équipes</button>
+  <button class="nav-item" onclick="scrollTo('identifiants')">Identifiants</button><button class="nav-item" onclick="scrollTo('todo')">À faire</button>
+</nav>
+
+<div class="container">
+
+  <!-- CONCEPT -->
+  <div class="section" id="concept">
+    <div class="section-header">
+      <span class="section-num">01</span>
+      <div>
+        <div class="section-title">Le concept Secret Story</div>
+        <div class="section-sub">Un jeu d'enquête social pour apprendre à se connaître entre Guest Suite et Evermaps.</div>
+      </div>
+    </div>
+    <div class="cards-grid">
+      <div class="card purple">
+        <div class="card-icon">🎭</div>
+        <div class="card-title">Chaque joueur a un secret</div>
+        <div class="card-desc">Un fait réel sur sa vie, préalablement collecté par les organisateurs. Visible uniquement par soi-même dans l'appli (caché par défaut).</div>
+      </div>
+      <div class="card red">
+        <div class="card-icon">🔴</div>
+        <div class="card-title">Buzzer pour accuser</div>
+        <div class="card-desc">Quand on pense avoir trouvé le secret de quelqu'un, on le "buze". 5 minutes pour aller le voir en vrai et lui poser la question.</div>
+      </div>
+      <div class="card green">
+        <div class="card-icon">✅</div>
+        <div class="card-title">Confirmer ou nier</div>
+        <div class="card-desc">La personne buzzée répond "Oui c'est mon secret" ou "Non ce n'est pas ça" depuis son téléphone. Le résultat affecte les tokens des deux joueurs.</div>
+      </div>
+      <div class="card amber">
+        <div class="card-icon">💡</div>
+        <div class="card-title">Débloquer des indices</div>
+        <div class="card-desc">Dépenser des tokens pour révéler des indices progressifs sur n'importe quel joueur. 4 indices par personne, de plus en plus précis.</div>
+      </div>
+    </div>
+
+
+  </div>
+
+  <!-- PROGRAMME -->
+  <div class="section" id="programme">
+    <div class="section-header">
+      <span class="section-num">02</span>
+      <div>
+        <div class="section-title">Programme des 2 jours</div>
+        <div class="section-sub">Les activités marquées ⚡ sont liées au Secret Story. L'admin débloque chaque activité au bon moment depuis le panneau admin.</div>
+      </div>
+    </div>
+    <div class="programme-grid">
+      <div class="prog-day-title">Lundi</div>
+      <div class="prog-row game">
+        <span class="prog-time">09h00</span>
+        <span class="prog-title">Bus 🚌 — Connexion à l'appli & découverte des secrets</span>
+        <span class="prog-badge badge-game">⚡ Jeu</span>
+      </div>
+      <div class="prog-row">
+        <span class="prog-time">09h45</span>
+        <span class="prog-title">Arrivée au domaine</span>
+        <span class="prog-badge badge-normal">Info</span>
+      </div>
+      <div class="prog-row">
+        <span class="prog-time">10h00</span>
+        <span class="prog-title">Rocket Quarter #1 🚀 — Réunion d'équipe</span>
+        <span class="prog-badge badge-normal">Pro</span>
+      </div>
+      <div class="prog-row">
+        <span class="prog-time">12h00</span>
+        <span class="prog-title">Déjeuner 🍽️</span>
+        <span class="prog-badge badge-normal">Repas</span>
+      </div>
+      <div class="prog-row">
+        <span class="prog-time">14h00</span>
+        <span class="prog-title">Rocket Quarter #2 🚀 — Suite réunion</span>
+        <span class="prog-badge badge-normal">Pro</span>
+      </div>
+      <div class="prog-row game">
+        <span class="prog-time">16h00</span>
+        <span class="prog-title">Activité ⚡ — Course d'orientation + épreuves en équipe</span>
+        <span class="prog-badge badge-game">⚡ Tokens</span>
+      </div>
+      <div class="prog-row">
+        <span class="prog-time">18h00</span>
+        <span class="prog-title">Temps libre 🌿</span>
+        <span class="prog-badge badge-normal">Libre</span>
+      </div>
+      <div class="prog-row game">
+        <span class="prog-time">19h30</span>
+        <span class="prog-title">Apéro 🥂</span>
+        <span class="prog-badge badge-game">⚡ Jeu actif</span>
+      </div>
+      <div class="prog-row">
+        <span class="prog-time">20h30</span>
+        <span class="prog-title">Repas 🍷 — Le Secret Story continue en parallèle</span>
+        <span class="prog-badge badge-normal">Repas</span>
+      </div>
+      <div class="prog-row">
+        <span class="prog-time">22h00</span>
+        <span class="prog-title">Soirée 🎉</span>
+        <span class="prog-badge badge-normal">Libre</span>
+      </div>
+
+      <div class="prog-day-title">Mardi</div>
+      <div class="prog-row">
+        <span class="prog-time">09h00</span>
+        <span class="prog-title">Petit déjeuner ☀️</span>
+        <span class="prog-badge badge-normal">Repas</span>
+      </div>
+      <div class="prog-row game">
+        <span class="prog-time">10h00</span>
+        <span class="prog-title">Activité ⚡ — Blind test + quiz final</span>
+        <span class="prog-badge badge-game">⚡ Tokens</span>
+      </div>
+      <div class="prog-row game">
+        <span class="prog-time">12h30</span>
+        <span class="prog-title">Déjeuner + Cérémonie 🏆 — Révélation des secrets & remise des prix</span>
+        <span class="prog-badge badge-game">⚡ Final</span>
+      </div>
+      <div class="prog-row">
+        <span class="prog-time">14h00</span>
+        <span class="prog-title">Moment chill / Équipe tech</span>
+        <span class="prog-badge badge-normal">Libre</span>
+      </div>
+      <div class="prog-row">
+        <span class="prog-time">16h30</span>
+        <span class="prog-title">Départ 👋</span>
+        <span class="prog-badge badge-normal">Fin</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- RÈGLES & TOKENS -->
+  <div class="section" id="regles">
+    <div class="section-header">
+      <span class="section-num">03</span>
+      <div>
+        <div class="section-title">Règles & Système de tokens</div>
+        <div class="section-sub">Équilibre conçu pour que personne ne puisse tout acheter facilement — le jeu reste tendu jusqu'à la cérémonie.</div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:32px;">
+      <div>
+        <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:600;margin-bottom:12px;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px;">Coût des indices</div>
+        <table class="tokens-table" style="border-radius:12px;overflow:hidden;border:1px solid var(--border);">
+          <thead><tr><th>Indice</th><th>Coût</th><th>Info</th></tr></thead>
+          <tbody>
+            <tr><td>Indice 1</td><td class="token-val">1 token</td><td style="font-size:12px;color:var(--text2);">Très vague</td></tr>
+            <tr><td>Indice 2</td><td class="token-val">2 tokens</td><td style="font-size:12px;color:var(--text2);">Un peu plus précis</td></tr>
+            <tr><td>Indice 3</td><td class="token-val">3 tokens</td><td style="font-size:12px;color:var(--text2);">On se rapproche</td></tr>
+            <tr><td>Indice 4</td><td class="token-val">4 tokens</td><td style="font-size:12px;color:var(--text2);">Quasi certain</td></tr>
+            <tr style="font-weight:600;"><td>Total</td><td class="token-val" style="font-size:16px;">10 tokens</td><td style="font-size:12px;color:var(--text2);">Pour tout débloquer</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:600;margin-bottom:12px;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px;">Gains & Pertes</div>
+        <table class="tokens-table" style="border-radius:12px;overflow:hidden;border:1px solid var(--border);">
+          <thead><tr><th>Événement</th><th>Effet</th></tr></thead>
+          <tbody>
+            <tr><td>Départ</td><td class="token-val">3 tokens</td></tr>
+            <tr><td>Buzz confirmé</td><td class="token-pos">+5 tokens</td></tr>
+            <tr><td>Buzz nié</td><td class="token-neg">-3 tokens</td></tr>
+            <tr><td>Timeout 5 min</td><td class="token-neg">-3 tokens</td></tr>
+            <tr><td>Épreuve gagnante</td><td class="token-pos">+4 à +8 tokens</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="rules-list">
+      <div class="rule-item">
+        <div class="rule-icon ri-red">🔴</div>
+        <div class="rule-content">
+          <div class="rule-title">Buzzer = engagement fort</div>
+          <div class="rule-desc">Buzzer est gratuit mais risqué. Si la personne nie, tu perds 3 tokens. Si le timer de 5 minutes expire sans réponse, tu perds aussi 3 tokens.</div>
+        </div>
+      </div>
+      <div class="rule-item">
+        <div class="rule-icon ri-amber">⏳</div>
+        <div class="rule-content">
+          <div class="rule-title">Un seul buzz actif à la fois — file d'attente</div>
+          <div class="rule-desc">Pendant qu'un buzz est actif, les autres peuvent buzzer mais entrent en file d'attente. Le buzzer suivant se déclenche automatiquement quand le précédent est résolu.</div>
+        </div>
+      </div>
+      <div class="rule-item">
+        <div class="rule-icon ri-purple">🔒</div>
+        <div class="rule-content">
+          <div class="rule-title">Bouton bloqué pendant un buzz</div>
+          <div class="rule-desc">Si tu as un buzz actif (émetteur ou cible), le bouton BUZZER est grisé. Impossible de buzzer quelqu'un d'autre avant que le buzz en cours soit résolu.</div>
+        </div>
+      </div>
+      <div class="rule-item">
+        <div class="rule-icon ri-green">✓</div>
+        <div class="rule-content">
+          <div class="rule-title">Secret trouvé = personne retirée de la liste</div>
+          <div class="rule-desc">Une fois qu'un secret est confirmé, cette personne n'apparaît plus dans la liste "Qui veux-tu buzzer ?". Elle reste visible dans la liste des joueurs avec le badge "Secret trouvé 🔓".</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ÉPREUVES -->
+  <div class="section" id="epreuves">
+    <div class="section-header">
+      <span class="section-num">04</span>
+      <div>
+        <div class="section-title">Idées de jeux & épreuves</div>
+        <div class="section-sub">Idées validées et à valider. Les tokens sont attribués par les animateurs via le panneau admin. Format de certaines épreuves encore à définir avec l'orga.</div>
+      </div>
+    </div>
+    <div class="cards-grid">
+      <div class="card purple">
+        <div class="card-icon">📝</div>
+        <div class="card-title">Quiz de lancement — Lundi 12h</div>
+        <div class="card-desc">Questions fun sur Guest Suite et Evermaps. <strong>Gagnant : +4 tokens / 2ème : +2 / Participation : +1</strong></div>
+      </div>
+      <div class="card red">
+        <div class="card-icon">🧭</div>
+        <div class="card-title">Course d'orientation — Lundi 16h</div>
+        <div class="card-desc">Course dans le domaine. À l'arrivée : <strong>Jeu "Qui est-ce ?"</strong> — tokens ou indices supplémentaires selon l'ordre d'arrivée. <em style="color:var(--amber);">Format exact à définir avec l'orga.</em></div>
+      </div>
+      <div class="card green">
+        <div class="card-icon">🎵</div>
+        <div class="card-title">Blind test — Mardi 10h</div>
+        <div class="card-desc">10 extraits, 3 manches. <strong>Gagnant : +5 tokens / 2ème : +3 / Participation : +1</strong></div>
+      </div>
+      <div class="card amber">
+        <div class="card-icon">🏆</div>
+        <div class="card-title">Quiz final — Mardi 10h</div>
+        <div class="card-desc">Questions sur les deux entreprises. <strong>Gagnant : +6 tokens / 2ème : +3 / Participation : +1</strong></div>
+      </div>
+      <div class="card" style="border-left:3px dashed #854F0B;background:#FFFCF7;">
+        <div class="card-icon">🕵️</div>
+        <div class="card-title" style="display:flex;align-items:center;gap:8px;">Qui est-ce ? <span style="font-size:10px;font-weight:500;background:#854F0B;color:white;padding:2px 7px;border-radius:20px;">À discuter</span></div>
+        <div class="card-desc">Jeu à organiser à la fin de la course d'orientation. Deviner des membres du groupe à partir d'indices. Selon l'ordre d'arrivée : tokens supplémentaires ou indices Secret Story offerts. Format exact à définir avec l'orga.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- APPLI MOCKUP -->
+  <div class="mockup-section" id="appli">
+    <div class="mockup-title">L'application — vues clés</div>
+    <div class="mockup-sub">Interface mobile, accessible via URL. Login par email + code personnel.</div>
+    <div class="phones-row">
+
+      <!-- ACCUEIL JOUEUR -->
+      <div class="phone-mockup">
+        <div class="phone-screen-label">Accueil joueur</div>
+        <div class="mini-secret">
+          <div class="mini-secret-lbl">Mon secret</div>
+          <div class="mini-secret-txt">J'ai gagné un jeu à la radio avant de rejoindre l'équipe</div>
+          <div class="mini-secret-hide">👁 Afficher</div>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;background:rgba(255,255,255,0.06);border-radius:8px;padding:8px 10px;">
+          <div style="text-align:center;">
+            <div style="font-size:9px;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:3px;">Tokens</div>
+            <div style="font-size:20px;font-weight:700;color:white;">9</div>
+            <div style="font-size:8px;color:rgba(255,255,255,0.4);">1 secret trouvé</div>
+          </div>
+          <div style="text-align:center;">
+            <div style="font-size:9px;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:3px;">Équipe</div>
+            <div style="background:#EEEDFE;color:#534AB7;font-size:10px;font-weight:600;padding:3px 8px;border-radius:20px;">Les Renards</div>
+          </div>
+        </div>
+        <button class="mini-buzz-btn">BUZZER</button>
+        <div class="mini-nav">
+          <div class="mini-nav-item active"><div class="mini-dot active"></div>Accueil</div>
+          <div class="mini-nav-item"><div class="mini-dot inactive"></div>Joueurs</div>
+          <div class="mini-nav-item"><div class="mini-dot inactive"></div>Prog.</div>
+          <div class="mini-nav-item"><div class="mini-dot inactive"></div>Feed</div>
+          <div class="mini-nav-item"><div class="mini-dot inactive"></div>Top</div>
+        </div>
+      </div>
+
+      <!-- BUZZ ACTIF -->
+      <div class="phone-mockup">
+        <div class="phone-screen-label">Buzz actif</div>
+        <div class="mini-secret" style="background:#2D2850;">
+          <div class="mini-secret-lbl" style="color:rgba(255,255,255,0.5);">Mon secret</div>
+          <div class="mini-secret-txt" style="filter:blur(2.5px);">Secret caché</div>
+          <div class="mini-secret-hide">👁 Afficher</div>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;background:rgba(255,255,255,0.06);border-radius:8px;padding:8px 10px;">
+          <div style="text-align:center;"><div style="font-size:9px;color:rgba(255,255,255,0.4);margin-bottom:3px;">Tokens</div><div style="font-size:20px;font-weight:700;color:white;">6</div></div>
+          <div style="background:#EEEDFE;color:#534AB7;font-size:10px;font-weight:600;padding:3px 8px;border-radius:20px;">Les Aigles</div>
+        </div>
+        <div class="mini-buzz-active">
+          <div class="mini-buzz-active-title">⚡ Tu as buzzé Charline !</div>
+          <div class="mini-buzz-active-desc">Vas la voir maintenant !</div>
+          <div class="mini-timer-bar"><div class="mini-timer-fill"></div></div>
+          <div style="font-size:8px;color:#A32D2D;text-align:right;margin-top:2px;">2:54</div>
+        </div>
+        <button class="mini-buzz-btn" style="background:#888;font-size:10px;">En attente de réponse...</button>
+        <div class="mini-nav">
+          <div class="mini-nav-item active"><div class="mini-dot active"></div>Accueil</div>
+          <div class="mini-nav-item"><div class="mini-dot inactive"></div>Joueurs</div>
+          <div class="mini-nav-item"><div class="mini-dot inactive"></div>Prog.</div>
+          <div class="mini-nav-item"><div class="mini-dot inactive"></div>Feed</div>
+          <div class="mini-nav-item"><div class="mini-dot inactive"></div>Top</div>
+        </div>
+      </div>
+
+      <!-- POP-UP BUZZ REÇU -->
+      <div class="phone-mockup">
+        <div class="phone-screen-label">Pop-up buzz reçu</div>
+        <div class="mini-popup-overlay">
+          <div class="mini-popup">
+            <div class="mini-popup-emoji">🔴</div>
+            <div class="mini-popup-title">Tu as été buzzé·e !</div>
+            <div class="mini-popup-text">Kristi pense avoir découvert ton secret ! Tu as 5 minutes pour la rencontrer.</div>
+            <div class="mini-popup-btns">
+              <button class="mini-popup-yes">✓ Oui</button>
+              <button class="mini-popup-no">✗ Non</button>
+            </div>
+          </div>
+        </div>
+        <div class="mini-nav" style="margin-top:8px;">
+          <div class="mini-nav-item active"><div class="mini-dot active"></div>Accueil</div>
+          <div class="mini-nav-item"><div class="mini-dot inactive"></div>Joueurs</div>
+          <div class="mini-nav-item"><div class="mini-dot inactive"></div>Prog.</div>
+          <div class="mini-nav-item"><div class="mini-dot inactive"></div>Feed</div>
+          <div class="mini-nav-item"><div class="mini-dot inactive"></div>Top</div>
+        </div>
+      </div>
+
+      <!-- LISTE JOUEURS -->
+      <div class="phone-mockup">
+        <div class="phone-screen-label">Liste joueurs</div>
+        <div style="background:rgba(255,255,255,0.07);border-radius:6px;padding:5px 8px;font-size:9px;color:rgba(255,255,255,0.4);margin-bottom:8px;">🔍 Rechercher...</div>
+        <div style="font-size:8px;font-weight:600;color:#534AB7;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.5px;">● Les Renards</div>
+        <div class="mini-player">
+          <div class="mini-av" style="background:#EEEDFE;color:#534AB7;">CB</div>
+          <div style="flex:1;"><div class="mini-pname">Charline B.</div><div class="mini-pteam" style="color:#534AB7;">Les Renards</div></div>
+          <span class="mini-badge-found">🔓 Trouvé</span>
+        </div>
+        <div style="font-size:8px;font-weight:600;color:#0F6E56;margin-bottom:4px;margin-top:8px;text-transform:uppercase;letter-spacing:0.5px;">● Les Aigles</div>
+        <div class="mini-player">
+          <div class="mini-av" style="background:#E1F5EE;color:#0F6E56;">KR</div>
+          <div style="flex:1;"><div class="mini-pname">Kristi</div><div class="mini-pteam" style="color:#0F6E56;">Les Aigles</div></div>
+          <span class="mini-badge-cd">⏳ 1:32</span>
+        </div>
+        <div class="mini-player" style="margin-top:4px;">
+          <div class="mini-av" style="background:#E1F5EE;color:#0F6E56;">LM</div>
+          <div style="flex:1;"><div class="mini-pname">Lucas M.</div><div class="mini-pteam" style="color:#0F6E56;">Les Aigles</div></div>
+          <div style="font-size:10px;color:rgba(255,255,255,0.3);">›</div>
+        </div>
+        <div class="mini-nav" style="margin-top:8px;">
+          <div class="mini-nav-item"><div class="mini-dot inactive"></div>Accueil</div>
+          <div class="mini-nav-item active"><div class="mini-dot active"></div>Joueurs</div>
+          <div class="mini-nav-item"><div class="mini-dot inactive"></div>Prog.</div>
+          <div class="mini-nav-item"><div class="mini-dot inactive"></div>Feed</div>
+          <div class="mini-nav-item"><div class="mini-dot inactive"></div>Top</div>
+        </div>
+      </div>
+
+      <!-- ADMIN -->
+      <div class="phone-mockup">
+        <div class="phone-screen-label">Vue admin</div>
+        <div class="mini-admin">
+          <div class="mini-admin-badge">ADMIN</div>
+          <div class="mini-admin-title">Panneau de contrôle</div>
+        </div>
+        <div class="mini-toggle-row">
+          <span class="mini-toggle-label">Bloquer le buzzer</span>
+          <div class="mini-toggle on"></div>
+        </div>
+        <div class="mini-toggle-row">
+          <span class="mini-toggle-label">Bloquer l'appli</span>
+          <div class="mini-toggle off"></div>
+        </div>
+        <div style="font-size:8px;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.5px;margin:8px 0 4px;">Attribuer tokens</div>
+        <div class="mini-award-row">
+          <select class="mini-select"><option>Joueur...</option></select>
+          <div style="background:rgba(255,255,255,0.1);border-radius:4px;padding:4px 6px;font-size:9px;color:rgba(255,255,255,0.6);">4</div>
+          <button class="mini-plus-btn">+</button>
+        </div>
+        <div class="mini-award-row" style="margin-top:4px;">
+          <select class="mini-select"><option>Équipe...</option></select>
+          <div style="background:rgba(255,255,255,0.1);border-radius:4px;padding:4px 6px;font-size:9px;color:rgba(255,255,255,0.6);">5</div>
+          <button class="mini-plus-btn">+</button>
+        </div>
+        <div class="mini-nav" style="margin-top:8px;">
+          <div class="mini-nav-item active" style="color:#E24B4A;"><div class="mini-dot" style="background:#E24B4A;"></div>Ctrl</div>
+          <div class="mini-nav-item"><div class="mini-dot inactive"></div>Prog.</div>
+          <div class="mini-nav-item"><div class="mini-dot inactive"></div>Tokens</div>
+          <div class="mini-nav-item"><div class="mini-dot inactive"></div>Équipes</div>
+          <div class="mini-nav-item"><div class="mini-dot inactive"></div>Stats</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ÉQUIPES -->
+  <div class="section" id="equipes">
+    <div class="section-header">
+      <span class="section-num">05</span>
+      <div>
+        <div class="section-title">Structure des équipes</div>
+        <div class="section-sub">10 équipes de 6 — 3 Guest Suite + 3 Evermaps. Définies en amont, noms attribués lors du séminaire via l'admin. Les couleurs sont fixes dans l'appli.</div>
+      </div>
+    </div>
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:20px;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+        <div style="width:10px;height:10px;border-radius:50%;background:#534AB7;"></div>
+        <span style="font-family:'Syne',sans-serif;font-size:14px;font-weight:600;">Noms d'équipes — comment ça marche</span>
+      </div>
+      <ol style="font-size:14px;color:var(--text2);line-height:2;padding-left:20px;">
+        <li>Par défaut, les équipes s'appellent <strong>Groupe 1 à 10</strong> dans l'appli</li>
+        <li>Le jour J, les membres de chaque groupe se trouvent un nom</li>
+        <li>L'admin renomme le groupe depuis le panneau — ça se met à jour <strong>en temps réel</strong> sur tous les téléphones</li>
+      </ol>
+    </div>
+    <div class="equipes-grid">
+      <div class="equipe-card" style="border-color:#534AB7;background:#FAFAFE;">
+        <div class="equipe-name" style="color:#534AB7;">Groupe 1</div>
+        <div class="equipe-members">
+          <div class="equipe-member"><div class="equipe-dot" style="background:#534AB7;"></div>3 × Guest Suite</div>
+          <div class="equipe-member"><div class="equipe-dot" style="background:#534AB7;"></div>3 × Evermaps</div>
+        </div>
+      </div>
+      <div class="equipe-card" style="border-color:#0F6E56;background:#F8FCFB;">
+        <div class="equipe-name" style="color:#0F6E56;">Groupe 2</div>
+        <div class="equipe-members">
+          <div class="equipe-member"><div class="equipe-dot" style="background:#0F6E56;"></div>3 × Guest Suite</div>
+          <div class="equipe-member"><div class="equipe-dot" style="background:#0F6E56;"></div>3 × Evermaps</div>
+        </div>
+      </div>
+      <div class="equipe-card" style="border-color:#993C1D;background:#FDF9F7;">
+        <div class="equipe-name" style="color:#993C1D;">Groupe 3</div>
+        <div class="equipe-members">
+          <div class="equipe-member"><div class="equipe-dot" style="background:#993C1D;"></div>3 × Guest Suite</div>
+          <div class="equipe-member"><div class="equipe-dot" style="background:#993C1D;"></div>3 × Evermaps</div>
+        </div>
+      </div>
+      <div class="equipe-card" style="border-color:#185FA5;background:#F7FBFF;">
+        <div class="equipe-name" style="color:#185FA5;">Groupe 4</div>
+        <div class="equipe-members">
+          <div class="equipe-member"><div class="equipe-dot" style="background:#185FA5;"></div>3 × Guest Suite</div>
+          <div class="equipe-member"><div class="equipe-dot" style="background:#185FA5;"></div>3 × Evermaps</div>
+        </div>
+      </div>
+      <div class="equipe-card" style="border-color:#854F0B;background:#FFFCF7;">
+        <div class="equipe-name" style="color:#854F0B;">Groupe 5</div>
+        <div class="equipe-members">
+          <div class="equipe-member"><div class="equipe-dot" style="background:#854F0B;"></div>3 × Guest Suite</div>
+          <div class="equipe-member"><div class="equipe-dot" style="background:#854F0B;"></div>3 × Evermaps</div>
+        </div>
+      </div>
+      <div class="equipe-card" style="border-color:#888780;">
+        <div class="equipe-name" style="color:var(--text2);">Groupes 6–10</div>
+        <div class="equipe-members">
+          <div class="equipe-member" style="font-style:italic;font-size:12px;"><div class="equipe-dot" style="background:#888780;"></div>Même structure × 5</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- IDENTIFIANTS -->
+  <div class="section" id="identifiants">
+    <div class="section-header">
+      <span class="section-num">06</span>
+      <div>
+        <div class="section-title">Identifiants de connexion</div>
+        <div class="section-sub">Email + code personnel pour se connecter à l'appli. Les codes suivent la logique : initiales + numéro d'équipe.</div>
+      </div>
+    </div>
+
+    <div style="margin-bottom:20px;">
+      <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:600;color:#E24B4A;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px;">🔐 Admins</div>
+      <table class="tokens-table" style="border-radius:12px;overflow:hidden;border:1px solid var(--border);">
+        <thead><tr><th>Nom</th><th>Email</th><th>Code</th></tr></thead>
+        <tbody>
+          <tr><td>Charline Blanchet</td><td style="font-size:12px;">charline.blanchet@guestapp.me</td><td><span style="font-family:monospace;font-weight:600;background:#FCEBEB;color:#E24B4A;padding:2px 8px;border-radius:6px;">ADMIN01</span></td></tr>
+          <tr><td>Christina Evrard</td><td style="font-size:12px;">christina.evrard@guestapp.me</td><td><span style="font-family:monospace;font-weight:600;background:#FCEBEB;color:#E24B4A;padding:2px 8px;border-radius:6px;">ADMIN02</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div style="margin-bottom:20px;">
+      <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:600;color:#534AB7;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px;">● Équipe 1 — <span id="eq1-name">Groupe 1</span></div>
+      <table class="tokens-table" style="border-radius:12px;overflow:hidden;border:1px solid var(--border);">
+        <thead><tr><th>Nom</th><th>Email</th><th>Code</th><th>Entreprise</th></tr></thead>
+        <tbody>
+          <tr><td>Charline Blanchet</td><td style="font-size:12px;">charline.blanchet@demo.fr</td><td><span style="font-family:monospace;font-weight:600;background:#EEEDFE;color:#534AB7;padding:2px 8px;border-radius:6px;">CB2408</span></td><td style="font-size:12px;color:var(--color-text-secondary);">Guest Suite</td></tr>
+          <tr><td>Lucas Martin</td><td style="font-size:12px;">lucas.martin@demo.fr</td><td><span style="font-family:monospace;font-weight:600;background:#EEEDFE;color:#534AB7;padding:2px 8px;border-radius:6px;">LM0101</span></td><td style="font-size:12px;color:var(--color-text-secondary);">Evermaps</td></tr>
+          <tr><td>Sophie Renard</td><td style="font-size:12px;">sophie.renard@demo.fr</td><td><span style="font-family:monospace;font-weight:600;background:#EEEDFE;color:#534AB7;padding:2px 8px;border-radius:6px;">SR0101</span></td><td style="font-size:12px;color:var(--color-text-secondary);">Guest Suite</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div style="margin-bottom:20px;">
+      <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:600;color:#0F6E56;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px;">● Équipe 2 — <span id="eq2-name">Groupe 2</span></div>
+      <table class="tokens-table" style="border-radius:12px;overflow:hidden;border:1px solid var(--border);">
+        <thead><tr><th>Nom</th><th>Email</th><th>Code</th><th>Entreprise</th></tr></thead>
+        <tbody>
+          <tr><td>Christina Evrard</td><td style="font-size:12px;">christina.evrard@demo.fr</td><td><span style="font-family:monospace;font-weight:600;background:#E1F5EE;color:#0F6E56;padding:2px 8px;border-radius:6px;">KR1503</span></td><td style="font-size:12px;color:var(--color-text-secondary);">Evermaps</td></tr>
+          <tr><td>Théo Dupont</td><td style="font-size:12px;">theo.dupont@demo.fr</td><td><span style="font-family:monospace;font-weight:600;background:#E1F5EE;color:#0F6E56;padding:2px 8px;border-radius:6px;">TD0102</span></td><td style="font-size:12px;color:var(--color-text-secondary);">Evermaps</td></tr>
+          <tr><td>Marie Leclerc</td><td style="font-size:12px;">marie.leclerc@demo.fr</td><td><span style="font-family:monospace;font-weight:600;background:#E1F5EE;color:#0F6E56;padding:2px 8px;border-radius:6px;">ML0102</span></td><td style="font-size:12px;color:var(--color-text-secondary);">Guest Suite</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div style="margin-bottom:20px;">
+      <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:600;color:#993C1D;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px;">● Équipe 3 — <span id="eq3-name">Groupe 3</span></div>
+      <table class="tokens-table" style="border-radius:12px;overflow:hidden;border:1px solid var(--border);">
+        <thead><tr><th>Nom</th><th>Email</th><th>Code</th><th>Entreprise</th></tr></thead>
+        <tbody>
+          <tr><td>Alex Durand</td><td style="font-size:12px;">alex.durand@demo.fr</td><td><span style="font-family:monospace;font-weight:600;background:#FAECE7;color:#993C1D;padding:2px 8px;border-radius:6px;">AD0103</span></td><td style="font-size:12px;color:var(--color-text-secondary);">Guest Suite</td></tr>
+          <tr><td>Camille Bernard</td><td style="font-size:12px;">camille.bernard@demo.fr</td><td><span style="font-family:monospace;font-weight:600;background:#FAECE7;color:#993C1D;padding:2px 8px;border-radius:6px;">CB0103</span></td><td style="font-size:12px;color:var(--color-text-secondary);">Evermaps</td></tr>
+          <tr><td>Julien Moreau</td><td style="font-size:12px;">julien.moreau@demo.fr</td><td><span style="font-family:monospace;font-weight:600;background:#FAECE7;color:#993C1D;padding:2px 8px;border-radius:6px;">JM0103</span></td><td style="font-size:12px;color:var(--color-text-secondary);">Evermaps</td></tr>
+          <tr><td>Noémie Thomas</td><td style="font-size:12px;">noemie.thomas@demo.fr</td><td><span style="font-family:monospace;font-weight:600;background:#FAECE7;color:#993C1D;padding:2px 8px;border-radius:6px;">NT0103</span></td><td style="font-size:12px;color:var(--color-text-secondary);">Guest Suite</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div style="margin-bottom:20px;">
+      <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:600;color:#185FA5;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px;">● Équipe 4 — <span id="eq4-name">Groupe 4</span></div>
+      <table class="tokens-table" style="border-radius:12px;overflow:hidden;border:1px solid var(--border);">
+        <thead><tr><th>Nom</th><th>Email</th><th>Code</th><th>Entreprise</th></tr></thead>
+        <tbody>
+          <tr><td>Léa Petit</td><td style="font-size:12px;">lea.petit@demo.fr</td><td><span style="font-family:monospace;font-weight:600;background:#E6F1FB;color:#185FA5;padding:2px 8px;border-radius:6px;">LP0104</span></td><td style="font-size:12px;color:var(--color-text-secondary);">Guest Suite</td></tr>
+          <tr><td>Maxime Simon</td><td style="font-size:12px;">maxime.simon@demo.fr</td><td><span style="font-family:monospace;font-weight:600;background:#E6F1FB;color:#185FA5;padding:2px 8px;border-radius:6px;">MS0104</span></td><td style="font-size:12px;color:var(--color-text-secondary);">Evermaps</td></tr>
+          <tr><td>Emma Laurent</td><td style="font-size:12px;">emma.laurent@demo.fr</td><td><span style="font-family:monospace;font-weight:600;background:#E6F1FB;color:#185FA5;padding:2px 8px;border-radius:6px;">EL0104</span></td><td style="font-size:12px;color:var(--color-text-secondary);">Guest Suite</td></tr>
+          <tr><td>Romain Garcia</td><td style="font-size:12px;">romain.garcia@demo.fr</td><td><span style="font-family:monospace;font-weight:600;background:#E6F1FB;color:#185FA5;padding:2px 8px;border-radius:6px;">RG0104</span></td><td style="font-size:12px;color:var(--color-text-secondary);">Evermaps</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <!-- À FAIRE -->
+  <div class="section" id="todo">
+    <div class="section-header">
+      <span class="section-num">07</span>
+      <div>
+        <div class="section-title">Checklist — ce qu'il reste à faire</div>
+        <div class="section-sub">Clique sur les items pour les cocher au fur et à mesure.</div>
+      </div>
+    </div>
+    <div class="checklist" id="checklist">
+      <div class="check-item" data-id="1">
+        <div class="check-box todo" onclick="toggleCheck(1)">○</div>
+        <span class="check-text">Collecter les secrets des 60 participants (formulaire à envoyer en amont)</span>
+      </div>
+      <div class="check-item" data-id="2">
+        <div class="check-box todo" onclick="toggleCheck(2)">○</div>
+        <span class="check-text">Générer les 4 indices pour chaque secret (Claude peut faire ça automatiquement)</span>
+      </div>
+      <div class="check-item" data-id="3">
+        <div class="check-box todo" onclick="toggleCheck(3)">○</div>
+        <span class="check-text">Intégrer les 60 participants dans l'appli (email + code d'accès basé sur date de naissance)</span>
+      </div>
+      <div class="check-item" data-id="4">
+        <div class="check-box todo" onclick="toggleCheck(4)">○</div>
+        <span class="check-text">Définir les 10 équipes (3 GS + 3 Evermaps par groupe) et les rentrer dans l'appli</span>
+      </div>
+      <div class="check-item" data-id="5">
+        <div class="check-box todo" onclick="toggleCheck(5)">○</div>
+        <span class="check-text">Choisir une solution d'hébergement gratuite (GitHub Pages recommandé)</span>
+      </div>
+      <div class="check-item" data-id="6">
+        <div class="check-box todo" onclick="toggleCheck(6)">○</div>
+        <span class="check-text">Créer le QR code vers l'URL de l'appli (à afficher dans le bus)</span>
+      </div>
+      <div class="check-item" data-id="7">
+        <div class="check-box todo" onclick="toggleCheck(7)">○</div>
+        <span class="check-text">Tester l'appli complète avec les vrais comptes (buzzer, indices, tokens, admin)</span>
+      </div>
+      <div class="check-item" data-id="8">
+        <div class="check-box todo" onclick="toggleCheck(8)">○</div>
+        <span class="check-text">Préparer les épreuves collectives (quiz, checkpoints course d'orientation, blind test)</span>
+      </div>
+      <div class="check-item" data-id="9">
+        <div class="check-box todo" onclick="toggleCheck(9)">○</div>
+        <span class="check-text">Briefer les animateurs sur le fonctionnement du panneau admin</span>
+      </div>
+      <div class="check-item" data-id="10">
+        <div class="check-box todo" onclick="toggleCheck(10)">○</div>
+        <span class="check-text">Désactiver le reset automatique des tokens avant le vrai séminaire</span>
+      </div>
+      <div class="check-item" data-id="11">
+        <div class="check-box todo" onclick="toggleCheck(11)">○</div>
+        <span class="check-text">Préparer les prix pour la cérémonie finale (meilleur détective, secret le plus WTF, équipe championne)</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <div class="footer-logo">Secret Story <span>×</span> Séminaire 2026</div>
+  <div class="footer-info">Guest Suite × Evermaps · Tours · Document généré avec Claude</div>
+</div>
+
+<script>
+// NAV SCROLL
+function scrollTo(id) {
+  document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  event.target.classList.add('active');
+}
+
+// ACTIVE NAV ON SCROLL
+const sections = ['concept','programme','regles','epreuves','appli','equipes','identifiants','todo'];
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const id = e.target.id;
+      document.querySelectorAll('.nav-item').forEach((n, i) => {
+        n.classList.toggle('active', sections[i] === id);
+      });
+    }
+  });
+}, { threshold: 0.3 });
+sections.forEach(id => {
+  const el = document.getElementById(id);
+  if (el) observer.observe(el);
+});
+
+// CHECKLIST
+const checks = JSON.parse(localStorage.getItem('ss_checks') || '{}');
+Object.keys(checks).forEach(id => {
+  if (checks[id]) applyCheck(parseInt(id), true, false);
+});
+
+function toggleCheck(id) {
+  checks[id] = !checks[id];
+  localStorage.setItem('ss_checks', JSON.stringify(checks));
+  applyCheck(id, checks[id], true);
+}
+
+function applyCheck(id, done, animate) {
+  const item = document.querySelector(`.check-item[data-id="${id}"]`);
+  if (!item) return;
+  const box = item.querySelector('.check-box');
+  const text = item.querySelector('.check-text');
+  if (done) {
+    box.className = 'check-box done';
+    box.textContent = '✓';
+    text.classList.add('done');
+    if (animate) item.style.opacity = '0.7';
+  } else {
+    box.className = 'check-box todo';
+    box.textContent = '○';
+    text.classList.remove('done');
+    item.style.opacity = '1';
+  }
+}
+
+// TIMER ANIMATION on buzz mockup
+let timerWidth = 60;
+setInterval(() => {
+  timerWidth = timerWidth <= 0 ? 100 : timerWidth - 0.5;
+  const bar = document.querySelector('.mini-timer-fill');
+  if (bar) bar.style.width = timerWidth + '%';
+}, 100);
+</script>
+</body>
+</html>
