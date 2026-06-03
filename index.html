@@ -1129,11 +1129,15 @@ window.openHintsModal = function(key) {
   document.getElementById("mh-name").textContent = p.name;
   const el = document.getElementById("mh-body");
   const uc = playerState?.unlockedHints?.[key] || 0;
+  const alreadyFound = playerState?.buzzResults?.[key] === "confirmed";
   let html = "";
+  if (alreadyFound) {
+    html += '<div style="text-align:center;padding:12px;background:#EAF3DE;border-radius:8px;color:#3B6D11;font-size:13px;font-weight:500;margin-bottom:10px;">🔓 Secret trouvé !</div>';
+  }
   p.hints.forEach((h, i) => {
     if (i < uc) html += `<div class="hint-item"><div class="hl">${h.level}</div><div class="ht">${h.text}</div></div>`;
-    else if (i === uc) html += `<button class="buy-hint-btn" onclick="buyHint('${key}')"><i class="ti ti-coin"></i> Débloquer l'indice ${i+1} — ${h.cost} token${h.cost > 1 ? "s" : ""}</button><div class="hint-item locked-h"><div class="hl">${h.level}</div><div class="ht">${h.text}</div></div>`;
-    else html += `<div class="hint-item locked-h"><div class="hl">${h.level}</div><div class="ht">${h.text}</div></div>`;
+    else if (i === uc && !alreadyFound) html += `<button class="buy-hint-btn" onclick="buyHint('${key}')"><i class="ti ti-coin"></i> Débloquer l'indice ${i+1} — ${h.cost} token${h.cost > 1 ? "s" : ""}</button><div class="hint-item locked-h"><div class="hl">${h.level}</div><div class="ht">${h.text}</div></div>`;
+    else if (i >= uc) html += `<div class="hint-item locked-h"><div class="hl">${h.level}</div><div class="ht">${h.text}</div></div>`;
   });
   el.innerHTML = html;
   document.getElementById("modal-hints").classList.add("open");
@@ -1141,6 +1145,7 @@ window.openHintsModal = function(key) {
 
 window.buyHint = async function(key) {
   const p = PLAYERS[key]; if (!p) return;
+  if (playerState?.buzzResults?.[key] === "confirmed") { showToast("Secret déjà trouvé !"); return; }
   const uc = playerState?.unlockedHints?.[key] || 0;
   if (uc >= p.hints.length) { showToast("Tous les indices débloqués !"); return; }
   const cost = p.hints[uc].cost;
