@@ -385,7 +385,10 @@ body{font-family:var(--font-sans);background:var(--color-background-secondary);m
       <div class="timer-bar-wrap"><div class="timer-bar" id="timer-bar" style="width:100%;"></div></div>
       <div class="timer-lbl" id="timer-label">5:00</div>
     </div>
-    <button class="buzz-btn-big" id="buzz-main-btn" onclick="(window.openBuzzModal||function(){})()">BUZZER</button>
+    <button id="buzz-main-btn" onclick="(window.openBuzzModal||function(){})()" style="width:100px;height:100px;border-radius:50%;background:#E24B4A;border:none;cursor:pointer;display:block;margin:0 auto 12px;box-shadow:0 6px 24px rgba(226,75,74,0.5);transition:transform 0.1s,box-shadow 0.1s;" onmousedown="this.style.transform='scale(0.95)';this.style.boxShadow='0 2px 10px rgba(226,75,74,0.4)'" onmouseup="this.style.transform='scale(1)';this.style.boxShadow='0 6px 24px rgba(226,75,74,0.5)'">
+  <div style="width:60px;height:60px;border-radius:50%;background:rgba(255,255,255,0.15);margin:0 auto;"></div>
+</button>
+<div style="text-align:center;font-size:12px;color:var(--color-text-secondary);margin-bottom:10px;letter-spacing:1px;text-transform:uppercase;">Buzzer</div>
     <div class="how-to">
       <div><i class="ti ti-bulb" style="color:#534AB7;"></i> Achète des indices sur les autres joueurs</div>
       <div><i class="ti ti-hand-stop" style="color:#E24B4A;"></i> Buze quand tu penses avoir trouvé</div>
@@ -457,13 +460,145 @@ const PLAYERS = {
   },
   kristi: {
     name: "Christina", email: "kristi35@hotmail.fr",
-    company: "Evermaps", initials: "KR", team: "2",
+    company: "Evermaps", initials: "CE", team: "2",
     secret: "J'ai voyagé aux États-Unis avant de rejoindre Evermaps.",
     hints: [
       { level: "Indice 1", text: "Mon secret s'est passé avant mon job actuel.", cost: 1 },
       { level: "Indice 2", text: "Ça implique un déplacement de plus de 1000 km.", cost: 2 },
       { level: "Indice 3", text: "J'ai traversé un océan.", cost: 3 },
       { level: "Indice 4", text: "Le pays est connu pour ses gratte-ciels et son hamburger.", cost: 4 }
+    ]
+  },
+  lucas: {
+    name: "Lucas Martin", email: "lucas.martin@demo.fr",
+    company: "Evermaps", initials: "LM", team: "1",
+    secret: "J'ai fait de la compétition de break dance pendant 5 ans.",
+    hints: [
+      { level: "Indice 1", text: "Mon secret est lié à une activité physique.", cost: 1 },
+      { level: "Indice 2", text: "Ça se pratique avec de la musique.", cost: 2 },
+      { level: "Indice 3", text: "C'est une danse urbaine.", cost: 3 },
+      { level: "Indice 4", text: "On en voit aux JO depuis 2024.", cost: 4 }
+    ]
+  },
+  sophie: {
+    name: "Sophie Renard", email: "sophie.renard@demo.fr",
+    company: "Guest Suite", initials: "SR", team: "1",
+    secret: "J'ai travaillé comme guide touristique au Japon.",
+    hints: [
+      { level: "Indice 1", text: "Mon secret implique un voyage à l'étranger.", cost: 1 },
+      { level: "Indice 2", text: "J'avais un rôle professionnel pendant ce voyage.", cost: 2 },
+      { level: "Indice 3", text: "Je faisais découvrir un pays à des étrangers.", cost: 3 },
+      { level: "Indice 4", text: "Ce pays est en Asie et connu pour ses cerisiers.", cost: 4 }
+    ]
+  },
+  theo: {
+    name: "Théo Dupont", email: "theo.dupont@demo.fr",
+    company: "Evermaps", initials: "TD", team: "2",
+    secret: "J'ai terminé un marathon sans m'être entraîné.",
+    hints: [
+      { level: "Indice 1", text: "Mon secret est lié à une performance sportive.", cost: 1 },
+      { level: "Indice 2", text: "C'est une course à pied.", cost: 2 },
+      { level: "Indice 3", text: "La distance fait 42 km.", cost: 3 },
+      { level: "Indice 4", text: "La plupart des gens s'entraînent des mois avant.", cost: 4 }
+    ]
+  },
+  marie: {
+    name: "Marie Leclerc", email: "marie.leclerc@demo.fr",
+    company: "Guest Suite", initials: "ML", team: "2",
+    secret: "J'ai vécu 6 mois dans un van aménagé.",
+    hints: [
+      { level: "Indice 1", text: "Mon secret concerne mon mode de vie passé.", cost: 1 },
+      { level: "Indice 2", text: "J'habitais dans un véhicule.", cost: 2 },
+      { level: "Indice 3", text: "Je me déplaçais au gré de mes envies.", cost: 3 },
+      { level: "Indice 4", text: "Ce mode de vie s'appelle le van life.", cost: 4 }
+    ]
+  },
+  alex: {
+    name: "Alex Durand", email: "alex.durand@demo.fr",
+    company: "Guest Suite", initials: "AD", team: "3",
+    secret: "J'ai été figurant dans un film de cinéma.",
+    hints: [
+      { level: "Indice 1", text: "Mon secret est lié au monde du spectacle.", cost: 1 },
+      { level: "Indice 2", text: "J'apparais dans une oeuvre visuelle.", cost: 2 },
+      { level: "Indice 3", text: "On me voit à l'écran mais je n'ai pas de réplique.", cost: 3 },
+      { level: "Indice 4", text: "Le tournage s'est fait sur un plateau de cinéma.", cost: 4 }
+    ]
+  },
+  camille: {
+    name: "Camille Bernard", email: "camille.bernard@demo.fr",
+    company: "Evermaps", initials: "CB2", team: "3",
+    secret: "J'ai élevé des poules en plein Paris.",
+    hints: [
+      { level: "Indice 1", text: "Mon secret concerne des animaux.", cost: 1 },
+      { level: "Indice 2", text: "Ces animaux produisent quelque chose qu'on mange.", cost: 2 },
+      { level: "Indice 3", text: "C'est surprenant vu l'endroit où je vivais.", cost: 3 },
+      { level: "Indice 4", text: "La capitale française n'est pas connue pour ses fermes.", cost: 4 }
+    ]
+  },
+  julien: {
+    name: "Julien Moreau", email: "julien.moreau@demo.fr",
+    company: "Evermaps", initials: "JM", team: "3",
+    secret: "J'ai appris à piloter un avion.",
+    hints: [
+      { level: "Indice 1", text: "Mon secret implique une formation spécialisée.", cost: 1 },
+      { level: "Indice 2", text: "Ça concerne un moyen de transport.", cost: 2 },
+      { level: "Indice 3", text: "Ce véhicule vole.", cost: 3 },
+      { level: "Indice 4", text: "J'ai passé mon brevet de pilote.", cost: 4 }
+    ]
+  },
+  lea: {
+    name: "Léa Petit", email: "lea.petit@demo.fr",
+    company: "Guest Suite", initials: "LP", team: "4",
+    secret: "J'ai gagné un concours de déguisements nationaux.",
+    hints: [
+      { level: "Indice 1", text: "Mon secret est lié à un concours.", cost: 1 },
+      { level: "Indice 2", text: "Je portais un costume ce jour-là.", cost: 2 },
+      { level: "Indice 3", text: "La créativité était le critère principal.", cost: 3 },
+      { level: "Indice 4", text: "Je représentais quelque chose ou quelqu'un.", cost: 4 }
+    ]
+  },
+  maxime: {
+    name: "Maxime Simon", email: "maxime.simon@demo.fr",
+    company: "Evermaps", initials: "MS", team: "4",
+    secret: "J'ai survécu 3 jours seul en forêt sans équipement.",
+    hints: [
+      { level: "Indice 1", text: "Mon secret concerne une aventure en plein air.", cost: 1 },
+      { level: "Indice 2", text: "J'étais complètement isolé.", cost: 2 },
+      { level: "Indice 3", text: "Je n'avais pas de téléphone ni de nourriture.", cost: 3 },
+      { level: "Indice 4", text: "C'est un défi de survie en nature.", cost: 4 }
+    ]
+  },
+  emma: {
+    name: "Emma Laurent", email: "emma.laurent@demo.fr",
+    company: "Guest Suite", initials: "EL", team: "4",
+    secret: "J'ai publié un roman sous un pseudonyme.",
+    hints: [
+      { level: "Indice 1", text: "Mon secret est lié à la création.", cost: 1 },
+      { level: "Indice 2", text: "J'ai produit une oeuvre écrite.", cost: 2 },
+      { level: "Indice 3", text: "Mon vrai nom n'apparaît pas dessus.", cost: 3 },
+      { level: "Indice 4", text: "On peut le trouver en librairie.", cost: 4 }
+    ]
+  },
+  romain: {
+    name: "Romain Garcia", email: "romain.garcia@demo.fr",
+    company: "Evermaps", initials: "RG", team: "4",
+    secret: "J'ai dormi dans un igloo au cercle polaire.",
+    hints: [
+      { level: "Indice 1", text: "Mon secret concerne un endroit inhabituel pour dormir.", cost: 1 },
+      { level: "Indice 2", text: "C'est une construction en glace.", cost: 2 },
+      { level: "Indice 3", text: "La température extérieure était de -30°C.", cost: 3 },
+      { level: "Indice 4", text: "C'est dans une région arctique.", cost: 4 }
+    ]
+  },
+  noemie: {
+    name: "Noémie Thomas", email: "noemie.thomas@demo.fr",
+    company: "Guest Suite", initials: "NT", team: "3",
+    secret: "J'ai cuisiné pour 200 personnes lors d'un mariage.",
+    hints: [
+      { level: "Indice 1", text: "Mon secret est lié à la cuisine.", cost: 1 },
+      { level: "Indice 2", text: "C'était pour un événement festif.", cost: 2 },
+      { level: "Indice 3", text: "Il y avait beaucoup de convives.", cost: 3 },
+      { level: "Indice 4", text: "La mariée comptait sur moi.", cost: 4 }
     ]
   }
 };
@@ -806,10 +941,12 @@ function showResultPopup(success, targetName, tokens) {
 function showBuzzPopup(notif) {
   const popup = document.getElementById("buzz-popup");
   const txt = document.getElementById("buzz-popup-text");
+  const titleEl = document.getElementById("buzz-popup-title");
   if (!popup || !txt) return;
-  txt.textContent = notif.text;
+  const fname = notif.fromName ? notif.fromName.split(" ")[0] : "Quelqu'un";
+  if (titleEl) titleEl.textContent = fname + " pense avoir trouvé ton secret...";
+  txt.textContent = "A-t-il/elle raison ?";
   const idx = (playerState?.notifs || []).findIndex(n => n.id === notif.id);
-  // Store pending buzz response on window for non-module access
   window._pendingBuzz = { idx, fromKey: notif.fromKey, fromName: notif.fromName };
   popup.style.display = "flex";
 }
@@ -861,10 +998,14 @@ window.renderBuzzList = function() {
     if (confirmed) return; // Already found — hide from buzz list
     const inQueue = gameState?.queue?.some(qq => qq.targetKey === key && qq.fromKey === currentUser);
     const isBuzzed = gameState?.activeBuzz?.targetKey === key;
+    const hintsUnlocked = playerState?.unlockedHints?.[key] || 0;
     let badge = '<i class="ti ti-chevron-right" style="color:var(--color-text-secondary);"></i>';
     const div = document.createElement("div");
     let disabled = false;
-    if (inQueue) { badge = '<span style="font-size:11px;color:#854F0B;background:#FAEEDA;padding:2px 7px;border-radius:20px;">File d\'attente</span>'; disabled = true; }
+    if (hintsUnlocked === 0) {
+      badge = '<span style="font-size:10px;color:#888;background:var(--color-background-secondary);padding:2px 6px;border-radius:20px;white-space:nowrap;">🔒 1 indice requis</span>';
+      disabled = true;
+    } else if (inQueue) { badge = '<span style="font-size:11px;color:#854F0B;background:#FAEEDA;padding:2px 7px;border-radius:20px;">File d\'attente</span>'; disabled = true; }
     div.className = "player-row";
     div.style.borderLeft = `3px solid ${tc.main}`;
     div.innerHTML = `<div class="av" style="background:${tc.light};color:${tc.main};">${p.initials}</div><div class="pinfo"><div class="pname">${p.name}</div><div class="pcomp">${p.company}${isBuzzed ? " · 🔴 actif" : ""}</div></div>${badge}`;
@@ -1172,11 +1313,11 @@ function updateBuzzBtn() {
     const rem2 = ab ? Math.max(0, Math.floor((ab.endTs - Date.now()) / 1000)) : 0;
     const isBusy = ab && rem2 > 0 && (ab.fromKey === currentUser || ab.targetKey === currentUser);
     if (isBusy) {
-      btn.style.opacity="0.5"; btn.style.pointerEvents="none"; btn.style.background="#888780";
-      btn.textContent = ab.fromKey === currentUser ? "En attente de réponse..." : "Réponds au buzz !";
+      btn.style.opacity="0.4"; btn.style.pointerEvents="none"; btn.style.background="#888780";
+      btn.style.boxShadow="none";
     } else {
       btn.style.opacity="1"; btn.style.pointerEvents="auto"; btn.style.background="#E24B4A";
-      btn.textContent = "BUZZER";
+      btn.style.boxShadow="0 6px 24px rgba(226,75,74,0.5)";
     }
   }
   const banner = document.getElementById("app-blocked-banner");
@@ -1591,13 +1732,13 @@ document.addEventListener("DOMContentLoaded", function() {
     <div id="buzz-popup" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);z-index:150;align-items:center;justify-content:center;padding:1.5rem;">
       <div style="background:var(--color-background-primary);border-radius:16px;padding:1.5rem;width:100%;max-width:340px;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,0.3);">
         <div style="font-size:40px;margin-bottom:10px;">🔴</div>
-        <div style="font-size:17px;font-weight:600;color:#A32D2D;margin-bottom:8px;">Tu as été buzzé·e !</div>
+        <div style="font-size:17px;font-weight:600;color:#A32D2D;margin-bottom:8px;" id="buzz-popup-title">X pense avoir trouvé ton secret !</div>
         <div style="font-size:14px;color:var(--color-text-secondary);line-height:1.6;margin-bottom:20px;" id="buzz-popup-text"></div>
-        <div style="display:flex;gap:10px;margin-bottom:8px;">
-          <button id="buzz-popup-yes" onclick="window._respondBuzzYes()" style="flex:1;padding:14px;background:#3B6D11;color:white;border:none;border-radius:10px;font-size:14px;font-weight:500;cursor:pointer;">✓ Oui</button>
-          <button id="buzz-popup-no" onclick="window._respondBuzzNo()" style="flex:1;padding:14px;background:#E24B4A;color:white;border:none;border-radius:10px;font-size:14px;font-weight:500;cursor:pointer;">✗ Non</button>
-        </div>
-        <button onclick="document.getElementById('buzz-popup').style.display='none'" style="width:100%;padding:10px;background:none;border:0.5px solid rgba(255,255,255,0.15);border-radius:10px;font-size:13px;color:rgba(255,255,255,0.5);cursor:pointer;margin-top:0;">Plus tard — je vais la voir d'abord</button>
+      <div style="display:flex;gap:16px;justify-content:center;margin-bottom:12px;">
+        <button id="buzz-popup-yes" onclick="window._respondBuzzYes()" style="width:72px;height:72px;background:#3B6D11;color:white;border:none;border-radius:50%;font-size:32px;cursor:pointer;box-shadow:0 4px 16px rgba(59,109,17,0.4);">✅</button>
+        <button id="buzz-popup-no" onclick="window._respondBuzzNo()" style="width:72px;height:72px;background:#E24B4A;color:white;border:none;border-radius:50%;font-size:32px;cursor:pointer;box-shadow:0 4px 16px rgba(226,75,74,0.4);">❌</button>
+      </div>
+      <button onclick="document.getElementById('buzz-popup').style.display='none'" style="width:100%;padding:10px;background:none;border:0.5px solid rgba(255,255,255,0.2);border-radius:10px;font-size:13px;color:rgba(255,255,255,0.5);cursor:pointer;">Plus tard</button>
       </div>
     </div>
 
