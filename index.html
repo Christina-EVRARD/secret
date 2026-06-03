@@ -443,7 +443,19 @@ const ADMIN_ACCOUNTS = {
 
 const PLAYER_ACCOUNTS = {
   "charline.blanchet@free.fr": { code: "CB2408", key: "charline" },
-  "kristi35@hotmail.fr":        { code: "KR1503", key: "kristi" }
+  "kristi35@hotmail.fr":        { code: "KR1503", key: "kristi" },
+  "alex.durand@demo.fr":        { code: "AD0103", key: "alex" },
+  "lea.petit@demo.fr":          { code: "LP0104", key: "lea" },
+  "lucas.martin@demo.fr":       { code: "LM0101", key: "lucas" },
+  "sophie.renard@demo.fr":      { code: "SR0101", key: "sophie" },
+  "theo.dupont@demo.fr":        { code: "TD0102", key: "theo" },
+  "marie.leclerc@demo.fr":      { code: "ML0102", key: "marie" },
+  "camille.bernard@demo.fr":    { code: "CB0103", key: "camille" },
+  "julien.moreau@demo.fr":      { code: "JM0103", key: "julien" },
+  "noemie.thomas@demo.fr":      { code: "NT0103", key: "noemie" },
+  "maxime.simon@demo.fr":       { code: "MS0104", key: "maxime" },
+  "emma.laurent@demo.fr":       { code: "EL0104", key: "emma" },
+  "romain.garcia@demo.fr":      { code: "RG0104", key: "romain" }
 };
 
 const PLAYERS = {
@@ -1735,8 +1747,8 @@ document.addEventListener("DOMContentLoaded", function() {
         <div style="font-size:17px;font-weight:600;color:#A32D2D;margin-bottom:8px;" id="buzz-popup-title">X pense avoir trouvé ton secret !</div>
         <div style="font-size:14px;color:var(--color-text-secondary);line-height:1.6;margin-bottom:20px;" id="buzz-popup-text"></div>
       <div style="display:flex;gap:16px;justify-content:center;margin-bottom:12px;">
-        <button id="buzz-popup-yes" onclick="window._respondBuzzYes()" style="width:72px;height:72px;background:#3B6D11;color:white;border:none;border-radius:50%;font-size:32px;cursor:pointer;box-shadow:0 4px 16px rgba(59,109,17,0.4);">✅</button>
-        <button id="buzz-popup-no" onclick="window._respondBuzzNo()" style="width:72px;height:72px;background:#E24B4A;color:white;border:none;border-radius:50%;font-size:32px;cursor:pointer;box-shadow:0 4px 16px rgba(226,75,74,0.4);">❌</button>
+        <button id="buzz-popup-yes" onclick="window._respondBuzzYes()" style="width:80px;height:80px;background:none;border:none;font-size:52px;cursor:pointer;line-height:1;" onmousedown="this.style.transform='scale(0.9)'" onmouseup="this.style.transform='scale(1)'">✅</button>
+        <button id="buzz-popup-no" onclick="window._respondBuzzNo()" style="width:80px;height:80px;background:none;border:none;font-size:52px;cursor:pointer;line-height:1;" onmousedown="this.style.transform='scale(0.9)'" onmouseup="this.style.transform='scale(1)'">❌</button>
       </div>
       <button onclick="document.getElementById('buzz-popup').style.display='none'" style="width:100%;padding:10px;background:none;border:0.5px solid rgba(255,255,255,0.2);border-radius:10px;font-size:13px;color:rgba(255,255,255,0.5);cursor:pointer;">Plus tard</button>
       </div>
