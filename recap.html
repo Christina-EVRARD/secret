@@ -400,7 +400,7 @@ body {
   <button class="nav-item" onclick="scrollTo('epreuves')">Épreuves</button>
   <button class="nav-item" onclick="scrollTo('appli')">L'appli</button>
   <button class="nav-item" onclick="scrollTo('equipes')">Équipes</button>
-  <button class="nav-item" onclick="scrollTo('identifiants')">Identifiants</button><button class="nav-item" onclick="scrollTo('todo')">À faire</button>
+  <button class="nav-item" onclick="scrollTo('identifiants')">Identifiants</button><button class="nav-item" onclick="scrollTo('tests')">Tests</button><button class="nav-item" onclick="scrollTo('todo')">À faire</button>
 </nav>
 
 <div class="container">
@@ -932,10 +932,70 @@ body {
 
   </div>
 
+  <!-- TESTS -->
+  <div class="section" id="tests">
+    <div class="section-header">
+      <span class="section-num">07</span>
+      <div>
+        <div class="section-title">Tests de l'application</div>
+        <div class="section-sub">À faire avant le séminaire pour valider que tout fonctionne. Coche au fur et à mesure !</div>
+      </div>
+    </div>
+
+    <!-- CÔTÉ JOUEUR -->
+    <details style="margin-bottom:12px;" open>
+      <summary style="font-family:'Syne',sans-serif;font-size:14px;font-weight:600;cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;user-select:none;">
+        <span>👤 Côté joueur</span>
+        <span style="font-size:12px;color:var(--text2);font-weight:400;">Déplier / replier</span>
+      </summary>
+      <div style="margin-top:8px;display:flex;flex-direction:column;gap:8px;" id="tests-joueur">
+        <div class="check-item" data-id="t1"><div class="check-box todo" onclick="toggleCheck('t1')">○</div><span class="check-text">Se connecter avec un compte joueur (email + code)</span></div>
+        <div class="check-item" data-id="t2"><div class="check-box todo" onclick="toggleCheck('t2')">○</div><span class="check-text">Vérifier que le secret est caché par défaut et que le bouton Afficher fonctionne</span></div>
+        <div class="check-item" data-id="t3"><div class="check-box todo" onclick="toggleCheck('t3')">○</div><span class="check-text">Fermer et rouvrir l'appli → vérifier qu'on est toujours connecté (session persistante)</span></div>
+        <div class="check-item" data-id="t4"><div class="check-box todo" onclick="toggleCheck('t4')">○</div><span class="check-text">Acheter un indice sur un autre joueur → vérifier la déduction de tokens</span></div>
+        <div class="check-item" data-id="t5"><div class="check-box todo" onclick="toggleCheck('t5')">○</div><span class="check-text">Vérifier qu'on ne peut pas buzzer sans avoir acheté au moins 1 indice (bouton grisé)</span></div>
+        <div class="check-item" data-id="t6"><div class="check-box todo" onclick="toggleCheck('t6')">○</div><span class="check-text">Vérifier qu'on ne peut pas buzzer avec moins de 3 tokens (toast d'erreur)</span></div>
+        <div class="check-item" data-id="t7"><div class="check-box todo" onclick="toggleCheck('t7')">○</div><span class="check-text">Buzzer un joueur → vérifier que la pop-up s'affiche sur le téléphone de la cible</span></div>
+        <div class="check-item" data-id="t8"><div class="check-box todo" onclick="toggleCheck('t8')">○</div><span class="check-text">La cible répond "Oui" → vérifier +5 tokens pour le buzzeur, pop-up résultat reçue</span></div>
+        <div class="check-item" data-id="t9"><div class="check-box todo" onclick="toggleCheck('t9')">○</div><span class="check-text">La cible répond "Non" → vérifier -3 tokens pour le buzzeur, pop-up résultat reçue</span></div>
+        <div class="check-item" data-id="t10"><div class="check-box todo" onclick="toggleCheck('t10')">○</div><span class="check-text">La cible clique "Plus tard" → pop-up disparaît, notif accessible dans Mon activité</span></div>
+        <div class="check-item" data-id="t11"><div class="check-box todo" onclick="toggleCheck('t11')">○</div><span class="check-text">Vérifier que le timer 5 min s'affiche et que le buzzer est grisé pendant un buzz actif</span></div>
+        <div class="check-item" data-id="t12"><div class="check-box todo" onclick="toggleCheck('t12')">○</div><span class="check-text">Secret déjà trouvé → joueur n'apparaît plus dans la liste buzzer + badge "Secret trouvé" dans Joueurs</span></div>
+        <div class="check-item" data-id="t13"><div class="check-box todo" onclick="toggleCheck('t13')">○</div><span class="check-text">Vérifier "Mon activité" → toutes les actions apparaissent avec delta tokens et solde</span></div>
+        <div class="check-item" data-id="t14"><div class="check-box todo" onclick="toggleCheck('t14')">○</div><span class="check-text">Vérifier le Feed → toutes les actions de tous les joueurs apparaissent</span></div>
+        <div class="check-item" data-id="t15"><div class="check-box todo" onclick="toggleCheck('t15')">○</div><span class="check-text">Vérifier le classement Top → individuel et par équipe mis à jour en temps réel</span></div>
+        <div class="check-item" data-id="t16"><div class="check-box todo" onclick="toggleCheck('t16')">○</div><span class="check-text">Vérifier le Programme → toutes les activités visibles, sous-éléments verrouillés/déverrouillés</span></div>
+        <div class="check-item" data-id="t17"><div class="check-box todo" onclick="toggleCheck('t17')">○</div><span class="check-text">Tester avec 2 téléphones en simultané → tout se synchronise en temps réel</span></div>
+      </div>
+    </details>
+
+    <!-- CÔTÉ ADMIN -->
+    <details style="margin-bottom:12px;">
+      <summary style="font-family:'Syne',sans-serif;font-size:14px;font-weight:600;cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;user-select:none;">
+        <span>🔐 Côté admin</span>
+        <span style="font-size:12px;color:var(--text2);font-weight:400;">Déplier / replier</span>
+      </summary>
+      <div style="margin-top:8px;display:flex;flex-direction:column;gap:8px;" id="tests-admin">
+        <div class="check-item" data-id="ta1"><div class="check-box todo" onclick="toggleCheck('ta1')">○</div><span class="check-text">Se connecter avec un compte admin (charline.blanchet@guestapp.me / ADMIN01)</span></div>
+        <div class="check-item" data-id="ta2"><div class="check-box todo" onclick="toggleCheck('ta2')">○</div><span class="check-text">Attribuer des tokens à un joueur individuel → vérifier mise à jour en temps réel</span></div>
+        <div class="check-item" data-id="ta3"><div class="check-box todo" onclick="toggleCheck('ta3')">○</div><span class="check-text">Attribuer des tokens à toute une équipe → vérifier que tous les membres sont mis à jour</span></div>
+        <div class="check-item" data-id="ta4"><div class="check-box todo" onclick="toggleCheck('ta4')">○</div><span class="check-text">Bloquer le buzzer → vérifier que le bouton est grisé pour tous les joueurs</span></div>
+        <div class="check-item" data-id="ta5"><div class="check-box todo" onclick="toggleCheck('ta5')">○</div><span class="check-text">Bloquer l'appli avec un message → vérifier que le message s'affiche sur tous les téléphones</span></div>
+        <div class="check-item" data-id="ta6"><div class="check-box todo" onclick="toggleCheck('ta6')">○</div><span class="check-text">Renommer une équipe → vérifier que le nouveau nom apparaît partout en temps réel</span></div>
+        <div class="check-item" data-id="ta7"><div class="check-box todo" onclick="toggleCheck('ta7')">○</div><span class="check-text">Programme → ajouter un sous-élément (nom + URL) à une activité</span></div>
+        <div class="check-item" data-id="ta8"><div class="check-box todo" onclick="toggleCheck('ta8')">○</div><span class="check-text">Programme → déverrouiller un sous-élément → vérifier qu'il apparaît côté joueur</span></div>
+        <div class="check-item" data-id="ta9"><div class="check-box todo" onclick="toggleCheck('ta9')">○</div><span class="check-text">Réinitialiser tous les joueurs (démo) → vérifier retour à 3 tokens, feed vidé</span></div>
+        <div class="check-item" data-id="ta10"><div class="check-box todo" onclick="toggleCheck('ta10')">○</div><span class="check-text">Vérifier les stats live → nombre de buzzes, secrets trouvés, tokens distribués</span></div>
+        <div class="check-item" data-id="ta11"><div class="check-box todo" onclick="toggleCheck('ta11')">○</div><span class="check-text">Vider la file d'attente buzzer si nécessaire</span></div>
+      </div>
+    </details>
+
+  </div>
+
   <!-- À FAIRE -->
   <div class="section" id="todo">
     <div class="section-header">
-      <span class="section-num">07</span>
+      <span class="section-num">08</span>
       <div>
         <div class="section-title">Checklist — ce qu'il reste à faire</div>
         <div class="section-sub">Clique sur les items pour les cocher au fur et à mesure.</div>
@@ -1006,7 +1066,7 @@ function scrollTo(id) {
 }
 
 // ACTIVE NAV ON SCROLL
-const sections = ['concept','programme','regles','epreuves','appli','equipes','identifiants','todo'];
+const sections = ['concept','programme','regles','epreuves','appli','equipes','identifiants','tests','todo'];
 const observer = new IntersectionObserver((entries) => {
   entries.forEach(e => {
     if (e.isIntersecting) {
