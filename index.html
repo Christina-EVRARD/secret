@@ -457,13 +457,13 @@ const PLAYER_ACCOUNTS = {
   "charline.blanchet@demo.fr": { code: "CB2408", key: "charline" },
   "kristi35@hotmail.fr":        { code: "KR1503", key: "kristi" },
   "christina.evrard@demo.fr":   { code: "KR1503", key: "kristi" },
-  "alex.durand@demo.fr":        { code: "AD0103", key: "alex" },
-  "lea.petit@demo.fr":          { code: "LP0104", key: "lea" },
-  "lucas.martin@demo.fr":       { code: "LM0101", key: "lucas" },
+  "paul.langouet@demo.fr":      { code: "PL0103", key: "alex" },
+  "btari.kesumanegoro@demo.fr": { code: "BK0104", key: "lea" },
+  "sefian.aomari@demo.fr":      { code: "SA0101", key: "lucas" },
   "sophie.renard@demo.fr":      { code: "SR0101", key: "sophie" },
   "theo.dupont@demo.fr":        { code: "TD0102", key: "theo" },
   "marie.leclerc@demo.fr":      { code: "ML0102", key: "marie" },
-  "camille.bernard@demo.fr":    { code: "CB0103", key: "camille" },
+  "sophie.boute-brenac@demo.fr":{ code: "SB0103", key: "camille" },
   "julien.moreau@demo.fr":      { code: "JM0103", key: "julien" },
   "noemie.thomas@demo.fr":      { code: "NT0103", key: "noemie" },
   "maxime.simon@demo.fr":       { code: "MS0104", key: "maxime" },
@@ -915,7 +915,7 @@ async function handleBuzzTimeout() {
     tokens: Math.max(0, (playerState?.tokens || 0) - 3),
     [`buzzResults.${targetKey}`]: "timeout"
   });
-  await addFeedItem("fi-fail", "Temps écoulé — 3 tokens perdus !");
+  await addFeedItem("fi-fail", "Temps écoulé — -3 tokens [delta:-3]");
   await advanceBuzzQueue();
 }
 
@@ -1088,7 +1088,7 @@ window.respondBuzz = async function(idx, confirmed, fromKey, fromName) {
         });
       }
     }
-    await addFeedItem("fi-win", currentUserData.name.split(" ")[0] + " a confirmé son secret à " + fname + " ! +5 tokens");
+    await addFeedItem("fi-win", currentUserData.name.split(" ")[0] + " a confirmé son secret à " + fname + " ! +5 tokens [delta:+5]");
     await updateDoc(gameRef(), { totalFound: (gameState?.totalFound || 0) + 1 });
     showToast("Secret confirmé !");
     // Notify the buzzer via their player doc
@@ -1110,7 +1110,7 @@ window.respondBuzz = async function(idx, confirmed, fromKey, fromName) {
         });
       }
     }
-    await addFeedItem("fi-fail", currentUserData.name.split(" ")[0] + " a nié — " + fname + " perd 3 tokens !");
+    await addFeedItem("fi-fail", currentUserData.name.split(" ")[0] + " a nié — " + fname + " perd -3 tokens [delta:-3]");
     showToast("Buzz nié !");
     if (PLAYERS[fromKey]) {
       await updateDoc(playerRef(fromKey), { pendingResult: { success: false, targetName: currentUserData.name, tokens: 3, ts: Date.now() } });
@@ -1149,7 +1149,7 @@ window.buyHint = async function(key) {
     tokens: (playerState.tokens || 0) - cost,
     [`unlockedHints.${key}`]: uc + 1
   });
-  await addFeedItem("fi-search", currentUserData.name.split(" ")[0] + " a acheté un indice sur " + p.name.split(" ")[0]);
+  await addFeedItem("fi-search", currentUserData.name.split(" ")[0] + " a acheté un indice sur " + p.name.split(" ")[0] + " [delta:-"+cost+"]");
   openHintsModal(key);
   showToast("Indice débloqué !");
 };
@@ -1368,19 +1368,46 @@ function renderPersonalFeed() {
            item.text.startsWith("Temps") ||
            item.text.includes("ton secret") ||
            item.text.includes("a buzzé " + myName) ||
-           item.text.includes("a confirmé") && item.text.includes(myName) ||
-           item.text.includes("a nié") && item.text.includes(myName);
+           (item.text.includes("a confirmé") && item.text.includes(myName)) ||
+           (item.text.includes("a nié") && item.text.includes(myName));
   }).slice(0, 10);
   if (!myItems.length) {
-    el.innerHTML = "<div style='font-size:12px;color:var(--color-text-secondary);font-style:italic;'>Aucune activité pour l'instant...</div>";
+    el.innerHTML = "<div style='font-size:12px;color:var(--color-text-secondary);font-style:italic;padding:8px;'>Aucune activité pour l'instant...</div>";
     return;
   }
   el.innerHTML = "";
   const iconMap = {"fi-buzz":"🔴","fi-win":"✅","fi-fail":"❌","fi-token":"🪙","fi-search":"🔍","fi-admin":"⚙️"};
-  myItems.forEach(item => {
+  // Calculate running balance from current tokens backwards
+  const currentTokens = playerState?.tokens || 0;
+  let runningBalance = currentTokens;
+  // First pass: collect deltas
+  const deltas = myItems.map(item => {
+    const match = item.text.match(/\[delta:([+-]\d+)\]/);
+    return match ? parseInt(match[1]) : 0;
+  });
+  // Running balance goes forwards (oldest first = last in array)
+  // Items are newest first, so we go from end to start
+  const balances = [];
+  for (let i = myItems.length - 1; i >= 0; i--) {
+    balances[i] = runningBalance;
+    runningBalance -= deltas[i]; // subtract going back in time
+  }
+  myItems.forEach((item, idx) => {
     const div = document.createElement("div");
     div.style.cssText = "display:flex;align-items:flex-start;gap:8px;padding:8px 10px;background:var(--color-background-secondary);border-radius:8px;font-size:12px;line-height:1.5;";
-    div.innerHTML = "<span style='font-size:15px;flex-shrink:0;'>"+(iconMap[item.icon]||"📌")+"</span><span style='flex:1;color:var(--color-text-primary);'>"+item.text+"</span><span style='font-size:10px;color:var(--color-text-secondary);white-space:nowrap;margin-left:4px;'>"+(item.time||"")+"</span>";
+    const delta = deltas[idx];
+    const balance = balances[idx];
+    const cleanText = item.text.replace(/\[delta:[+-]\d+\]/g, "");
+    let deltaHtml = "";
+    if (delta !== 0) {
+      const color = delta > 0 ? "#3B6D11" : "#E24B4A";
+      const sign = delta > 0 ? "+" : "";
+      deltaHtml = "<span style='font-size:11px;font-weight:600;color:"+color+";white-space:nowrap;margin-left:4px;'>"+sign+delta+"</span>" +
+                  "<span style='font-size:10px;color:var(--color-text-secondary);white-space:nowrap;margin-left:3px;'>("+balance+" tkn)</span>";
+    }
+    div.innerHTML = "<span style='font-size:15px;flex-shrink:0;'>"+(iconMap[item.icon]||"📌")+"</span>" +
+                    "<span style='flex:1;color:var(--color-text-primary);'>"+cleanText+"</span>" +
+                    deltaHtml;
     el.appendChild(div);
   });
 }
