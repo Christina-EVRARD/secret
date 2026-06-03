@@ -699,7 +699,7 @@ async function initGame() {
     await setDoc(gameRef(), {
       activeBuzz: null, queue: [], appBlocked: false, buzzBlocked: false,
       blockMessage: "Cours d'orientation en cours — à tout à l'heure !",
-      programme: PROGRAMME.map(p => ({ id: p.id, unlocked: p.unlocked, url: "", consigne: "" })),
+      programme: PROGRAMME.map(p => ({ id: p.id, unlocked: true, url: "", consigne: "", subItems: [] })),
       awardHistory: [], teamNames: { ...DEFAULT_TEAM_NAMES },
       totalBuzzes: 0, totalFound: 0
     });
@@ -748,6 +748,7 @@ window.login = async function() {
   if (adminMatch) {
     isAdmin = true; adminName = adminMatch[1].name;
     document.getElementById("screen-login").classList.remove("active");
+  localStorage.setItem("ss_admin", currentAdminKey);
     document.getElementById("screen-admin").classList.add("active");
     document.getElementById("admin-name-header").textContent = adminName;
     await initGame();
@@ -767,6 +768,7 @@ window.login = async function() {
     document.getElementById("screen-login").classList.remove("active");
     document.getElementById("screen-main").classList.add("active");
     const p = currentUserData;
+  localStorage.setItem("ss_user", currentUser);
     const tc = getTC(p.team);
     const tname0 = teamNames[p.team] || "Groupe " + p.team;
   document.getElementById("home-header-area").innerHTML = '<div style="display:flex;align-items:center;gap:10px;"><div style="width:40px;height:40px;border-radius:50%;background:'+tc.light+';color:'+tc.main+';display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;">'+p.initials+'</div><div><div style="font-size:14px;font-weight:500;color:var(--color-text-primary);">'+p.name+'</div><div class="header-team-name" style="font-size:11px;color:var(--color-text-secondary);margin-top:2px;">Mon équipe : <strong style="color:'+tc.main+';">'+tname0+'</strong></div></div></div>';
@@ -786,6 +788,8 @@ window.login = async function() {
 window.logout = async function() {
   if (currentUser) {
     await updateDoc(playerRef(currentUser), { online: false });
+  localStorage.removeItem("ss_user");
+  localStorage.removeItem("ss_admin");
   }
   if (unsubGame) { unsubGame(); unsubGame = null; }
   if (unsubPlayer) { unsubPlayer(); unsubPlayer = null; }
@@ -800,6 +804,8 @@ window.logout = async function() {
 };
 
 window.logoutAdmin = function() {
+  localStorage.removeItem("ss_user");
+  localStorage.removeItem("ss_admin");
   if (unsubGame) { unsubGame(); unsubGame = null; }
   isAdmin = false;
   document.getElementById("screen-admin").classList.remove("active");
@@ -1174,12 +1180,15 @@ function renderProgramme() {
       el.appendChild(dh);
     }
     const div = document.createElement("div");
-    div.className = "prog-item" + (st.unlocked ? " unlocked" : " locked") + (item.isGame ? " is-game" : "");
-    const badge = st.unlocked
-      ? (item.isGame ? '<span class="prog-badge badge-game-p">⚡ Activité</span>' : '<span class="prog-badge badge-unlocked-p">✓</span>')
-      : '<span class="prog-badge badge-locked-p">🔒 Bientôt</span>';
+    const hasSubItems = (st.subItems || []).length > 0;
+    const unlockedSubs = (st.subItems || []).filter(s => s.unlocked).length;
+    div.className = "prog-item unlocked" + (item.isGame ? " is-game" : "");
+    let badge = item.isGame ? '<span class="prog-badge badge-game-p">⚡ Activité</span>' : '<span class="prog-badge badge-unlocked-p">✓</span>';
+    if (hasSubItems) {
+      badge += '<span style="font-size:10px;margin-left:4px;color:var(--color-text-secondary);">'+unlockedSubs+'/'+st.subItems.length+' disponibles</span>';
+    }
     div.innerHTML = `<div class="prog-time">${item.time}</div><div class="prog-body"><div class="prog-title">${item.title}</div>${badge}</div>`;
-    if (st.unlocked) div.onclick = () => openProgModal(item, st);
+    div.onclick = () => openProgModal(item, st);
     el.appendChild(div);
   });
 }
@@ -1188,18 +1197,29 @@ window.openProgModal = function(item, st) {
   activeProgItem = { item, st };
   document.getElementById("mp-time").textContent = item.day + " · " + item.time;
   document.getElementById("mp-name").textContent = item.title;
-  document.getElementById("mp-desc").textContent = st.consigne || item.desc;
+  document.getElementById("mp-desc").textContent = item.desc;
   const linksWrap = document.getElementById("mp-links-wrap");
   if (linksWrap) {
     linksWrap.innerHTML = "";
-    const links = st.links || (st.url ? [{label: "Ouvrir le lien", url: st.url}] : []);
-    links.forEach(function(lk) {
-      const btn = document.createElement("button");
-      btn.style.cssText = "width:100%;padding:12px;background:#534AB7;color:white;border:none;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;margin-bottom:8px;display:block;";
-      btn.textContent = (lk.label || "Lien") + " ↗";
-      btn.onclick = function() { window.open(lk.url, "_blank"); };
-      linksWrap.appendChild(btn);
-    });
+    const subItems = st.subItems || [];
+    if (subItems.length === 0) {
+      linksWrap.innerHTML = "<p style='font-size:12px;color:var(--color-text-secondary);font-style:italic;'>Aucun lien ou activité ajouté pour le moment.</p>";
+    } else {
+      subItems.forEach(function(sub) {
+        const div = document.createElement("div");
+        div.style.cssText = "display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;margin-bottom:6px;border:0.5px solid var(--color-border-tertiary);background:var(--color-background-secondary);";
+        if (sub.unlocked) {
+          div.style.background = "var(--color-background-primary)";
+          div.style.borderColor = "#534AB7";
+          div.innerHTML = "<span style='font-size:16px;'>🔗</span><div style='flex:1;'><div style='font-size:13px;font-weight:500;color:var(--color-text-primary);'>"+sub.label+"</div>" +
+            (sub.consigne ? "<div style='font-size:12px;color:var(--color-text-secondary);margin-top:2px;'>"+sub.consigne+"</div>" : "") + "</div>" +
+            (sub.url ? '<a href="' + sub.url + '" target="_blank" style="padding:6px 12px;background:#534AB7;color:white;border-radius:6px;font-size:12px;text-decoration:none;white-space:nowrap;display:inline-block;">Ouvrir ↗</a>' : '');
+        } else {
+          div.innerHTML = "<span style='font-size:16px;'>🔒</span><div style='flex:1;'><div style='font-size:13px;color:var(--color-text-secondary);'>"+sub.label+"</div><div style='font-size:11px;color:var(--color-text-secondary);opacity:0.6;'>Pas encore disponible</div></div>";
+        }
+        linksWrap.appendChild(div);
+      });
+    }
   }
   document.getElementById("modal-prog").classList.add("open");
 };
@@ -1283,7 +1303,7 @@ function renderFeed() {
   const iconMap = { "fi-search": "ti-search", "fi-win": "ti-check", "fi-fail": "ti-x", "fi-token": "ti-coin", "fi-buzz": "ti-hand-stop", "fi-admin": "ti-settings" };
   feedItems.forEach(item => {
     const div = document.createElement("div"); div.className = "feed-item";
-    div.innerHTML = `<div class="fi-icon ${item.icon}"><i class="ti ${iconMap[item.icon]||"ti-activity"}"></i></div><div class="feed-text">${item.text}</div><div class="feed-time">${formatTime(item.ts)}</div>`;
+    div.innerHTML = `<div class="fi-icon ${item.icon}"><i class="ti ${iconMap[item.icon]||"ti-activity"}"></i></div><div class="feed-text">${(item.text||"").replace(/\[delta:[+\-]?\d+\]/g,"")}</div><div class="feed-time">${formatTime(item.ts)}</div>`;
     el.appendChild(div);
   });
 }
@@ -1561,25 +1581,39 @@ window.toggleProgItem = async function(id) {
 };
 
 window.saveProgItem = async function(id) {
-  const urlInput = document.getElementById("purl-" + id)?.value || "";
-  const labelInput = document.getElementById("plabel-" + id)?.value || "";
+  const label = document.getElementById("plabel-" + id)?.value?.trim() || "";
+  const url = document.getElementById("purl-" + id)?.value?.trim() || "";
+  const consigne = document.getElementById("pconsigne-" + id)?.value?.trim() || "";
+  if (!label) { showToast("Saisis un nom !"); return; }
   const prog = gameState?.programme || [];
   const idx = prog.findIndex(p => p.id === id);
   if (idx >= 0) {
-    if (urlInput.startsWith("http")) {
-      // Add to links array
-      prog[idx].links = prog[idx].links || [];
-      const label = labelInput || "Lien " + (prog[idx].links.length + 1);
-      prog[idx].links.push({label, url: urlInput});
-      prog[idx].url = urlInput; // keep backwards compat
-      prog[idx].consigne = "";
-    } else {
-      prog[idx].consigne = urlInput;
-      prog[idx].url = "";
-    }
+    prog[idx].subItems = prog[idx].subItems || [];
+    prog[idx].subItems.push({ label, url, consigne, unlocked: false });
   }
   await updateDoc(gameRef(), { programme: prog });
-  showToast("Sauvegardé !");
+  // Clear inputs
+  ["plabel-","purl-","pconsigne-"].forEach(p => { const el = document.getElementById(p+id); if(el) el.value = ""; });
+  showToast("Sous-élément ajouté !");
+};
+
+window.toggleSubItem = async function(id, si) {
+  const prog = gameState?.programme || [];
+  const idx = prog.findIndex(p => p.id === id);
+  if (idx >= 0 && prog[idx].subItems?.[si] !== undefined) {
+    prog[idx].subItems[si].unlocked = !prog[idx].subItems[si].unlocked;
+  }
+  await updateDoc(gameRef(), { programme: prog });
+};
+
+window.removeSubItem = async function(id, si) {
+  const prog = gameState?.programme || [];
+  const idx = prog.findIndex(p => p.id === id);
+  if (idx >= 0 && prog[idx].subItems) {
+    prog[idx].subItems.splice(si, 1);
+  }
+  await updateDoc(gameRef(), { programme: prog });
+  showToast("Supprimé !");
 };
 
 window.removeLinkFromProg = async function(id, linkIdx) {
@@ -1600,7 +1634,22 @@ function renderAdminProg() {
   PROGRAMME.forEach(item => {
     const st = ps[item.id] || { unlocked: item.unlocked, url: "", consigne: "" };
     const div = document.createElement("div"); div.className = "admin-prog-item";
-    div.innerHTML = `<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;"><div><div style="font-size:13px;font-weight:500;color:var(--color-text-primary);">${item.time} — ${item.title}</div><div style="font-size:11px;color:var(--color-text-secondary);">${item.day}</div></div><button class="toggle ${st.unlocked ? "on-green" : "off"}" id="ptoggle-${item.id}" onclick="toggleProgItem('${item.id}')"></button></div><div class="api-url-row"><input class="api-url-input" id="purl-${item.id}" placeholder="URL ou consigne..." value="${st.url || st.consigne || ""}"><button class="api-url-save" onclick="saveProgItem('${item.id}')">OK</button></div>`;
+    const subItems = st.subItems || [];
+    const subHtml = subItems.map(function(sub, si) {
+      return '<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;padding:6px 8px;background:var(--color-background-secondary);border-radius:6px;border-left:3px solid ' + (sub.unlocked?"#3B6D11":"#888780") + ';">' +
+        '<button onclick="toggleSubItem(\''+item.id+'\','+si+')" style="width:32px;height:18px;border-radius:9px;border:none;cursor:pointer;background:' + (sub.unlocked?"#3B6D11":"#C8C7C2") + ';flex-shrink:0;"></button>' +
+        '<div style="flex:1;min-width:0;"><div style="font-size:12px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + sub.label + '</div>' +
+        (sub.url ? '<div style="font-size:10px;color:#534AB7;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + sub.url + '</div>' : '') + '</div>' +
+        '<button onclick="removeSubItem(\''+item.id+'\','+si+')" style="background:#E24B4A;color:white;border:none;border-radius:4px;padding:2px 6px;font-size:10px;cursor:pointer;">✕</button></div>';
+    }).join("");
+    div.innerHTML =
+      '<div style="font-size:13px;font-weight:500;color:var(--color-text-primary);margin-bottom:8px;">' + item.time + ' — ' + item.title + ' <span style="font-size:11px;color:var(--color-text-secondary);">' + item.day + '</span></div>' +
+      (subHtml ? '<div style="margin-bottom:8px;">' + subHtml + '</div>' : '<div style="font-size:11px;color:var(--color-text-secondary);margin-bottom:8px;font-style:italic;">Aucun sous-élément</div>') +
+      '<div style="display:flex;flex-direction:column;gap:4px;">' +
+      '<input class="api-url-input" id="plabel-' + item.id + '" placeholder="Nom (ex: Lien quiz, Consigne course...)" style="width:100%;padding:6px 8px;border:0.5px solid var(--color-border-secondary);border-radius:6px;font-size:11px;background:var(--color-background-primary);color:var(--color-text-primary);">' +
+      '<input class="api-url-input" id="purl-' + item.id + '" placeholder="URL (optionnel)" style="width:100%;padding:6px 8px;border:0.5px solid var(--color-border-secondary);border-radius:6px;font-size:11px;background:var(--color-background-primary);color:var(--color-text-primary);">' +
+      '<input class="api-url-input" id="pconsigne-' + item.id + '" placeholder="Consigne (optionnel)" style="width:100%;padding:6px 8px;border:0.5px solid var(--color-border-secondary);border-radius:6px;font-size:11px;background:var(--color-background-primary);color:var(--color-text-primary);">' +
+      '<button class="api-url-save" style="width:100%;" onclick="saveProgItem(\'' + item.id + '\')">+ Ajouter</button></div>';
     el.appendChild(div);
   });
 }
@@ -1816,6 +1865,35 @@ function attachEventListeners() {
 // ─── INIT ─────────────────────────────────────────────────
 document.getElementById("loading-screen").style.display = "none";
 document.getElementById("app").style.display = "block";
+
+// Auto-login from saved session
+(async function() {
+  const savedUser = localStorage.getItem("ss_user");
+  const savedAdmin = localStorage.getItem("ss_admin");
+  if (savedUser && PLAYERS[savedUser]) {
+    currentUser = savedUser;
+    currentUserData = PLAYERS[savedUser];
+    await initPlayer(savedUser);
+    document.getElementById("screen-login").classList.remove("active");
+    document.getElementById("screen-main").classList.add("active");
+    attachEventListeners();
+    startPlayerListeners();
+    secretHidden = true;
+    const secretEl = document.getElementById("my-secret");
+    if (secretEl) { secretEl.textContent = currentUserData.secret; secretEl.classList.add("blurred"); }
+    const hideBtn = document.getElementById("hide-btn");
+    if (hideBtn) hideBtn.innerHTML = '<i class="ti ti-eye"></i> Afficher';
+    const tname0 = teamNames[currentUserData.team] || "Groupe " + currentUserData.team;
+    const tc = getTC(currentUserData.team);
+    const headerEl = document.getElementById("home-header-area");
+    if (headerEl) headerEl.innerHTML = '<div style="display:flex;align-items:center;gap:10px;"><div style="width:40px;height:40px;border-radius:50%;background:'+tc.light+';color:'+tc.main+';display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;">'+currentUserData.initials+'</div><div><div style="font-size:14px;font-weight:500;color:var(--color-text-primary);">'+currentUserData.name+'</div><div class="header-team-name" style="font-size:11px;color:var(--color-text-secondary);margin-top:2px;">Mon équipe : <strong style="color:'+tc.main+';">'+tname0+'</strong></div></div></div>';
+  } else if (savedAdmin) {
+    currentAdminKey = savedAdmin;
+    document.getElementById("screen-login").classList.remove("active");
+    document.getElementById("screen-admin").classList.add("active");
+    startAdminListeners();
+  }
+})();
 
 // Enter on login
 document.getElementById("login-code").addEventListener("keydown", e => { if (e.key === "Enter") login(); });
