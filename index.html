@@ -418,19 +418,18 @@ body{font-family:var(--font-sans);background:var(--color-background-secondary);m
     <div id="players-list"></div>
   </div>
 
-  <div class="tab" id="tab-programme"><div id="programme-list"></div></div>
-  <div class="tab" id="tab-notifs"><div class="section-lbl">Notifications</div><div id="notifs-list"></div></div>
   <div class="tab" id="tab-feed"><div class="section-lbl">Feed live</div><div id="feed-list"></div></div>
   <div class="tab" id="tab-ranking">
     <div class="ranking-tabs">
       <button class="rtab-btn active" onclick="switchRankTab('individual')" id="rbtn-individual">Individuel</button>
-      <button class="rtab-btn" onclick="switchRankTab('team')" id="rbtn-team">Équipes</button>
+      <button class="rtab-btn" onclick="switchRankTab('team')" id="rbtn-team">Par équipe</button>
     </div>
-    <div class="rtab active" id="rtab-individual"><div id="ranking-individual"></div></div>
-    <div class="rtab" id="rtab-team"><div id="ranking-team"></div></div>
+    <div id="ranking-individual"></div>
+    <div id="ranking-team" style="display:none;"></div>
   </div>
-</div>
-</div>
+  <div class="tab" id="tab-programme"><div id="programme-list"></div></div>
+  <div class="tab" id="tab-notifs"><div class="section-lbl">Notifications</div><div id="notifs-list"></div></div>
+  <!-- notifs tab only -->
 
 <div id="toast" class="toast"></div>
 
