@@ -332,13 +332,16 @@ body{font-family:var(--font-sans);background:var(--color-background-secondary);m
   <div id="modal-buzz-list" class="modal-overlay" style="position:fixed;">
     <div class="modal">
       <h3 style="margin-bottom:10px;"><i class="ti ti-hand-stop" style="color:#E24B4A;"></i> Qui veux-tu buzzer ?</h3>
-      <div style="background:#FCEBEB;border-radius:8px;padding:10px 12px;margin-bottom:10px;font-size:12px;color:#A32D2D;line-height:1.5;">
-        <strong>Étape 1</strong> — Écris le secret que tu penses avoir trouvé :
-      </div>
-      <textarea id="buzz-secret-guess" placeholder="Je pense que ton secret est..." style="width:100%;padding:10px;border:0.5px solid var(--color-border-secondary);border-radius:8px;font-size:13px;min-height:70px;resize:none;margin-bottom:12px;background:var(--color-background-secondary);color:var(--color-text-primary);font-family:inherit;outline:none;"></textarea>
-      <div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:8px;"><strong>Étape 2</strong> — Choisis le joueur :</div>
+      <div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:8px;">Qui veux-tu buzzer ?</div>
       <input class="search-field" type="text" placeholder="🔍 Rechercher..." id="buzz-search" oninput="renderBuzzList()">
       <div id="buzz-player-list"></div>
+      <div id="buzz-secret-step" style="display:none;margin-top:12px;border-top:0.5px solid var(--color-border-secondary);padding-top:12px;">
+        <div style="background:#FCEBEB;border-radius:8px;padding:10px 12px;margin-bottom:10px;font-size:12px;color:#A32D2D;line-height:1.5;">
+          Tu vas buzzer <strong id="buzz-target-name"></strong> — quel est son secret ?
+        </div>
+        <textarea id="buzz-secret-guess" placeholder="Je pense que son secret est..." style="width:100%;padding:10px;border:0.5px solid var(--color-border-secondary);border-radius:8px;font-size:13px;min-height:70px;resize:none;margin-bottom:10px;background:var(--color-background-secondary);color:var(--color-text-primary);font-family:inherit;outline:none;"></textarea>
+        <button onclick="window.confirmBuzz()" style="width:100%;padding:12px;background:#E24B4A;color:white;border:none;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;">🔴 Buzzer !</button>
+      </div>
       <button class="modal-close" onclick="window.closeModalBuzz()">Annuler</button>
     </div>
   </div>
@@ -1073,6 +1076,7 @@ window.renderBuzzList = function() {
     // show all including self
     if (q && !p.name.toLowerCase().includes(q)) return;
     const tc = getTC(p.team);
+    if (key === currentUser) return; // Don't buzz yourself
     const confirmed = playerState?.buzzResults?.[key] === "confirmed";
     if (confirmed) return; // Already found — hide from buzz list
     const inQueue = gameState?.queue?.some(qq => qq.targetKey === key && qq.fromKey === currentUser);
@@ -1093,7 +1097,32 @@ window.renderBuzzList = function() {
   });
 };
 
-async function doBuzz(targetKey) {
+window.selectBuzzTarget = function(targetKey) {
+  const p = PLAYERS[targetKey]; if (!p) return;
+  const step = document.getElementById("buzz-secret-step");
+  const nameEl = document.getElementById("buzz-target-name");
+  if (step) step.style.display = "block";
+  if (nameEl) nameEl.textContent = p.name.split(" ")[0];
+  window._buzzTargetKey = targetKey;
+  if (step) step.scrollIntoView({ behavior: "smooth" });
+  document.querySelectorAll(".player-buzz-row").forEach(r => {
+    r.style.background = r.dataset.key === targetKey ? "var(--color-background-secondary)" : "";
+  });
+};
+
+window.confirmBuzz = async function() {
+  const targetKey = window._buzzTargetKey;
+  if (!targetKey) { showToast("Sélectionne d'abord un joueur !"); return; }
+  const guess = document.getElementById("buzz-secret-guess")?.value?.trim() || "";
+  if (!guess) { showToast("Écris le secret que tu penses avoir trouvé !"); return; }
+  document.getElementById("buzz-secret-guess").value = "";
+  const stepEl = document.getElementById("buzz-secret-step");
+  if (stepEl) stepEl.style.display = "none";
+  window._buzzTargetKey = null;
+  await doBuzz(targetKey, guess);
+};
+
+async function doBuzz(targetKey, guess) {
   closeModal("modal-buzz-list");
   const target = PLAYERS[targetKey];
   const fromName = currentUserData.name;
@@ -1325,9 +1354,10 @@ function renderRankingIndividual() {
     return { name: p.name, team: tname, color: tc.main, score: st?.tokens || 0, found: st?.secretsFound || 0 };
   }).sort((a, b) => b.score - a.score);
   el.innerHTML = ""; const medals = ["🥇","🥈","🥉"];
+  const allEqual = data.every(r => r.score === data[0]?.score && r.found === data[0]?.found);
   data.forEach((r, i) => {
     const div = document.createElement("div"); div.className = "ranking-item";
-    div.innerHTML = `<div class="rank-num">${medals[i]||i+1}</div><div class="rank-info"><div class="rank-name">${r.name}</div><div style="display:flex;align-items:center;gap:4px;margin-top:2px;"><span style="width:7px;height:7px;border-radius:50%;background:${r.color};display:inline-block;"></span><span class="rank-detail">${r.team} · ${r.found} secret(s)</span></div></div><div class="rank-score">${r.score}<span style="font-size:10px;color:var(--color-text-secondary);"> tkn</span></div>`;
+    div.innerHTML = `<div class="rank-num">${allEqual ? "—" : (medals[i]||i+1)}</div><div class="rank-info"><div class="rank-name">${r.name}</div><div style="display:flex;align-items:center;gap:4px;margin-top:2px;"><span style="width:7px;height:7px;border-radius:50%;background:${r.color};display:inline-block;"></span><span class="rank-detail">${r.team} · ${r.found} secret(s)</span></div></div><div class="rank-score">${r.score}<span style="font-size:10px;color:var(--color-text-secondary);"> tkn</span></div>`;
     el.appendChild(div);
   });
 }
@@ -1344,9 +1374,10 @@ function renderRankingTeam() {
     const tc = getTC(tid); return { name: teamNames[tid] || "Groupe "+tid, color: tc.main, light: tc.light, score: getTeamScore(tid) };
   }).sort((a, b) => b.score - a.score);
   el.innerHTML = ""; const medals = ["🥇","🥈","🥉"]; const max = data[0]?.score || 1;
+  const allTeamEqual = data.every(r => r.score === data[0]?.score && r.found === data[0]?.found);
   data.forEach((r, i) => {
     const div = document.createElement("div"); div.className = "ranking-item"; div.style.flexDirection = "column"; div.style.alignItems = "stretch";
-    div.innerHTML = `<div style="display:flex;align-items:center;gap:8px;"><div class="rank-num">${medals[i]||i+1}</div><div class="rank-info"><div class="rank-name" style="color:${r.color};">${r.name}</div></div><div class="rank-score">${r.score}<span style="font-size:10px;color:var(--color-text-secondary);"> tkn</span></div></div><div style="background:${r.light};border-radius:4px;height:5px;margin-top:8px;"><div style="height:100%;width:${Math.round((r.score/max)*100)}%;background:${r.color};border-radius:4px;transition:width 0.5s;"></div></div>`;
+    div.innerHTML = `<div style="display:flex;align-items:center;gap:8px;"><div class="rank-num">${allTeamEqual ? "—" : (medals[i]||i+1)}</div><div class="rank-info"><div class="rank-name" style="color:${r.color};">${r.name}</div></div><div class="rank-score">${r.score}<span style="font-size:10px;color:var(--color-text-secondary);"> tkn</span></div></div><div style="background:${r.light};border-radius:4px;height:5px;margin-top:8px;"><div style="height:100%;width:${Math.round((r.score/max)*100)}%;background:${r.color};border-radius:4px;transition:width 0.5s;"></div></div>`;
     el.appendChild(div);
   });
 }
@@ -1538,7 +1569,7 @@ window.resetAllPlayers = async function() {
     pendingResult: null, online: false
   };
   for (const key of Object.keys(PLAYERS)) {
-    await setDoc(playerRef(key), resetData);
+    await setDoc(playerRef(key), resetData); // setDoc creates or overwrites
   }
   // Reset shared game state
   await updateDoc(gameRef(), {
