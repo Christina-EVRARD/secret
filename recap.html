@@ -561,9 +561,11 @@ body {
           <thead><tr><th>Événement</th><th>Effet</th></tr></thead>
           <tbody>
             <tr><td>Départ</td><td class="token-val">3 tokens</td></tr>
-            <tr><td>Buzz confirmé</td><td class="token-pos">+5 tokens</td></tr>
-            <tr><td>Buzz nié</td><td class="token-neg">-3 tokens</td></tr>
-            <tr><td>Timeout 5 min</td><td class="token-neg">-3 tokens</td></tr>
+            <tr><td>✅ Buzz confirmé (buzzeur)</td><td class="token-pos">Cagnotte entière de la cible</td></tr>
+            <tr><td>😮 Secret découvert (cible)</td><td class="token-neg">0 → +3 tokens offerts</td></tr>
+            <tr><td>❌ Buzz nié (buzzeur)</td><td class="token-neg">-3 tokens transférés</td></tr>
+            <tr><td>❌ Buzz nié (cible)</td><td class="token-pos">+3 tokens reçus</td></tr>
+            <tr><td>⏱️ Timeout 5 min</td><td class="token-neg">-3 tokens (buzzeur)</td></tr>
             <tr><td>Épreuve gagnante</td><td class="token-pos">+4 à +8 tokens</td></tr>
           </tbody>
         </table>
@@ -574,8 +576,8 @@ body {
       <div class="rule-item">
         <div class="rule-icon ri-red">🔴</div>
         <div class="rule-content">
-          <div class="rule-title">Buzzer = engagement fort</div>
-          <div class="rule-desc">Buzzer est gratuit mais risqué. Si la personne nie, tu perds 3 tokens. Si le timer de 5 minutes expire sans réponse, tu perds aussi 3 tokens.</div>
+          <div class="rule-title">Buzzer = tout ou rien</div>
+          <div class="rule-desc">Si tu as raison → tu remportes <strong>toute la cagnotte</strong> de la personne. Si tu as tort → tu lui transfères 3 tokens. Si la cible perd tous ses tokens, elle reçoit automatiquement 3 tokens de consolation pour continuer à jouer.</div>
         </div>
       </div>
       <div class="rule-item">
@@ -636,6 +638,31 @@ body {
         <div class="card-icon">🕵️</div>
         <div class="card-title" style="display:flex;align-items:center;gap:8px;">Qui est-ce ? <span style="font-size:10px;font-weight:500;background:#854F0B;color:white;padding:2px 7px;border-radius:20px;">À discuter</span></div>
         <div class="card-desc">Jeu à organiser à la fin de la course d'orientation. Deviner des membres du groupe à partir d'indices. Selon l'ordre d'arrivée : tokens supplémentaires ou indices Secret Story offerts. Format exact à définir avec l'orga.</div>
+      </div>
+      <div class="card" style="border-left:3px dashed #185FA5;background:#F7FBFF;">
+        <div class="card-icon">🎨</div>
+        <div class="card-title" style="display:flex;align-items:center;gap:8px;">Jeu de dessin <span style="font-size:10px;font-weight:500;background:#185FA5;color:white;padding:2px 7px;border-radius:20px;">À discuter</span></div>
+        <div class="card-desc">On tire au sort un membre parmi les 60 et on le dessine. Les autres doivent deviner qui c'est. Peut se jouer en équipe pour gagner des tokens.</div>
+      </div>
+      <div class="card" style="border-left:3px dashed #0F6E56;background:#F8FCFB;">
+        <div class="card-icon">📸</div>
+        <div class="card-title" style="display:flex;align-items:center;gap:8px;">Jeu de la photo <span style="font-size:10px;font-weight:500;background:#0F6E56;color:white;padding:2px 7px;border-radius:20px;">À discuter</span></div>
+        <div class="card-desc">Chaque équipe reçoit la même photo ou tableau à reproduire en vrai, avec les membres de l'équipe qui jouent les personnages/éléments. L'équipe dont la reproduction est la plus fidèle gagne des tokens. Peut se faire plusieurs fois sur 2 jours avec des images différentes.</div>
+      </div>
+      <div class="card" style="border-left:3px dashed #E24B4A;background:#FFF7F7;">
+        <div class="card-icon">☎️</div>
+        <div class="card-title" style="display:flex;align-items:center;gap:8px;">Téléphone rouge <span style="font-size:10px;font-weight:500;background:#E24B4A;color:white;padding:2px 7px;border-radius:20px;">À discuter</span></div>
+        <div class="card-desc">
+          Le téléphone rouge sonne à n'importe quel moment du séminaire. Le premier à décrocher reçoit une bonne ou mauvaise nouvelle, gérée par l'admin :
+          <ul style="margin-top:8px;padding-left:16px;line-height:2;">
+            <li>Tu gagnes X tokens</li>
+            <li>Ton équipe perd X tokens</li>
+            <li>Tu offres un indice sur toi à une personne au hasard</li>
+            <li>Tu dévoiles un indice d'un autre joueur à tout le monde</li>
+            <li>Tu choisis quelqu'un qui perd X tokens</li>
+          </ul>
+          <div style="margin-top:8px;font-style:italic;color:var(--text2);">L'admin choisit le type d'événement et le déclenche depuis le panneau.</div>
+        </div>
       </div>
     </div>
   </div>
