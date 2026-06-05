@@ -1775,10 +1775,12 @@ window.switchTab = function(name) {
 };
 
 window.switchRankTab = function(n) {
-  document.querySelectorAll(".rtab").forEach(t => t.classList.remove("active"));
   document.querySelectorAll(".rtab-btn").forEach(b => b.classList.remove("active"));
-  document.getElementById("rtab-" + n).classList.add("active");
   document.getElementById("rbtn-" + n).classList.add("active");
+  const indiv = document.getElementById("ranking-individual");
+  const team = document.getElementById("ranking-team");
+  if (indiv) indiv.style.display = n === "individual" ? "block" : "none";
+  if (team) team.style.display = n === "team" ? "block" : "none";
 };
 
 window.switchAdminTab = function(n) {
