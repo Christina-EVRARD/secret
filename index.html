@@ -1296,7 +1296,7 @@ function renderPlayersTab() {
       div.style.borderLeft = `3px solid ${tc.main}`;
       const tname = teamNames[p.team] || "Groupe " + p.team;
       div.innerHTML = '<div class="av" style="background:'+tc.light+';color:'+tc.main+';">'+p.initials+'</div><div class="pinfo"><div class="pname">'+p.name+'</div><div style="font-size:11px;font-weight:500;color:'+tc.main+';margin-top:2px;">'+tname+'</div></div>'+badge;
-      if (!isSelf) div.onclick = () => openHintsModal(key);
+      if (key !== currentUser) div.onclick = () => openHintsModal(key);
       else div.style.opacity = "0.8";
       grp.appendChild(div);
     });
