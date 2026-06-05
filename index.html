@@ -331,10 +331,9 @@ body{font-family:var(--font-sans);background:var(--color-background-secondary);m
   </div>
   <div id="modal-buzz-list" class="modal-overlay" style="position:fixed;">
     <div class="modal">
-      <h3 style="margin-bottom:10px;"><i class="ti ti-hand-stop" style="color:#E24B4A;"></i> Qui veux-tu buzzer ?</h3>
-      <div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:8px;">Qui veux-tu buzzer ?</div>
+      <h3 style="margin-bottom:12px;"><i class="ti ti-hand-stop" style="color:#E24B4A;"></i> Qui veux-tu buzzer ?</h3>
       <input class="search-field" type="text" placeholder="🔍 Rechercher..." id="buzz-search" oninput="renderBuzzList()">
-      <div id="buzz-player-list"></div>
+      <div id="buzz-player-list" style="max-height:200px;overflow-y:auto;"></div>
       <div id="buzz-secret-step" style="display:none;margin-top:12px;border-top:0.5px solid var(--color-border-secondary);padding-top:12px;">
         <div style="background:#FCEBEB;border-radius:8px;padding:10px 12px;margin-bottom:10px;font-size:12px;color:#A32D2D;line-height:1.5;">
           Tu vas buzzer <strong id="buzz-target-name"></strong> — quel est son secret ?
@@ -873,7 +872,7 @@ function startPlayerListeners() {
     // Check for pending result popup (buzz confirmed/denied)
     if (playerState.pendingResult && (!prev?.pendingResult || playerState.pendingResult.ts !== prev?.pendingResult?.ts)) {
       const r = playerState.pendingResult;
-      showResultPopup(r.success, r.targetName, r.tokens);
+      showResultPopup(r.success, r.targetName, r.tokens, r);
       updateDoc(playerRef(currentUser), { pendingResult: null });
     }
     renderAll();
@@ -997,22 +996,29 @@ async function advanceBuzzQueue() {
 }
 
 // ─── BUZZ ─────────────────────────────────────────────────
-function showResultPopup(success, targetName, tokens) {
+function showResultPopup(success, targetName, tokens, extra) {
   const popup = document.getElementById("result-popup");
   const emoji = document.getElementById("result-popup-emoji");
   const title = document.getElementById("result-popup-title");
   const text = document.getElementById("result-popup-text");
   if (!popup) return;
-  if (success) {
+  if (extra?.isVictim) {
+    emoji.textContent = "😮";
+    title.style.color = "#E24B4A";
+    title.textContent = extra.winnerName + " a trouvé ton secret !";
+    text.innerHTML = extra.winnerName + " remporte ta cagnotte : <strong>" + extra.lostTokens + " tokens</strong>.<br><br>"
+      + "Mais la chasse n'est pas terminée... 🎯<br>"
+      + "Nous t'offrons <strong>3 tokens</strong> pour continuer !";
+  } else if (success) {
     emoji.textContent = "🎉";
     title.style.color = "#3B6D11";
-    title.textContent = "Bravo !";
-    text.textContent = "Tu as trouvé le secret de " + targetName + " et tu gagnes +" + tokens + " tokens !";
+    title.textContent = "Jackpot !";
+    text.innerHTML = "Tu as trouvé le secret de <strong>" + targetName + "</strong> et tu remportes sa cagnotte : <strong>+" + tokens + " tokens</strong> !";
   } else {
     emoji.textContent = "😬";
     title.style.color = "#E24B4A";
     title.textContent = "Dommage !";
-    text.textContent = "Ce n'était pas le bon secret de " + targetName + "... Tu perds " + tokens + " tokens.";
+    text.innerHTML = "Ce n'était pas le bon secret de <strong>" + targetName + "</strong>...<br>Tu lui transfères <strong>3 tokens</strong>.";
   }
   popup.style.display = "flex";
 }
@@ -1161,16 +1167,23 @@ window.respondBuzz = async function(idx, confirmed, fromKey, fromName) {
       const ost = await getDoc(playerRef(fromKey));
       if (ost.exists()) {
         const ostData = ost.data();
-        // Buzzer gains 3, target loses 3 (transfer)
+        // Buzzeur remporte TOUS les tokens de la cible
+        const targetTokens = ostData.tokens || 0;
         await updateDoc(playerRef(fromKey), {
-          tokens: (ostData.tokens || 0) + 3,
+          tokens: (ostData.tokens || 0) + targetTokens,
           secretsFound: (ostData.secretsFound || 0) + 1,
           [`buzzResults.${currentUser}`]: "confirmed"
         });
-        // Target loses 3
-        const myData = playerState;
+        // La cible tombe à 0 puis reçoit 3 tokens de consolation
         await updateDoc(playerRef(currentUser), {
-          tokens: Math.max(0, (myData.tokens || 0) - 3)
+          tokens: 3,
+          pendingResult: {
+            success: false,
+            isVictim: true,
+            winnerName: fname,
+            lostTokens: targetTokens,
+            ts: Date.now()
+          }
         });
       }
     }
@@ -1195,16 +1208,19 @@ window.respondBuzz = async function(idx, confirmed, fromKey, fromName) {
           tokens: Math.max(0, (ost.data().tokens || 0) - 3),
           [`buzzResults.${currentUser}`]: "denied"
         });
+        // Cible gagne 3 tokens (transfert)
+        await updateDoc(playerRef(currentUser), { notifs, tokens: Math.max(0, (playerState?.tokens || 0) + 3) });
+        await updateDoc(playerRef(currentUser), { notifs, tokens: Math.max(0, (playerState?.tokens || 0) + 3) });
       }
     }
-    const guessText2 = notifs[idx]?.guess ? " — \"" + notifs[idx].guess + "\"" : "";
     await addFeedItem("fi-fail", fname + " a buzzé " + currentUserData.name.split(" ")[0] + guessText2 + " → Nié ! (" + fname + " perd 3 tokens) [delta:-3]");
     showToast("Buzz nié !");
     if (PLAYERS[fromKey]) {
       await updateDoc(playerRef(fromKey), { pendingResult: { success: false, targetName: currentUserData.name, tokens: 3, ts: Date.now() } });
     }
   }
-  await updateDoc(playerRef(currentUser), { notifs });
+  // notifs already updated in denied branch above (if applicable)
+  if (confirmed) await updateDoc(playerRef(currentUser), { notifs });
   if (gameState?.activeBuzz?.fromKey === fromKey && gameState?.activeBuzz?.targetKey === currentUser) {
     await advanceBuzzQueue();
   }
