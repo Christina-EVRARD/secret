@@ -332,6 +332,11 @@ body{font-family:var(--font-sans);background:var(--color-background-secondary);m
   <div id="modal-buzz-list" class="modal-overlay" style="position:fixed;">
     <div class="modal">
       <h3 style="margin-bottom:10px;"><i class="ti ti-hand-stop" style="color:#E24B4A;"></i> Qui veux-tu buzzer ?</h3>
+      <div style="background:#FCEBEB;border-radius:8px;padding:10px 12px;margin-bottom:10px;font-size:12px;color:#A32D2D;line-height:1.5;">
+        <strong>Étape 1</strong> — Écris le secret que tu penses avoir trouvé :
+      </div>
+      <textarea id="buzz-secret-guess" placeholder="Je pense que ton secret est..." style="width:100%;padding:10px;border:0.5px solid var(--color-border-secondary);border-radius:8px;font-size:13px;min-height:70px;resize:none;margin-bottom:12px;background:var(--color-background-secondary);color:var(--color-text-primary);font-family:inherit;outline:none;"></textarea>
+      <div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:8px;"><strong>Étape 2</strong> — Choisis le joueur :</div>
       <input class="search-field" type="text" placeholder="🔍 Rechercher..." id="buzz-search" oninput="renderBuzzList()">
       <div id="buzz-player-list"></div>
       <button class="modal-close" onclick="window.closeModalBuzz()">Annuler</button>
@@ -349,9 +354,9 @@ body{font-family:var(--font-sans);background:var(--color-background-secondary);m
 
   <div style="display:flex;align-items:center;justify-content:space-between;padding:0.75rem 0;">
     <div id="home-header-area"></div>
-
+    <div id="home-header-area"></div>
+    <button onclick="window.logoutPlayer()" style="background:none;border:0.5px solid var(--color-border-secondary);border-radius:8px;padding:5px 10px;font-size:11px;cursor:pointer;color:var(--color-text-secondary);">Déco</button>
   </div>
-
   <div class="nav">
     <div class="nb-wrap"><button class="nb active" onclick="switchTab('home')" id="nav-home"><i class="ti ti-user"></i>Accueil</button></div>
     <div class="nb-wrap"><button class="nb" onclick="switchTab('players')" id="nav-players"><i class="ti ti-users"></i>Joueurs</button></div>
@@ -396,9 +401,9 @@ body{font-family:var(--font-sans);background:var(--color-background-secondary);m
     </div>
 
     <details style="margin-top:10px;">
-      <summary style="font-size:12px;font-weight:500;color:var(--color-text-secondary);cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:var(--color-background-secondary);border-radius:8px;user-select:none;">
+      <summary style="font-size:12px;font-weight:500;color:var(--color-text-secondary);cursor:pointer;display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:var(--color-background-secondary);border-radius:8px;user-select:none;">
         <span>📋 Mon activité</span>
-        <span style="font-size:10px;opacity:0.6;">Appuie pour déplier</span>
+        <span style="font-size:11px;opacity:0.7;">▶ Appuie pour déplier</span>
       </summary>
       <div style="margin-top:6px;">
         <div id="personal-feed-items" style="display:flex;flex-direction:column;gap:6px;">
@@ -800,6 +805,12 @@ window.logout = async function() {
   document.getElementById("login-code").value = "";
 };
 
+window.logoutPlayer = function() {
+  localStorage.removeItem("ss_user");
+  localStorage.removeItem("ss_admin");
+  location.reload();
+};
+
 window.logoutAdmin = function() {
   localStorage.removeItem("ss_user");
   localStorage.removeItem("ss_admin");
@@ -974,7 +985,9 @@ function showBuzzPopup(notif) {
   if (!popup || !txt) return;
   const fname = notif.fromName ? notif.fromName.split(" ")[0] : "Quelqu'un";
   if (titleEl) titleEl.textContent = fname + " pense avoir trouvé ton secret...";
-  txt.textContent = "A-t-il/elle raison ?";
+  if (notif.guess) {
+    txt.innerHTML = '<div style="font-size:13px;font-weight:500;padding:8px 12px;background:var(--color-background-secondary);border-radius:8px;margin-bottom:8px;">&ldquo;' + notif.guess + '&rdquo;</div><div style="font-size:13px;color:var(--color-text-secondary);">A-t-il/elle raison ?</div>';
+  } else { txt.textContent = "A-t-il/elle raison ?"; }
   const idx = (playerState?.notifs || []).findIndex(n => n.id === notif.id);
   window._pendingBuzz = { idx, fromKey: notif.fromKey, fromName: notif.fromName };
   popup.style.display = "flex";
@@ -1028,14 +1041,10 @@ window.renderBuzzList = function() {
     if (confirmed) return; // Already found — hide from buzz list
     const inQueue = gameState?.queue?.some(qq => qq.targetKey === key && qq.fromKey === currentUser);
     const isBuzzed = gameState?.activeBuzz?.targetKey === key;
-    const hintsUnlocked = playerState?.unlockedHints?.[key] || 0;
     let badge = '<i class="ti ti-chevron-right" style="color:var(--color-text-secondary);"></i>';
     const div = document.createElement("div");
     let disabled = false;
-    if (hintsUnlocked === 0) {
-      badge = '<span style="font-size:10px;color:#888;background:var(--color-background-secondary);padding:2px 6px;border-radius:20px;white-space:nowrap;">🔒 1 indice requis</span>';
-      disabled = true;
-    } else if (inQueue) { badge = '<span style="font-size:11px;color:#854F0B;background:#FAEEDA;padding:2px 7px;border-radius:20px;">File d\'attente</span>'; disabled = true; }
+    if (inQueue) { badge = '<span style="font-size:11px;color:#854F0B;background:#FAEEDA;padding:2px 7px;border-radius:20px;">File d\'attente</span>'; disabled = true; }
     div.className = "player-row";
     div.style.borderLeft = `3px solid ${tc.main}`;
     div.innerHTML = `<div class="av" style="background:${tc.light};color:${tc.main};">${p.initials}</div><div class="pinfo"><div class="pname">${p.name}</div><div class="pcomp">${p.company}${isBuzzed ? " · 🔴 actif" : ""}</div></div>${badge}`;
@@ -1084,14 +1093,21 @@ window.respondBuzz = async function(idx, confirmed, fromKey, fromName) {
       const ost = await getDoc(playerRef(fromKey));
       if (ost.exists()) {
         const ostData = ost.data();
+        // Buzzer gains 3, target loses 3 (transfer)
         await updateDoc(playerRef(fromKey), {
-          tokens: (ostData.tokens || 0) + 5,
+          tokens: (ostData.tokens || 0) + 3,
           secretsFound: (ostData.secretsFound || 0) + 1,
           [`buzzResults.${currentUser}`]: "confirmed"
         });
+        // Target loses 3
+        const myData = playerState;
+        await updateDoc(playerRef(currentUser), {
+          tokens: Math.max(0, (myData.tokens || 0) - 3)
+        });
       }
     }
-    await addFeedItem("fi-win", currentUserData.name.split(" ")[0] + " a confirmé son secret à " + fname + " ! +5 tokens [delta:+5]");
+    const guessText = notifs[idx]?.guess ? " — \"" + notifs[idx].guess + "\"" : "";
+    await addFeedItem("fi-win", fname + " a buzzé " + currentUserData.name.split(" ")[0] + guessText + " → Secret confirmé ! (+3 tokens) [delta:+3]");
     await updateDoc(gameRef(), { totalFound: (gameState?.totalFound || 0) + 1 });
     showToast("Secret confirmé !");
     // Notify the buzzer via their player doc
@@ -1099,7 +1115,7 @@ window.respondBuzz = async function(idx, confirmed, fromKey, fromName) {
       const ost2 = await getDoc(playerRef(fromKey));
       if (ost2.exists()) {
         const pd = ost2.data();
-        await updateDoc(playerRef(fromKey), { pendingResult: { success: true, targetName: currentUserData.name, tokens: 5, ts: Date.now() } });
+        await updateDoc(playerRef(fromKey), { pendingResult: { success: true, targetName: currentUserData.name, tokens: 3, ts: Date.now() } });
       }
     }
   } else {
@@ -1113,7 +1129,8 @@ window.respondBuzz = async function(idx, confirmed, fromKey, fromName) {
         });
       }
     }
-    await addFeedItem("fi-fail", currentUserData.name.split(" ")[0] + " a nié — " + fname + " perd -3 tokens [delta:-3]");
+    const guessText2 = notifs[idx]?.guess ? " — \"" + notifs[idx].guess + "\"" : "";
+    await addFeedItem("fi-fail", fname + " a buzzé " + currentUserData.name.split(" ")[0] + guessText2 + " → Nié ! (" + fname + " perd 3 tokens) [delta:-3]");
     showToast("Buzz nié !");
     if (PLAYERS[fromKey]) {
       await updateDoc(playerRef(fromKey), { pendingResult: { success: false, targetName: currentUserData.name, tokens: 3, ts: Date.now() } });
@@ -1932,7 +1949,7 @@ document.addEventListener("DOMContentLoaded", function() {
         <button id="buzz-popup-yes" onclick="window._respondBuzzYes()" style="width:80px;height:80px;background:none;border:none;font-size:52px;cursor:pointer;line-height:1;" onmousedown="this.style.transform='scale(0.9)'" onmouseup="this.style.transform='scale(1)'">✅</button>
         <button id="buzz-popup-no" onclick="window._respondBuzzNo()" style="width:80px;height:80px;background:none;border:none;font-size:52px;cursor:pointer;line-height:1;" onmousedown="this.style.transform='scale(0.9)'" onmouseup="this.style.transform='scale(1)'">❌</button>
       </div>
-      <button onclick="document.getElementById('buzz-popup').style.display='none'" style="width:100%;padding:10px;background:none;border:0.5px solid rgba(255,255,255,0.2);border-radius:10px;font-size:13px;color:rgba(255,255,255,0.5);cursor:pointer;">Plus tard</button>
+
       </div>
     </div>
 
