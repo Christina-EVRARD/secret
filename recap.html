@@ -915,6 +915,7 @@ body {
           <tr><td>Charline Blanchet</td><td style="font-size:12px;">charline.blanchet@demo.fr</td><td><span style="font-family:monospace;font-weight:600;background:#EEEDFE;color:#534AB7;padding:2px 8px;border-radius:6px;">CB2408</span></td><td style="font-size:12px;color:var(--color-text-secondary);">Guest Suite</td></tr>
           <tr><td>Sefian Aomari</td><td style="font-size:12px;">sefian.aomari@demo.fr</td><td><span style="font-family:monospace;font-weight:600;background:#EEEDFE;color:#534AB7;padding:2px 8px;border-radius:6px;">SA0101</span></td><td style="font-size:12px;color:var(--color-text-secondary);">Evermaps</td></tr>
           <tr><td>Sophie Renard</td><td style="font-size:12px;">sophie.renard@demo.fr</td><td><span style="font-family:monospace;font-weight:600;background:#EEEDFE;color:#534AB7;padding:2px 8px;border-radius:6px;">SR0101</span></td><td style="font-size:12px;color:var(--color-text-secondary);">Guest Suite</td></tr>
+          <tr><td>Pierre Fontaine</td><td style="font-size:12px;">pierre.fontaine@demo.fr</td><td><span style="font-family:monospace;font-weight:600;background:#EEEDFE;color:#534AB7;padding:2px 8px;border-radius:6px;">PF0101</span></td><td style="font-size:12px;color:var(--color-text-secondary);">Evermaps</td></tr>
         </tbody>
       </table>
     </div>
@@ -927,6 +928,7 @@ body {
           <tr><td>Christina Evrard</td><td style="font-size:12px;">christina.evrard@demo.fr</td><td><span style="font-family:monospace;font-weight:600;background:#E1F5EE;color:#0F6E56;padding:2px 8px;border-radius:6px;">KR1503</span></td><td style="font-size:12px;color:var(--color-text-secondary);">Evermaps</td></tr>
           <tr><td>Théo Dupont</td><td style="font-size:12px;">theo.dupont@demo.fr</td><td><span style="font-family:monospace;font-weight:600;background:#E1F5EE;color:#0F6E56;padding:2px 8px;border-radius:6px;">TD0102</span></td><td style="font-size:12px;color:var(--color-text-secondary);">Evermaps</td></tr>
           <tr><td>Marie Leclerc</td><td style="font-size:12px;">marie.leclerc@demo.fr</td><td><span style="font-family:monospace;font-weight:600;background:#E1F5EE;color:#0F6E56;padding:2px 8px;border-radius:6px;">ML0102</span></td><td style="font-size:12px;color:var(--color-text-secondary);">Guest Suite</td></tr>
+          <tr><td>Chloé Vasseur</td><td style="font-size:12px;">chloe.vasseur@demo.fr</td><td><span style="font-family:monospace;font-weight:600;background:#E1F5EE;color:#0F6E56;padding:2px 8px;border-radius:6px;">CV0102</span></td><td style="font-size:12px;color:var(--color-text-secondary);">Guest Suite</td></tr>
         </tbody>
       </table>
     </div>
@@ -977,22 +979,25 @@ body {
       </summary>
       <div style="margin-top:8px;display:flex;flex-direction:column;gap:8px;" id="tests-joueur">
         <div class="check-item" data-id="t1"><div class="check-box todo" onclick="toggleCheck('t1')">○</div><span class="check-text">Se connecter avec un compte joueur (email + code)</span></div>
-        <div class="check-item" data-id="t2"><div class="check-box todo" onclick="toggleCheck('t2')">○</div><span class="check-text">Vérifier que le secret est caché par défaut et que le bouton Afficher fonctionne</span></div>
-        <div class="check-item" data-id="t3"><div class="check-box todo" onclick="toggleCheck('t3')">○</div><span class="check-text">Fermer et rouvrir l'appli → vérifier qu'on est toujours connecté (session persistante)</span></div>
-        <div class="check-item" data-id="t4"><div class="check-box todo" onclick="toggleCheck('t4')">○</div><span class="check-text">Acheter un indice sur un autre joueur → vérifier la déduction de tokens</span></div>
-        <div class="check-item" data-id="t5"><div class="check-box todo" onclick="toggleCheck('t5')">○</div><span class="check-text">Vérifier qu'on ne peut pas buzzer sans avoir acheté au moins 1 indice (bouton grisé)</span></div>
-        <div class="check-item" data-id="t6"><div class="check-box todo" onclick="toggleCheck('t6')">○</div><span class="check-text">Vérifier qu'on ne peut pas buzzer avec moins de 3 tokens (toast d'erreur)</span></div>
-        <div class="check-item" data-id="t7"><div class="check-box todo" onclick="toggleCheck('t7')">○</div><span class="check-text">Buzzer un joueur → vérifier que la pop-up s'affiche sur le téléphone de la cible</span></div>
-        <div class="check-item" data-id="t8"><div class="check-box todo" onclick="toggleCheck('t8')">○</div><span class="check-text">La cible répond "Oui" → vérifier +5 tokens pour le buzzeur, pop-up résultat reçue</span></div>
-        <div class="check-item" data-id="t9"><div class="check-box todo" onclick="toggleCheck('t9')">○</div><span class="check-text">La cible répond "Non" → vérifier -3 tokens pour le buzzeur, pop-up résultat reçue</span></div>
-        <div class="check-item" data-id="t10"><div class="check-box todo" onclick="toggleCheck('t10')">○</div><span class="check-text">La cible clique "Plus tard" → pop-up disparaît, notif accessible dans Mon activité</span></div>
-        <div class="check-item" data-id="t11"><div class="check-box todo" onclick="toggleCheck('t11')">○</div><span class="check-text">Vérifier que le timer 5 min s'affiche et que le buzzer est grisé pendant un buzz actif</span></div>
-        <div class="check-item" data-id="t12"><div class="check-box todo" onclick="toggleCheck('t12')">○</div><span class="check-text">Secret déjà trouvé → joueur n'apparaît plus dans la liste buzzer + badge "Secret trouvé" dans Joueurs</span></div>
-        <div class="check-item" data-id="t13"><div class="check-box todo" onclick="toggleCheck('t13')">○</div><span class="check-text">Vérifier "Mon activité" → toutes les actions apparaissent avec delta tokens et solde</span></div>
-        <div class="check-item" data-id="t14"><div class="check-box todo" onclick="toggleCheck('t14')">○</div><span class="check-text">Vérifier le Feed → toutes les actions de tous les joueurs apparaissent</span></div>
-        <div class="check-item" data-id="t15"><div class="check-box todo" onclick="toggleCheck('t15')">○</div><span class="check-text">Vérifier le classement Top → individuel et par équipe mis à jour en temps réel</span></div>
-        <div class="check-item" data-id="t16"><div class="check-box todo" onclick="toggleCheck('t16')">○</div><span class="check-text">Vérifier le Programme → toutes les activités visibles, sous-éléments verrouillés/déverrouillés</span></div>
-        <div class="check-item" data-id="t17"><div class="check-box todo" onclick="toggleCheck('t17')">○</div><span class="check-text">Tester avec 2 téléphones en simultané → tout se synchronise en temps réel</span></div>
+        <div class="check-item" data-id="t2"><div class="check-box todo" onclick="toggleCheck('t2')">○</div><span class="check-text">Secret caché par défaut au login → bouton Afficher fonctionne sur toute la surface</span></div>
+        <div class="check-item" data-id="t3"><div class="check-box todo" onclick="toggleCheck('t3')">○</div><span class="check-text">Fermer et rouvrir l'appli → toujours connecté (session persistante), tokens inchangés</span></div>
+        <div class="check-item" data-id="t4"><div class="check-box todo" onclick="toggleCheck('t4')">○</div><span class="check-text">Acheter un indice → déduction de tokens, indice visible, pas possible si secret déjà trouvé</span></div>
+        <div class="check-item" data-id="t5"><div class="check-box todo" onclick="toggleCheck('t5')">○</div><span class="check-text">Vérifier qu'on ne peut pas buzzer avec moins de 3 tokens (bouton grisé + toast)</span></div>
+        <div class="check-item" data-id="t6"><div class="check-box todo" onclick="toggleCheck('t6')">○</div><span class="check-text">Buzzer : sélectionner un joueur → champ "quel est son secret ?" apparaît → bouton Buzzer !</span></div>
+        <div class="check-item" data-id="t7"><div class="check-box todo" onclick="toggleCheck('t7')">○</div><span class="check-text">Le feed affiche pour tous : "X pense avoir trouvé le secret de Y : [texte du secret deviné]"</span></div>
+        <div class="check-item" data-id="t8"><div class="check-box todo" onclick="toggleCheck('t8')">○</div><span class="check-text">Timer 5 min visible UNIQUEMENT pour le buzzeur et la cible (pas pour les autres)</span></div>
+        <div class="check-item" data-id="t9"><div class="check-box todo" onclick="toggleCheck('t9')">○</div><span class="check-text">La cible reçoit la pop-up avec le secret deviné affiché → ✅ ou ❌</span></div>
+        <div class="check-item" data-id="t10"><div class="check-box todo" onclick="toggleCheck('t10')">○</div><span class="check-text">✅ Buzz confirmé → buzzeur remporte TOUTE la cagnotte, cible tombe à 0 puis reçoit 3 tokens + message de consolation</span></div>
+        <div class="check-item" data-id="t11"><div class="check-box todo" onclick="toggleCheck('t11')">○</div><span class="check-text">❌ Buzz nié → buzzeur perd 3 tokens transférés à la cible</span></div>
+        <div class="check-item" data-id="t12"><div class="check-box todo" onclick="toggleCheck('t12')">○</div><span class="check-text">Pop-up résultat reçue par le buzzeur après réponse de la cible</span></div>
+        <div class="check-item" data-id="t13"><div class="check-box todo" onclick="toggleCheck('t13')">○</div><span class="check-text">Secret trouvé → joueur disparaît de la liste buzz + badge "Secret trouvé 🔓" dans Joueurs</span></div>
+        <div class="check-item" data-id="t14"><div class="check-box todo" onclick="toggleCheck('t14')">○</div><span class="check-text">"Mon activité" (déplié par défaut) → actions avec delta tokens +/-</span></div>
+        <div class="check-item" data-id="t15"><div class="check-box todo" onclick="toggleCheck('t15')">○</div><span class="check-text">Feed → toutes les actions visibles pour tout le monde en temps réel</span></div>
+        <div class="check-item" data-id="t16"><div class="check-box todo" onclick="toggleCheck('t16')">○</div><span class="check-text">Top individuel et équipe → classement par secrets découverts d'abord, tokens ensuite. Tiret — quand tout le monde est à égalité</span></div>
+        <div class="check-item" data-id="t17"><div class="check-box todo" onclick="toggleCheck('t17')">○</div><span class="check-text">Top → se met à jour en temps réel pour tous les joueurs</span></div>
+        <div class="check-item" data-id="t18"><div class="check-box todo" onclick="toggleCheck('t18')">○</div><span class="check-text">Programme → toutes les activités visibles et cliquables, sous-éléments verrouillés/déverrouillés par admin</span></div>
+        <div class="check-item" data-id="t19"><div class="check-box todo" onclick="toggleCheck('t19')">○</div><span class="check-text">Se voir soi-même dans la liste Joueurs avec badge "Moi" (non cliquable)</span></div>
+        <div class="check-item" data-id="t20"><div class="check-box todo" onclick="toggleCheck('t20')">○</div><span class="check-text">Tester avec 2 téléphones → tout synchronisé en temps réel</span></div>
       </div>
     </details>
 
@@ -1003,17 +1008,18 @@ body {
         <span style="font-size:12px;color:var(--text2);font-weight:400;">Déplier / replier</span>
       </summary>
       <div style="margin-top:8px;display:flex;flex-direction:column;gap:8px;" id="tests-admin">
-        <div class="check-item" data-id="ta1"><div class="check-box todo" onclick="toggleCheck('ta1')">○</div><span class="check-text">Se connecter avec un compte admin (charline.blanchet@guestapp.me / ADMIN01)</span></div>
-        <div class="check-item" data-id="ta2"><div class="check-box todo" onclick="toggleCheck('ta2')">○</div><span class="check-text">Attribuer des tokens à un joueur individuel → vérifier mise à jour en temps réel</span></div>
-        <div class="check-item" data-id="ta3"><div class="check-box todo" onclick="toggleCheck('ta3')">○</div><span class="check-text">Attribuer des tokens à toute une équipe → vérifier que tous les membres sont mis à jour</span></div>
-        <div class="check-item" data-id="ta4"><div class="check-box todo" onclick="toggleCheck('ta4')">○</div><span class="check-text">Bloquer le buzzer → vérifier que le bouton est grisé pour tous les joueurs</span></div>
-        <div class="check-item" data-id="ta5"><div class="check-box todo" onclick="toggleCheck('ta5')">○</div><span class="check-text">Bloquer l'appli avec un message → vérifier que le message s'affiche sur tous les téléphones</span></div>
-        <div class="check-item" data-id="ta6"><div class="check-box todo" onclick="toggleCheck('ta6')">○</div><span class="check-text">Renommer une équipe → vérifier que le nouveau nom apparaît partout en temps réel</span></div>
-        <div class="check-item" data-id="ta7"><div class="check-box todo" onclick="toggleCheck('ta7')">○</div><span class="check-text">Programme → ajouter un sous-élément (nom + URL) à une activité</span></div>
-        <div class="check-item" data-id="ta8"><div class="check-box todo" onclick="toggleCheck('ta8')">○</div><span class="check-text">Programme → déverrouiller un sous-élément → vérifier qu'il apparaît côté joueur</span></div>
-        <div class="check-item" data-id="ta9"><div class="check-box todo" onclick="toggleCheck('ta9')">○</div><span class="check-text">Réinitialiser tous les joueurs (démo) → vérifier retour à 3 tokens, feed vidé</span></div>
-        <div class="check-item" data-id="ta10"><div class="check-box todo" onclick="toggleCheck('ta10')">○</div><span class="check-text">Vérifier les stats live → nombre de buzzes, secrets trouvés, tokens distribués</span></div>
-        <div class="check-item" data-id="ta11"><div class="check-box todo" onclick="toggleCheck('ta11')">○</div><span class="check-text">Vider la file d'attente buzzer si nécessaire</span></div>
+        <div class="check-item" data-id="ta1"><div class="check-box todo" onclick="toggleCheck('ta1')">○</div><span class="check-text">Se connecter admin depuis un compte joueur → session joueur effacée automatiquement</span></div>
+        <div class="check-item" data-id="ta2"><div class="check-box todo" onclick="toggleCheck('ta2')">○</div><span class="check-text">Attribuer des tokens à un joueur individuel → mise à jour temps réel</span></div>
+        <div class="check-item" data-id="ta3"><div class="check-box todo" onclick="toggleCheck('ta3')">○</div><span class="check-text">Attribuer des tokens à toute une équipe → tous les membres mis à jour</span></div>
+        <div class="check-item" data-id="ta4"><div class="check-box todo" onclick="toggleCheck('ta4')">○</div><span class="check-text">Bloquer le buzzer → bouton grisé 🔒 pour tous → débloquer → bouton rouge restauré</span></div>
+        <div class="check-item" data-id="ta5"><div class="check-box todo" onclick="toggleCheck('ta5')">○</div><span class="check-text">Bloquer l'appli → message affiché → débloquer → bouton buzzer restauré (plus "Appli en pause")</span></div>
+        <div class="check-item" data-id="ta6"><div class="check-box todo" onclick="toggleCheck('ta6')">○</div><span class="check-text">Renommer une équipe → nouveau nom partout en temps réel (header joueur, liste, top)</span></div>
+        <div class="check-item" data-id="ta7"><div class="check-box todo" onclick="toggleCheck('ta7')">○</div><span class="check-text">Programme → ajouter un sous-élément avec nom + URL + consigne</span></div>
+        <div class="check-item" data-id="ta8"><div class="check-box todo" onclick="toggleCheck('ta8')">○</div><span class="check-text">Programme → toggle verrou sur sous-élément → visible/masqué côté joueur en temps réel</span></div>
+        <div class="check-item" data-id="ta9"><div class="check-box todo" onclick="toggleCheck('ta9')">○</div><span class="check-text">Réinitialiser tous les joueurs → 3 tokens, feed vidé, buzzes effacés (tous les docs créés)</span></div>
+        <div class="check-item" data-id="ta10"><div class="check-box todo" onclick="toggleCheck('ta10')">○</div><span class="check-text">Stats live → nb joueurs connectés, secrets trouvés, tokens distribués</span></div>
+        <div class="check-item" data-id="ta11"><div class="check-box todo" onclick="toggleCheck('ta11')">○</div><span class="check-text">Vider la file d'attente buzzer</span></div>
+        <div class="check-item" data-id="ta12"><div class="check-box todo" onclick="toggleCheck('ta12')">○</div><span class="check-text">Bouton Déco joueur → retour à l'écran de login, session effacée</span></div>
       </div>
     </details>
 
