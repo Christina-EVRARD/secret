@@ -863,6 +863,7 @@ function startPlayerListeners() {
     if (!snap.exists()) return;
     const prev = playerState;
     playerState = snap.data();
+    allPlayerStates[currentUser] = playerState; // keep allPlayerStates in sync
     const prevCount = (prev?.notifs || []).filter(n => !n.read && !n.resolved).length;
     const newCount = (playerState.notifs || []).filter(n => !n.read && !n.resolved).length;
     if (newCount > prevCount) {
@@ -1083,7 +1084,8 @@ window.renderBuzzList = function() {
     if (q && !p.name.toLowerCase().includes(q)) return;
     const tc = getTC(p.team);
     if (key === currentUser) return; // Don't buzz yourself
-    const confirmed = playerState?.buzzResults?.[key] === "confirmed";
+    const myState = playerState || allPlayerStates[currentUser] || {};
+    const confirmed = myState?.buzzResults?.[key] === "confirmed";
     if (confirmed) return; // Already found — hide from buzz list
     const inQueue = gameState?.queue?.some(qq => qq.targetKey === key && qq.fromKey === currentUser);
     const isBuzzed = gameState?.activeBuzz?.targetKey === key;
@@ -1169,8 +1171,9 @@ window.respondBuzz = async function(idx, confirmed, fromKey, fromName) {
         const ostData = ost.data();
         // Buzzeur remporte TOUS les tokens de la cible
         const targetTokens = ostData.tokens || 0;
+        const buzzeurCurrentTokens = (await getDoc(playerRef(fromKey))).data()?.tokens || 0;
         await updateDoc(playerRef(fromKey), {
-          tokens: (ostData.tokens || 0) + targetTokens,
+          tokens: buzzeurCurrentTokens + targetTokens,
           secretsFound: (ostData.secretsFound || 0) + 1,
           [`buzzResults.${currentUser}`]: "confirmed"
         });
@@ -1365,7 +1368,7 @@ function renderPlayersTab() {
 function renderRankingIndividual() {
   const el = document.getElementById("ranking-individual"); if (!el) return;
   const data = Object.entries(PLAYERS).map(([k, p]) => {
-    const st = k === currentUser ? playerState : allPlayerStates[k];
+    const st = allPlayerStates[k] || (k === currentUser ? playerState : null);
     const tc = getTC(p.team); const tname = teamNames[p.team] || "Groupe " + p.team;
     return { name: p.name, team: tname, color: tc.main, score: st?.tokens || 0, found: st?.secretsFound || 0 };
   }).sort((a, b) => b.score - a.score);
@@ -1380,7 +1383,7 @@ function renderRankingIndividual() {
 
 function getTeamScore(tid) {
   return Object.entries(PLAYERS).filter(([, p]) => p.team === tid)
-    .reduce((sum, [k]) => sum + ((k === currentUser ? playerState?.tokens : allPlayerStates[k]?.tokens) || 0), 0);
+    .reduce((sum, [k]) => sum + ((allPlayerStates[k]?.tokens) || 0), 0);
 }
 
 function renderRankingTeam() {
