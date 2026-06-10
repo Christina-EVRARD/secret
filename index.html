@@ -393,7 +393,7 @@ body{font-family:var(--font-sans);background:var(--color-background-secondary);m
     <button id="buzz-main-btn" onclick="(window.openBuzzModal||function(){})()" style="width:100px;height:100px;border-radius:50%;background:#E24B4A;border:none;cursor:pointer;display:block;margin:0 auto 12px;box-shadow:0 6px 24px rgba(226,75,74,0.5);transition:transform 0.1s,box-shadow 0.1s;" onmousedown="this.style.transform='scale(0.95)';this.style.boxShadow='0 2px 10px rgba(226,75,74,0.4)'" onmouseup="this.style.transform='scale(1)';this.style.boxShadow='0 6px 24px rgba(226,75,74,0.5)'">
   <div style="width:60px;height:60px;border-radius:50%;background:rgba(255,255,255,0.15);margin:0 auto;"></div>
 </button>
-<div style="text-align:center;font-size:12px;color:var(--color-text-secondary);margin-bottom:12px;letter-spacing:1px;text-transform:uppercase;">Buzzer</div>
+<div style="text-align:center;font-size:12px;color:var(--color-text-secondary);margin-bottom:12px;letter-spacing:1px;text-transform:uppercase;" id="buzz-btn-label">Buzzer</div>
 
     <div class="how-to">
       <div><i class="ti ti-bulb" style="color:#534AB7;"></i> Achète des indices sur les autres joueurs</div>
@@ -1462,8 +1462,9 @@ function renderHomeScores() {
 
 function updateBuzzBtn() {
   const btn = document.getElementById("buzz-main-btn"); if (!btn) return;
-  if (gameState?.appBlocked) { btn.style.opacity="0.5"; btn.style.pointerEvents="none"; btn.textContent = "⛔ Appli en pause"; btn.style.background="#888780"; }
-  else if (gameState?.buzzBlocked) { btn.style.opacity="0.5"; btn.style.pointerEvents="none"; btn.textContent = "🔒 Buzzer bloqué"; btn.style.background="#888780"; }
+  if (!btn._origHTML) btn._origHTML = btn.innerHTML;
+  if (gameState?.appBlocked) { btn.style.opacity="0.5"; btn.style.pointerEvents="none"; btn.style.background="#888780"; btn.innerHTML = '<div style="width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,0.15);margin:0 auto;display:flex;align-items:center;justify-content:center;font-size:18px;">⛔</div>'; const lbl=document.getElementById('buzz-btn-label'); if(lbl) lbl.textContent='Appli en pause'; }
+  else if (gameState?.buzzBlocked) { btn.style.opacity="0.5"; btn.style.pointerEvents="none"; btn.style.background="#888780"; btn.innerHTML = '<div style="width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,0.15);margin:0 auto;display:flex;align-items:center;justify-content:center;font-size:18px;">🔒</div>'; const lbl2=document.getElementById('buzz-btn-label'); if(lbl2) lbl2.textContent='Buzzer bloqué'; }
   else {
     const ab = gameState?.activeBuzz;
     const rem2 = ab ? Math.max(0, Math.floor((ab.endTs - Date.now()) / 1000)) : 0;
@@ -1480,6 +1481,8 @@ function updateBuzzBtn() {
       btn.style.opacity="1"; btn.style.pointerEvents="auto"; btn.style.background="#E24B4A";
       btn.style.boxShadow="0 6px 24px rgba(226,75,74,0.5)";
       btn.title="";
+      // Restore inner circle if text was overwritten
+      if (btn.innerHTML !== btn._origHTML && btn._origHTML) btn.innerHTML = btn._origHTML; const lbl3=document.getElementById('buzz-btn-label'); if(lbl3) lbl3.textContent='Buzzer';
     }
   }
   const banner = document.getElementById("app-blocked-banner");
