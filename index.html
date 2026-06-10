@@ -1088,14 +1088,17 @@ window.renderBuzzList = function() {
     const confirmed = myState?.buzzResults?.[key] === "confirmed";
     if (confirmed) return; // Already found — hide from buzz list
     const inQueue = gameState?.queue?.some(qq => qq.targetKey === key && qq.fromKey === currentUser);
-    const isBuzzed = gameState?.activeBuzz?.targetKey === key;
+    const activeBuzz = gameState?.activeBuzz;
+    const rem = activeBuzz ? Math.max(0, Math.floor((activeBuzz.endTs - Date.now()) / 1000)) : 0;
+    const isBuzzed = activeBuzz?.targetKey === key && rem > 0;
     const isSelf = key === currentUser;
     let badge = isSelf
       ? "<span style=\"font-size:10px;font-weight:500;color:#534AB7;background:#EEEDFE;padding:2px 8px;border-radius:20px;\">Moi</span>"
       : '<i class="ti ti-chevron-right" style="color:var(--color-text-secondary);"></i>';
     const div = document.createElement("div");
     let disabled = false;
-    if (inQueue) { badge = '<span style="font-size:11px;color:#854F0B;background:#FAEEDA;padding:2px 7px;border-radius:20px;">File d\'attente</span>'; disabled = true; }
+    if (isBuzzed) { badge = '<span style="font-size:10px;font-weight:500;color:#A32D2D;background:#FCEBEB;padding:2px 8px;border-radius:20px;white-space:nowrap;">🔴 Buzz en cours</span>'; disabled = true; }
+    else if (inQueue) { badge = '<span style="font-size:11px;color:#854F0B;background:#FAEEDA;padding:2px 7px;border-radius:20px;">File d\'attente</span>'; disabled = true; }
     div.className = "player-row";
     div.style.borderLeft = `3px solid ${tc.main}`;
     div.innerHTML = `<div class="av" style="background:${tc.light};color:${tc.main};">${p.initials}</div><div class="pinfo"><div class="pname">${p.name}</div><div class="pcomp">${p.company}${isBuzzed ? " · 🔴 actif" : ""}</div></div>${badge}`;
@@ -1225,6 +1228,8 @@ window.respondBuzz = async function(idx, confirmed, fromKey, fromName) {
   // notifs already updated in denied branch above (if applicable)
   if (confirmed) await updateDoc(playerRef(currentUser), { notifs });
   if (gameState?.activeBuzz?.fromKey === fromKey && gameState?.activeBuzz?.targetKey === currentUser) {
+    // Clear activeBuzz immediately so timer stops for everyone
+    await updateDoc(gameRef(), { activeBuzz: null });
     await advanceBuzzQueue();
   }
   
@@ -1667,7 +1672,7 @@ function renderTeamRenameList() {
     div.style.cssText = "background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:10px;padding:12px;margin-bottom:8px;border-left:3px solid " + tc.main + ";";
     div.innerHTML =
       '<div style="font-size:11px;color:'+tc.main+';font-weight:500;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.4px;">Groupe '+tid+'</div>' +
-      '<div class="team-rename-row" style="margin-bottom:10px;"><input class="team-rename-input" id="team-rename-'+tid+'" placeholder="Nom de votre équipe..." value="'+currentName+'"><button class="team-rename-btn" style="background:'+tc.main+';" onclick="renameTeam(&apos;"+tid+"&apos;)">OK</button></div>' +
+      '<div class="team-rename-row" style="margin-bottom:10px;"><input class="team-rename-input" id="team-rename-'+tid+'" placeholder="Nom de votre équipe..." value="'+currentName+'"><button class="team-rename-btn" style="background:'+tc.main+';" id="rename-btn-'+tid+'">OK</button></div>' +
       '<details style="cursor:pointer;">' +
       '<summary style="font-size:12px;color:var(--color-text-secondary);list-style:none;display:flex;align-items:center;gap:4px;user-select:none;">' +
       '<i class="ti ti-users" style="font-size:13px;"></i> ' + members.length + ' membre' + (members.length > 1 ? 's' : '') +
