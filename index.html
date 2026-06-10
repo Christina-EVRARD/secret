@@ -728,7 +728,7 @@ async function initGame() {
   if (!snap.exists()) {
     await setDoc(gameRef(), {
       activeBuzz: null, queue: [], appBlocked: false, buzzBlocked: false,
-      blockMessage: "Cours d'orientation en cours — à tout à l'heure !",
+      blockMessage: "Appli en pause",
       programme: PROGRAMME.map(p => ({ id: p.id, unlocked: true, url: "", consigne: "", subItems: [] })),
       awardHistory: [], teamNames: { ...DEFAULT_TEAM_NAMES },
       totalBuzzes: 0, totalFound: 0
@@ -1491,7 +1491,7 @@ function updateBuzzBtn() {
     }
   }
   const banner = document.getElementById("app-blocked-banner");
-  if (banner) { banner.style.display = gameState?.appBlocked ? "block" : "none"; const m = document.getElementById("block-msg-display"); if (m) m.textContent = gameState?.blockMessage || "Pause en cours"; }
+  if (banner) { banner.style.display = gameState?.appBlocked ? "block" : "none"; const m = document.getElementById("block-msg-display"); if (m) m.textContent = gameState?.blockMessage || "Appli en pause"; }
 }
 
 function renderPersonalFeed() {
@@ -1550,14 +1550,26 @@ function renderPersonalFeed() {
 
 function renderAll() {
   if (!currentUser) return;
+  // Lock UI when app is blocked
+  const nav = document.querySelector(".nav");
+  if (gameState?.appBlocked) {
+    // Hide nav, force home tab, show only banner
+    if (nav) nav.style.display = "none";
+    document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+    const homeTab = document.getElementById("tab-home");
+    if (homeTab) homeTab.classList.add("active");
+  } else {
+    if (nav) nav.style.display = "";
+  }
   renderHomeScores();
-  renderPlayersTab();
-  renderProgramme();
-  renderRankingIndividual();
-  renderRankingTeam();
-  renderNotifs();
-  renderNotifs();
-  renderPersonalFeed();
+  if (!gameState?.appBlocked) {
+    renderPlayersTab();
+    renderProgramme();
+    renderRankingIndividual();
+    renderRankingTeam();
+    renderNotifs();
+    renderPersonalFeed();
+  }
   updateBuzzBtn();
 }
 // ─── ADMIN FONCTIONS ──────────────────────────────────────
