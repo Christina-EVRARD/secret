@@ -947,11 +947,11 @@ function updateTimerUI() {
       lbl.textContent = m + ":" + (s < 10 ? "0" : "") + s;
       const isEm = gameState.activeBuzz.fromKey === currentUser;
       const isTg = gameState.activeBuzz.targetKey === currentUser;
+      if (!isEm && !isTg) { wrap.style.display = "none"; updateBuzzBtn(); return; }
       const titleEl = document.getElementById("active-buzz-title");
-      if (titleEl) titleEl.textContent = isEm ? "⚡ Tu as buzzé !" : isTg ? "Tu as été buzzé·e !" : "⚡ Buzzer actif";
-      if (isEm) { desc.textContent = "Tu as buzzé " + gameState.activeBuzz.targetName + " — vas le/la voir maintenant !"; }
-      else if (isTg) { desc.textContent = gameState.activeBuzz.fromName + " pense avoir trouvé ton secret !"; }
-      else { desc.textContent = gameState.activeBuzz.fromName.split(" ")[0] + " a buzzé " + gameState.activeBuzz.targetName.split(" ")[0]; }
+      if (titleEl) titleEl.textContent = isEm ? "⚡ Tu as buzzé !" : "🔴 Tu as été buzzé·e !";
+      if (isEm) { desc.textContent = "Tu as buzzé " + gameState.activeBuzz.targetName + " — vas la/le voir maintenant !"; }
+      else { desc.textContent = gameState.activeBuzz.fromName + " pense avoir trouvé ton secret !"; }
     } else {
       wrap.style.display = "none";
     }
@@ -1099,7 +1099,7 @@ window.renderBuzzList = function() {
     div.className = "player-row";
     div.style.borderLeft = `3px solid ${tc.main}`;
     div.innerHTML = `<div class="av" style="background:${tc.light};color:${tc.main};">${p.initials}</div><div class="pinfo"><div class="pname">${p.name}</div><div class="pcomp">${p.company}${isBuzzed ? " · 🔴 actif" : ""}</div></div>${badge}`;
-    if (!disabled) div.onclick = () => doBuzz(key);
+    if (!disabled) div.onclick = () => selectBuzzTarget(key);
     else { div.style.opacity = "0.55"; div.style.cursor = "default"; }
     el.appendChild(div);
   });
@@ -1155,7 +1155,7 @@ async function doBuzz(targetKey, guess) {
       await updateDoc(playerRef(targetKey), { notifs, buzzedBy: (ost.data().buzzedBy || 0) + 1 });
     }
   }
-  await addFeedItem("fi-buzz", fromName.split(" ")[0] + " a buzzé " + target.name.split(" ")[0] + " !");
+  await addFeedItem("fi-buzz", fromName.split(" ")[0] + " pense avoir trouvé le secret de " + target.name.split(" ")[0] + " : \"" + (guess||"") + "\"");
   showToast("Buzzer envoyé !");
 }
 
@@ -1672,6 +1672,8 @@ function renderTeamRenameList() {
       '<div style="margin-top:8px;padding-left:4px;">' + membersList + '</div>' +
       '</details>';
     el.appendChild(div);
+    const renameBtn = document.getElementById("rename-btn-" + tid);
+    if (renameBtn) renameBtn.addEventListener("click", () => window.renameTeam(tid));
   });
 }
 
